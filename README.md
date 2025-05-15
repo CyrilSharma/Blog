@@ -59,7 +59,7 @@ There is a sample blog post in [`content/article/personal-info.typ`](./content/a
 ## Deploying to GitHub Pages
 
 1. Search and change the `/blog-template` to name of your own repository.
-2. Change Source's "Build and deployment" to "GitHub Actions" in [Page Settings](./settings/pages).
+2. Change Source's "Build and deployment" to "GitHub Actions" in [Page Settings](../../settings/pages).
 3. Push your changes to the `main` branch and it will automatically deploy to GitHub Pages by [CI](.github/workflows/gh-pages.yml).
 
 ## Customization
