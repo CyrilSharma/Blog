@@ -69,4 +69,5 @@ There is a sample blog post in [`content/article/personal-info.typ`](./content/a
 
 ## Credit
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- The astro integration is supported by [astro-typst](https://github.com/overflowcat/astro-typst).
