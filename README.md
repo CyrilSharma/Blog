@@ -1,6 +1,6 @@
 # Blog
 
-The starter template for typst blogs, powered by typst and astro.
+The starter template for blogs, powered by [typst](https://github.com/typst/typst) and [Astro](https://astro.build/).
 
 ## Commands
 
@@ -69,5 +69,6 @@ There is a sample blog post in [`content/article/personal-info.typ`](./content/a
 
 ## Credit
 
-- This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
-- The astro integration is supported by [astro-typst](https://github.com/overflowcat/astro-typst).
+- This theme is based off of the lovely [Bear Blog.](https://github.com/HermanMartinus/bearblog/)
+- The astro integration is supported by [astro-typst.](https://github.com/overflowcat/astro-typst)
+- And, the lovely [typst.](https://github.com/typst/typst)
