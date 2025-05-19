@@ -20,7 +20,7 @@
   main-color: main-color,
   dash-color: dash-color,
   code-extra-colors: code-extra-colors,
-) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "web-ayu")
+) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "light")
 
 #let main(
   title: "Untitled",
@@ -29,9 +29,9 @@
   tags: [],
   body,
 ) = {
-  // set basic document metadata
+  // // set basic document metadata
   set document(
-    author: ("Myriad-Dreamin",),
+    author: ("Cyril Sharma"),
     title: title,
   )
 
@@ -99,13 +99,11 @@
     )
   }
 
-  show: it => if sys-is-html-target {
+  if sys-is-html-target {
     show footnote: it => context {
       let num = counter(footnote).get().at(0)
       link(label("footnote-" + str(num)), super(str(num)))
     }
-
-    it
   }
 
   [
