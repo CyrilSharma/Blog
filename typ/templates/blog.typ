@@ -20,7 +20,7 @@
   main-color: main-color,
   dash-color: dash-color,
   code-extra-colors: code-extra-colors,
-) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "light")
+) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "web-ayu")
 
 #let main(
   title: "Untitled",
