@@ -1,7 +1,7 @@
 ---
 import BaseHead from "$components/BaseHead.astro";
 import Sidebar from "$components/Sidebar.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "$consts";
+import { SITE_TITLE, SITE_DESCRIPTION, BASE_PATH } from "$consts";
 import { getCollection } from "astro:content";
 import FormattedDate from "$components/FormattedDate.astro";
 
@@ -9,7 +9,7 @@ const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 const latest = posts[0];
-const latestUrl = `/blog/${latest.id}/`;
+const latestUrl = `${BASE_PATH}/${latest.id}/`;
 ---
 
 <!doctype html>
@@ -45,7 +45,7 @@ const latestUrl = `/blog/${latest.id}/`;
           {
             posts.map((post) => (
               <li>
-                <a href={`/${post.id}/`}>
+                <a href={`${BASE_PATH}/${post.id}/`}>
                   <h4 class="title">{post.data.title}</h4>
                   <p class="date">
                     <FormattedDate date={post.data.date} />

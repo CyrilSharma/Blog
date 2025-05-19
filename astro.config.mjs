@@ -7,7 +7,7 @@ import { typst } from "astro-typst";
 export default defineConfig({
   // Deploys to GitHub Pages
   site: "https://cyrilsharma.github.io",
-  base: "/blog",
+  base: "/Blog",
 
   integrations: [
     sitemap(),

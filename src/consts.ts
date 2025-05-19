@@ -3,3 +3,4 @@
 
 export const SITE_TITLE = "Strata";
 export const SITE_DESCRIPTION = "Welcome to my blog!";
+export const BASE_PATH = '/Blog';

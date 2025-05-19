@@ -1,11 +1,11 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
-import { SITE_TITLE } from "$consts";
+import { SITE_TITLE, BASE_PATH } from "$consts";
 ---
 
 <header>
   <nav>
-    <h2><a href="/blog">{SITE_TITLE}</a></h2>
+    <h2><a href={BASE_PATH}>{SITE_TITLE}</a></h2>
   </nav>
 </header>
 <style>

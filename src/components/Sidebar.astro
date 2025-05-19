@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import FormattedDate from "./FormattedDate.astro";
-import { SITE_TITLE } from "$consts";
+import { SITE_TITLE, BASE_PATH } from "$consts";
 import { getTagColor as getTagColorSSR, getTextColor as getTextColorSSR } from "./tagColors";
 
 const posts = (await getCollection("blog")).sort(
@@ -18,12 +18,12 @@ const filteredPosts = currentTag
   : posts;
 
 // Only show tags on the blog listing page
-const isBlogListing = Astro.url.pathname === "/blog" || Astro.url.pathname === "/blog/";
+const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathname === `${BASE_PATH}/`;
 ---
 
 <aside>
   <nav>
-    <h3><a href="/blog">{SITE_TITLE}</a></h3>
+    <h3><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
     
     <div class="tags">
       <h4>Tags</h4>
@@ -43,7 +43,7 @@ const isBlogListing = Astro.url.pathname === "/blog" || Astro.url.pathname === "
       {
         posts.map((post) => (
           <li data-tags={post.data.tags.join(',')}>
-            <a href={`/blog/${post.id}/`}>
+            <a href={`${BASE_PATH}/${post.id}/`}>
               {post.data.title}
               <span class="date">
                 <FormattedDate date={post.data.date} />
