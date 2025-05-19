@@ -1,23 +1,62 @@
 ---
 import BaseHead from "$components/BaseHead.astro";
-import Header from "$components/Header.astro";
-import Footer from "$components/Footer.astro";
+import Sidebar from "$components/Sidebar.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "$consts";
-// @ts-ignore
-import AboutContent from "../../content/other/about.typ?html&body";
+import { getCollection } from "astro:content";
+import FormattedDate from "$components/FormattedDate.astro";
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const latest = posts[0];
+const latestUrl = `/blog/${latest.id}/`;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <meta http-equiv="refresh" content={`0; url=${latestUrl}`} />
+    <script define:vars={{ latestUrl }}>
+      window.location.href = latestUrl;
+    </script>
+    <style>
+      main {
+        margin-left: 200px;
+        padding: 2em;
+        max-width: 800px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: calc(200px + 2em);
+      }
+      @media (max-width: 1200px) {
+        main {
+          margin-left: auto;
+          padding-left: 2em;
+        }
+      }
+    </style>
   </head>
   <body>
-    <Header />
+    <Sidebar />
     <main>
-      <h1>{SITE_TITLE}</h1>
-      <AboutContent />
+      <section>
+        <ul>
+          {
+            posts.map((post) => (
+              <li>
+                <a href={`/${post.id}/`}>
+                  <h4 class="title">{post.data.title}</h4>
+                  <p class="date">
+                    <FormattedDate date={post.data.date} />
+                  </p>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
     </main>
-    <Footer />
+    <p>Redirecting to the latest post...</p>
   </body>
 </html>

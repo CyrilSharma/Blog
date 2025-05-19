@@ -1,4 +1,3 @@
-
 #import "@preview/zebraw:0.5.2": zebraw-init, zebraw
 #import "@preview/shiroa:0.2.3": templates
 #import templates: *
@@ -27,6 +26,7 @@
   title: "Untitled",
   desc: [This is a blog post.],
   date: "2024-08-15",
+  tags: [],
   body,
 ) = {
   // set basic document metadata
@@ -114,6 +114,7 @@
       author: "Myriad-Dreamin",
       desc: desc,
       date: date,
+      tags: tags,
     )) <frontmatter>
   ]
 

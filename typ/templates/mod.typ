@@ -1,5 +1,5 @@
 
-#import "@preview/fletcher:0.5.7"
+#import "@preview/fletcher:0.4.0"
 
 #let sys-is-html-target = ("target" in dictionary(std))
 

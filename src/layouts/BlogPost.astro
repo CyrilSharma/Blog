@@ -1,13 +1,43 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import BaseHead from "$components/BaseHead.astro";
-import Header from "$components/Header.astro";
-import Footer from "$components/Footer.astro";
+import Sidebar from "$components/Sidebar.astro";
 import FormattedDate from "$components/FormattedDate.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
-const { title, desc, date, updatedDate } = Astro.props;
+const { title, desc, date, updatedDate, tags } = Astro.props;
+
+// Dark-friendly, high-contrast tag colors
+const tagColors: string[] = [
+  '#3B82F6', // blue
+  '#F59E42', // orange
+  '#10B981', // green
+  '#F43F5E', // red
+  '#A78BFA', // purple
+  '#FBBF24', // yellow
+  '#6366F1', // indigo
+  '#F472B6', // pink
+  '#22D3EE', // cyan
+  '#84CC16', // lime
+  '#E11D48', // rose
+  '#0EA5E9', // sky
+];
+
+function getTagColor(tag: string): string {
+  if (!tag || tag.toLowerCase() === 'all') return 'var(--accent, #a78bfa)';
+  const index = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return tagColors[index % tagColors.length];
+}
+
+function getTextColor(bg: string): string {
+  const hex = bg.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+  return brightness > 140 ? '#222' : '#fff';
+}
 ---
 
 <html lang="en">
@@ -15,13 +45,22 @@ const { title, desc, date, updatedDate } = Astro.props;
     <BaseHead title={title} description={desc} />
     <style>
       main {
-        width: calc(100% - 2em);
-        max-width: 100%;
-        margin: 0;
+        margin-left: 200px;
+        padding: 2em;
+        max-width: 800px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: calc(200px + 2em);
+      }
+      @media (max-width: 1200px) {
+        main {
+          margin-left: auto;
+          padding-left: 2em;
+        }
       }
       .prose {
-        width: 720px;
-        max-width: calc(100% - 2em);
+        width: 100%;
+        max-width: 100%;
         margin: auto;
         padding: 1em;
         color: var(--main-color);
@@ -34,23 +73,57 @@ const { title, desc, date, updatedDate } = Astro.props;
       }
       .title h1 {
         margin: 0 0 0.5em 0;
+        text-align: center;
+        letter-spacing: normal;
       }
       .date {
-        margin-bottom: 0.5em;
+        margin: 0.5em 0;
         color: rgb(var(--date-color));
+        font-size: 0.9em;
       }
       .last-updated-on {
         font-style: italic;
+        margin-top: 0.3em;
+      }
+      .tags {
+        margin: 1em 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5em;
+        justify-content: center;
+      }
+      .tag {
+        display: inline-block;
+        padding: 0.2em 0.7em;
+        border-radius: 4px;
+        font-size: 0.85em;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        cursor: pointer;
+        opacity: 0.9;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+      .tag:hover, .tag.active {
+        opacity: 1;
+        transform: translateY(-1px) scale(1.05);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        outline: none;
+      }
+      h1, h2, h3, h4, h5, h6, .sidebar-title {
+        letter-spacing: normal;
       }
     </style>
   </head>
 
   <body>
-    <Header />
+    <Sidebar />
     <main>
       <article>
         <div class="prose">
           <div class="title">
+            <h1>{title}</h1>
             <div class="date">
               <FormattedDate date={date} />
               {
@@ -61,13 +134,31 @@ const { title, desc, date, updatedDate } = Astro.props;
                 )
               }
             </div>
-            <h1>{title}</h1>
+            {
+              tags && tags.length > 0 && (
+                <div class="tags">
+                  {tags.map(tag => {
+                    const bg = getTagColor(tag);
+                    const fg = getTextColor(bg.replace('var(--accent, ', '').replace(')', '') || bg);
+                    return (
+                      <button 
+                        class="tag" 
+                        data-tag={tag}
+                        style={`background-color: ${bg}; color: ${fg}; border-color: ${bg};`}
+                        onclick={`window.dispatchEvent(new CustomEvent('tagSelected', { detail: '${tag}' }))`}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              )
+            }
             <hr />
           </div>
           <slot />
         </div>
       </article>
     </main>
-    <Footer />
   </body>
 </html>
