@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import FormattedDate from "./FormattedDate.astro";
 import { SITE_TITLE, BASE_PATH } from "$consts";
-import { getTagColor as getTagColorSSR, getTextColor as getTextColorSSR } from "./tagColors";
 
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -11,23 +10,17 @@ const posts = (await getCollection("blog")).sort(
 // Get all unique tags
 const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
 
-// Get current tag from URL
-const currentTag = Astro.url.searchParams.get('tag');
-const filteredPosts = currentTag 
-  ? posts.filter(post => post.data.tags.includes(currentTag))
-  : posts;
-
-// Only show tags on the blog listing page
-const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathname === `${BASE_PATH}/`;
 ---
-
 <aside>
   <nav>
-    <h3><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
+    <h3 style="margin-bottom: 1.5em;"><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
     
     <div class="tags">
-      <h4>Tags</h4>
-      <div class="tag-list">
+      <h4 style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 0.3em;">
+        Tags
+        <button id="toggle-tags" class="toggle-tags-btn" aria-label="Toggle tags">▼</button>
+      </h4>
+      <div class="tag-list hide">
         <button class="tag" data-tag="">All</button>
         {
           allTags.map(tag => (
@@ -57,15 +50,17 @@ const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathnam
 </aside>
 
 <script>
-  // Inline for client-side use
+  let currentTag = '';
   const tagColors: string[] = [
     '#3B82F6', '#F59E42', '#10B981', '#F43F5E', '#A78BFA', '#FBBF24', '#6366F1', '#F472B6', '#22D3EE', '#84CC16', '#E11D48', '#0EA5E9',
   ];
+
   function getTagColor(tag: string): string {
     if (!tag || tag.toLowerCase() === 'all') return 'var(--accent, #a78bfa)';
     const index = Array.from(tag).reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
     return tagColors[index % tagColors.length];
   }
+
   function getTextColor(bg: string): string {
     const hex = bg.replace('#', '');
     const r = parseInt(hex.substring(0, 2), 16);
@@ -74,7 +69,7 @@ const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathnam
     const brightness = (r * 299 + g * 587 + b * 114) / 1000;
     return brightness > 140 ? '#222' : '#fff';
   }
-  let currentTag = '';
+  
   const posts = document.querySelectorAll<HTMLLIElement>('#posts-list li');
   const tagButtons = document.querySelectorAll<HTMLButtonElement>('.tag');
 
@@ -128,6 +123,20 @@ const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathnam
 
   // Set initial state
   filterPosts('');
+
+  // Add toggle functionality
+  const toggleBtn = document.getElementById('toggle-tags');
+  const tagList = document.querySelector('.tag-list');
+  if (toggleBtn && tagList) {
+    // Remove hide class on load so tags are visible by default
+    toggleBtn.addEventListener('click', function() {
+      const isHidden = tagList.classList.contains('hide');
+      tagList.classList.toggle('hide', !isHidden);
+      tagList.classList.toggle('show', isHidden);
+      toggleBtn.textContent = isHidden ? '▲' : '▼';
+    });
+  }
+
 </script>
 
 <style>
@@ -147,7 +156,7 @@ const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathnam
   nav {
     display: flex;
     flex-direction: column;
-    gap: 2em;
+    gap: 0;
   }
 
   h3 {
@@ -170,35 +179,47 @@ const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathnam
   }
 
   .tags {
-    margin-bottom: 1em;
+    margin-bottom: 0;
+  }
+
+  .toggle-tags-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: var(--accent);
+    padding: 0 0.2em;
+    transition: color 0.2s;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .toggle-tags-btn:hover, .toggle-tags-btn:focus {
+    color: var(--accent-hover, #a78bfa);
+    outline: none;
   }
 
   .tag-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em;
-  }
-
-  .tag {
-    display: inline-block;
-    padding: 0.2em 0.7em;
-    border-radius: 4px;
-    font-size: 0.85em;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border: 2px solid transparent;
-    cursor: pointer;
-    opacity: 0.9;
-    font-weight: 500;
-    margin-bottom: 2px;
-  }
-
-  .tag:hover, .tag.active {
+    margin-top: 0.2em;
+    margin-bottom: 1em;
     opacity: 1;
-    transform: translateY(-1px) scale(1.05);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    outline: none;
+    max-height: 200px;
+    transition: opacity 0.2s, max-height 0.2s, margin-top 0.2s, margin-bottom 0.2s;
+    overflow: hidden;
   }
+
+  .tag-list[hidden], .tag-list.hide {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    pointer-events: none;
+  }
+
 
   ul {
     list-style: none;
@@ -234,4 +255,5 @@ const isBlogListing = Astro.url.pathname === `${BASE_PATH}` || Astro.url.pathnam
       display: none;
     }
   }
+
 </style> 
