@@ -178,3 +178,8 @@ figcaption {
   letter-spacing: normal !important;
   word-spacing: normal !important;
 }
+
+html.frame {
+  all: unset;
+  display: block;
+}
