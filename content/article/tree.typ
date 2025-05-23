@@ -7,7 +7,7 @@
   tags: ("random",),
 )
 
-#let args = (stroke: white, parent-line: (stroke: white, stroke-width: 2pt))
+#let args = (stroke: white, text: (fill: blue), parent-line: (stroke: blue, stroke-width: 2pt))
 
 // https://forum.typst.app/t/how-to-export-cetz-diagrams-in-html/3034/5
 // https://github.com/pearcebasmanm/arborly/blob/main/docs/manual.pdf

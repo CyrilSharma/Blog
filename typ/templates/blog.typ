@@ -20,7 +20,8 @@
   main-color: main-color,
   dash-color: dash-color,
   code-extra-colors: code-extra-colors,
-) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "web-ayu")
+) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "light")
+
 
 #let main(
   title: "Untitled",
@@ -41,7 +42,7 @@
   show link: set text(fill: dash-color)
 
   // math setting
-  show math.equation: set text(weight: 400)
+  show math.equation: set text(weight: 500, fill: if is-dark-theme { rgb("#fff") } else { rgb("#111") })
   show math.equation.where(block: true): it => context if shiroa-sys-target() == "html" {
     p-frame(attrs: ("class": "block-equation"), it)
   } else {

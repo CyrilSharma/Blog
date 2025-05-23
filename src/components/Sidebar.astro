@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import FormattedDate from "./FormattedDate.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 import { SITE_TITLE, BASE_PATH } from "$consts";
 
 const posts = (await getCollection("blog")).sort(
@@ -13,7 +14,10 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
 ---
 <aside>
   <nav>
-    <h3 style="margin-bottom: 1.5em;"><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em;">
+      <h3><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
+      <ThemeToggle />
+    </div>
     
     <div class="tags">
       <h4 style="display: flex; align-items: center; gap: 0.5em; margin-bottom: 0.3em;">
@@ -143,14 +147,15 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
   aside {
     width: 200px;
     padding: 1.5em 1em;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
     background: var(--nav-bg-color);
     border-right: 1px solid rgba(var(--black), 5%);
     overflow-y: auto;
     font-size: 0.9em;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
   }
 
   nav {
@@ -248,12 +253,6 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
     font-size: 0.8em;
     color: var(--gray);
     margin-top: 0.2em;
-  }
-
-  @media (max-width: 1200px) {
-    aside {
-      display: none;
-    }
   }
 
 </style> 

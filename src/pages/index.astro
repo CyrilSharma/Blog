@@ -21,42 +21,63 @@ const latestUrl = `${BASE_PATH}/${latest.id}/`;
       window.location.href = latestUrl;
     </script>
     <style>
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
       main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 2em 1em;
+        min-width: 0;
+        box-sizing: border-box;
         margin-left: 200px;
-        padding: 2em;
+      }
+      .content-wrapper {
         max-width: 800px;
-        margin-right: auto;
-        margin-left: auto;
-        padding-left: calc(200px + 2em);
+        width: 100%;
+        margin: 0 auto;
       }
       @media (max-width: 1200px) {
+        .layout {
+          flex-direction: column;
+        }
         main {
-          margin-left: auto;
-          padding-left: 2em;
+          margin-left: 0;
+          max-width: 100%;
+          width: 100%;
+          padding: 2em;
         }
       }
     </style>
   </head>
   <body>
-    <Sidebar />
-    <main>
-      <section>
-        <ul>
-          {
-            posts.map((post) => (
-              <li>
-                <a href={`${BASE_PATH}/${post.id}/`}>
-                  <h4 class="title">{post.data.title}</h4>
-                  <p class="date">
-                    <FormattedDate date={post.data.date} />
-                  </p>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-    </main>
+    <div class="layout">
+      <Sidebar />
+      <main>
+        <div class="content-wrapper">
+          <section>
+            <ul>
+              {
+                posts.map((post) => (
+                  <li>
+                    <a href={`${BASE_PATH}/${post.id}/`}>
+                      <h4 class="title">{post.data.title}</h4>
+                      <p class="date">
+                        <FormattedDate date={post.data.date} />
+                      </p>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </section>
+        </div>
+      </main>
+    </div>
     <p>Redirecting to the latest post...</p>
   </body>
 </html>
