@@ -13,15 +13,18 @@
 // https://github.com/pearcebasmanm/arborly/blob/main/docs/manual.pdf
 // If we make cetz drawings in the future, we should wrap this functionality in a function.
 // That way, if we change our export format, we only have to change one function.
-#html.frame(
-  tree(style: args)[Root
-    [Left
-      [Left.Left]
-      [Left.Right]
+
+#align(center)[
+  #html.frame(
+    tree(style: args)[Root
+      [Left
+        [Left.Left]
+        [Left.Right]
+      ]
+      [Right
+        [Right.Left]
+        [Right.Right]
+      ]
     ]
-    [Right
-      [Right.Left]
-      [Right.Right]
-    ]
-  ]
-)
+  )
+]
