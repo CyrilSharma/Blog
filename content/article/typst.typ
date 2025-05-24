@@ -75,3 +75,17 @@ Or numbered lists with +.
 Check out ```typst #lorem``` if you don't know how I generated the above.
 
 There are even objects and data structures!
+
+// #align(
+//   a + b = c,
+//   d = e + f + g,
+//   x^2 + y^2 = z^2
+// )
+
+We can also change the alignment of text using ```typst align```.
+#for item in (left, center, right) [
+  #align(item + bottom)[
+    #block[Text!]
+  ]
+]
+

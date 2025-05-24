@@ -1,5 +1,6 @@
 #import "@preview/zebraw:0.5.2": zebraw-init, zebraw
 #import "@preview/shiroa:0.2.3": templates
+#import "@preview/cetz:0.3.1"
 #import templates: *
 #import "mod.typ": *
 
@@ -41,13 +42,35 @@
   // link setting
   show link: set text(fill: dash-color)
 
+  show align.where(): it => context if shiroa-sys-target() == "html" {
+    let h-align = "center";
+    if it.alignment.x == left {
+      h-align = "left";
+    } else if it.alignment.x == right {
+      h-align = "right"
+    }
+
+    let v-align = "text-top";
+    if it.alignment.y == top {
+      v-align = "text-top";
+    } else if it.alignment.y == bottom {
+      v-align = "text-bottom"
+    }
+    let s = "text-align: " + h-align + ";" + "vertical-align: " + v-align
+    html.elem("div", attrs: ("style": s))[#it]
+  } else {
+    it
+  } 
+
   // math setting
   show math.equation: set text(weight: 500, fill: if is-dark-theme { rgb("#fff") } else { rgb("#111") })
+
   show math.equation.where(block: true): it => context if shiroa-sys-target() == "html" {
     p-frame(attrs: ("class": "block-equation"), it)
   } else {
     it
   }
+
   show math.equation.where(block: false): it => context if shiroa-sys-target() == "html" {
     span-frame(attrs: (class: "inline-equation"), it)
   } else {
