@@ -21,6 +21,14 @@
   }
 ]
 
+#let ctext(content, fill: color) = [
+  #context if shiroa-sys-target() == "html" {
+    html.elem("span", attrs: ("style": "color: " + fill.to-hex()), content)
+  } else {
+    text(fill)[#content]
+  }
+]
+
 // Theme (Colors)
 #let (
   style: theme-style,
@@ -166,4 +174,5 @@
       })
       .join()
   }
+
 }
