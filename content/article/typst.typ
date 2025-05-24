@@ -48,7 +48,7 @@ Math mode is activated by putting things in between ```typst $$``` If there's a 
   Inline Mode - $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$
 ]
 
-We can do aligned math using the \& syntax. Wow, didn't eve 
+We can do aligned math using the \& syntax. Wow, didn't even have to modify the html export! 
 $
   a + b &= c, \
   d &= e + f + g, \
