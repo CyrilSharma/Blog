@@ -17,7 +17,10 @@ Typst is like Latex but redesigned to be a usable programming language. It has m
 Subheader made with ```typst == Features```
 
 There are for loops and function calls making table generation and other tasks relatively trivial.
-#mblock(inset: 1em)[
+
+
+
+#block(inset: 1em)[
   ```typst
   #for (word, color) in ("apple", "bannana", "carrot").zip((blue, green, red)) [
     The word #word has #ctext(fill: color)[#word.len()] characters.
@@ -29,10 +32,13 @@ There are for loops and function calls making table generation and other tasks r
   ]
 ]
 
+
+
+
 To produce indented content like above you can use ```typst#block(args)[content]```.
 
 You can also define variables with the following syntax.
-#mblock(inset: 1em)[
+#block(inset: 1em)[
   ```typst
   #let ooga = 5 - 3
   #ooga // prints 2
@@ -41,12 +47,12 @@ You can also define variables with the following syntax.
 
 Math mode is activated by putting things in between ```typst $$``` If there's a leading and trailing space, then it will be put in a seperate block. Otherwise, it will be shown inline.
 
-#mblock(inset: 1em)[
+#block(inset: 1em)[
   Block Mode ```typst $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$``` $ integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1 $
   Inline Mode - $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$
 ]
 
-We can do aligned math using the \& syntax. Wow, didn't even have to modify the html export! 
+We can do aligned math using the \& syntax. (Very surprised that worked without any modifications).
 $
   a + b &= c, \
   d &= e + f + g, \
@@ -55,7 +61,7 @@ $
 
 
 You can define your own functions!
-#mblock(inset: 1em)[
+#block(inset: 1em)[
   ```typst
   #let helloWorld() = {
     ctext(fill: red)[Hello World.]
@@ -77,7 +83,7 @@ You can make bullet points with ```typst -```.
 Or numbered lists with +. 
 + #lorem(10)
 + #lorem(12)
-Check out ```typst #lorem``` if you don't know how I generated the above.
+I used ```typst #lorem``` to generate the above.
 
 There are even objects and data structures!
 
@@ -87,8 +93,10 @@ There are even objects and data structures!
 //   x^2 + y^2 = z^2
 // )
 
+
+
 We can also change the alignment of text using ```typst align```.
-#mblock(inset: 1em)[
+#block(inset: 1em)[
   ```typst
   #for item in (left, center, right) [
     #align(item)[
@@ -106,7 +114,7 @@ We can also change the alignment of text using ```typst align```.
 
 
 
-We can also do fancy graphics and callouts, but sadly all such things require exporting to svg, and typst doesn't support selectable text for this.
+We can also do fancy graphics and callouts, but sadly all such things require exporting to svg, and typst doesn't support selectable text for this. I think this will be useful for plotting graphs and tables though.
 #align(center)[
   #graphic(
     box(
@@ -118,5 +126,13 @@ We can also do fancy graphics and callouts, but sadly all such things require ex
     ]
   )
 ]
+
+There's also a bunch of meta-programming in the language (like show rules, argument spreading, sinks, etc.) which I had to deal with to get the html export to work. It mainly boiled down to wrapping the typst functions in custom html functions, and then emitting appropriate css.
+
+
+
+
+
+
 
 

@@ -23,21 +23,44 @@
   }
 ]
 
-#let mblock(content, inset: relative) = [
+#let mblock(..attrs, content) = [
   #context if shiroa-sys-target() == "html" {
-    html.elem("div", attrs: ("style": "margin-left: " + repr(inset)), content)
+    if attrs.at("inset", default: none) != none {
+      let inset = repr(attrs.at("inset"))
+      html.elem("div", attrs: ("style": "padding-left: " + inset + ";" + "padding-right: " + inset), content)
+    } else {
+      block(..attrs)[#content]
+    }
+    
+    // [#attrs.at("inset")] + [#repr(attrs.named())] + [#repr(attrs)] + block(..attrs)[#content]
   } else {
-    [#repr(inset)] + block(inset: inset)[#content]
+    // [#repr(attrs)] + block(..attrs)[#content]
+    [#attrs.at("inset", default: none)] + block(..attrs)[#content]
   }
 ]
 
-#let ctext(content, fill: color) = [
+#let ctext(..attrs, content) = [
   #context if shiroa-sys-target() == "html" {
-    html.elem("span", attrs: ("style": "color: " + fill.to-hex()), content)
+    if attrs.at("fill", default: none) != none {
+      html.elem("span", attrs: ("style": "color: " + attrs.at("fill").to-hex()), content)
+    } else {
+      text(..attrs)[#content]
+    }
+    // text(..attrs)[#content]
   } else {
-    text(fill)[#content]
+    text(..attrs)[#content]
   }
 ]
+
+// This is a general pattern which lets us apply custom html functionality 
+// Without having to change how we write typst code.
+// mblock is a strict super set of block.
+#let block = mblock;
+
+// Sadly, this is not possible.
+// See: https://forum.typst.app/t/how-do-i-read-the-api-documentation-in-regards-to-named-parameters-that-act-positionally/1148
+// Hopefully, a more mature version of html export will fix this.
+// #let text = ctext;
 
 // Theme (Colors)
 #let (
@@ -87,6 +110,7 @@
   } else {
     it
   } 
+
 
   // math setting
   show math.equation: set text(weight: 500, fill: if is-dark-theme { rgb("#fff") } else { rgb("#111") })
