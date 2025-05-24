@@ -1,4 +1,4 @@
-#import "/typ/templates/blog.typ": main
+#import "/typ/templates/blog.typ": main, graphic
 #show: main.with(
   title: "Learning How To Use Typst",
   desc: [Typst is like Latex but redesigned to be a usable programming language.],
@@ -48,6 +48,13 @@ Math mode is activated by putting things in between ```typst $$``` If there's a 
   Inline Mode - $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$
 ]
 
+We can do aligned math using the \& syntax. Wow, didn't eve 
+$
+  a + b &= c, \
+  d &= e + f + g, \
+  x^2 + y^2 &= z^2 \
+$
+
 
 You can define your own functions!
 #block(inset: 1em)[
@@ -83,20 +90,33 @@ There are even objects and data structures!
 // )
 
 We can also change the alignment of text using ```typst align```.
+```typst
 #for item in (left, center, right) [
-  #align(item + bottom)[
+  #align(item)[
+    #block[Text!]
+  ]
+]
+```
+
+#for item in (left, center, right) [
+  #align(item)[
     #block[Text!]
   ]
 ]
 
-We can also do fancy graphics and callouts, but sadly this requires exporting to svg so the text isn't selectable.
+
+
+
+We can also do fancy graphics and callouts, but sadly all such things require exporting to svg, and typst doesn't support selectable text for this.
 #align(center)[
-#html.frame(
-box(
-  fill: luma(240),
-  inset: 12pt,
-  radius: 6pt,
-)[
-  *Tip:* Save often to avoid losing work.
-])]
+  #graphic(
+    box(
+      fill: luma(240),
+      inset: 12pt,
+      radius: 6pt,
+    )[
+      *Tip:* Save often to avoid losing work.
+    ]
+  )
+]
 

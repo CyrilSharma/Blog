@@ -12,6 +12,11 @@
 #let div-frame(content, attrs: (:), tag: "div") = html.elem(tag, html.frame(content), attrs: attrs)
 #let span-frame = div-frame.with(tag: "span")
 #let p-frame = div-frame.with(tag: "p")
+#let graphic(content) = if shiroa-sys-target() == "html" {
+  div-frame(content, tag: "div")
+} else {
+  content
+}
 
 // Theme (Colors)
 #let (
@@ -42,7 +47,7 @@
   // link setting
   show link: set text(fill: dash-color)
 
-  show align.where(): it => context if shiroa-sys-target() == "html" {
+  show align: it => context if shiroa-sys-target() == "html" {
     let h-align = "center";
     if it.alignment.x == left {
       h-align = "left";
