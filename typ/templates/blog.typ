@@ -8,6 +8,8 @@
   "DejaVu Sans Mono",
 )
 
+
+
 /// Creates an embedded block typst frame.
 #let div-frame(content, attrs: (:), tag: "div") = html.elem(tag, html.frame(content), attrs: attrs)
 #let span-frame = div-frame.with(tag: "span")
@@ -18,6 +20,14 @@
     html.frame(content)
   } else {
     content
+  }
+]
+
+#let mblock(content, inset: relative) = [
+  #context if shiroa-sys-target() == "html" {
+    html.elem("div", attrs: ("style": "margin-left: " + repr(inset)), content)
+  } else {
+    [#repr(inset)] + block(inset: inset)[#content]
   }
 ]
 

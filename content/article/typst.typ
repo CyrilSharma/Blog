@@ -17,24 +17,22 @@ Typst is like Latex but redesigned to be a usable programming language. It has m
 Subheader made with ```typst == Features```
 
 There are for loops and function calls making table generation and other tasks relatively trivial.
-#block(inset: 1em)[
+#mblock(inset: 1em)[
   ```typst
   #for (word, color) in ("apple", "bannana", "carrot").zip((blue, green, red)) [
     The word #word has #ctext(fill: color)[#word.len()] characters.
-
   ]
   ```
   Produces...\ 
   #for (word, color) in ("apple", "bannana", "carrot").zip((blue, green, red)) [
     The word #word has #ctext(fill: color)[#word.len()] characters.
-
   ]
 ]
 
 To produce indented content like above you can use ```typst#block(args)[content]```.
 
 You can also define variables with the following syntax.
-#block(inset: 1em)[
+#mblock(inset: 1em)[
   ```typst
   #let ooga = 5 - 3
   #ooga // prints 2
@@ -43,7 +41,7 @@ You can also define variables with the following syntax.
 
 Math mode is activated by putting things in between ```typst $$``` If there's a leading and trailing space, then it will be put in a seperate block. Otherwise, it will be shown inline.
 
-#block(inset: 1em)[
+#mblock(inset: 1em)[
   Block Mode ```typst $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$``` $ integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1 $
   Inline Mode - $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$
 ]
@@ -57,7 +55,7 @@ $
 
 
 You can define your own functions!
-#block(inset: 1em)[
+#mblock(inset: 1em)[
   ```typst
   #let helloWorld() = {
     ctext(fill: red)[Hello World.]
@@ -90,20 +88,21 @@ There are even objects and data structures!
 // )
 
 We can also change the alignment of text using ```typst align```.
-```typst
-#for item in (left, center, right) [
-  #align(item)[
-    #block[Text!]
+#mblock(inset: 1em)[
+  ```typst
+  #for item in (left, center, right) [
+    #align(item)[
+      #block[Text!]
+    ]
+  ]
+  ```
+
+  #for item in (left, center, right) [
+    #align(item)[
+      #block[Text!]
+    ]
   ]
 ]
-```
-
-#for item in (left, center, right) [
-  #align(item)[
-    #block[Text!]
-  ]
-]
-
 
 
 
