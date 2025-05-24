@@ -89,3 +89,14 @@ We can also change the alignment of text using ```typst align```.
   ]
 ]
 
+We can also do fancy graphics and callouts, but sadly this requires exporting to svg so the text isn't selectable.
+#align(center)[
+#html.frame(
+box(
+  fill: luma(240),
+  inset: 12pt,
+  radius: 6pt,
+)[
+  *Tip:* Save often to avoid losing work.
+])]
+
