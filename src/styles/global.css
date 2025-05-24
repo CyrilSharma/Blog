@@ -93,6 +93,9 @@ a {
 a:hover {
   color: var(--accent-dark);
 }
+p, div {
+  font-family: "New Computer Modern", serif;
+}
 p {
   margin-bottom: 1em;
 }
