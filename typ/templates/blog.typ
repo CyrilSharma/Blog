@@ -12,11 +12,14 @@
 #let div-frame(content, attrs: (:), tag: "div") = html.elem(tag, html.frame(content), attrs: attrs)
 #let span-frame = div-frame.with(tag: "span")
 #let p-frame = div-frame.with(tag: "p")
-#let graphic(content) = if shiroa-sys-target() == "html" {
-  div-frame(content, tag: "div")
-} else {
-  content
-}
+
+#let graphic(content) = [
+  #context if shiroa-sys-target() == "html" {
+    html.frame(content)
+  } else {
+    content
+  }
+]
 
 // Theme (Colors)
 #let (
