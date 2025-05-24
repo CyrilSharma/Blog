@@ -123,18 +123,25 @@ kbd,
 samp {
   font-family: var(--vp-font-family-mono);
 }
+
 code {
-  padding: 2px 5px;
+  /* padding: 2px 5px; */
   background-color: var(--raw-bg-color);
-  border-radius: 2px;
+  /* border-radius: 2px; */
 }
+
 pre {
+  /* all: unset !important; */
   padding: 1.5em;
+  margin-top: -0.5em !important;
+  margin-bottom: -0.5em !important;
   border-radius: 8px;
 }
+
 pre > code {
   all: unset;
 }
+
 blockquote {
   border-left: 4px solid var(--accent);
   padding: 0 0 0 18px;
