@@ -61,7 +61,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0 0 0.5rem 0;
+  margin: 1.0rem 0 0.25rem 0;
   color: var(--main-color);
   line-height: 1.2;
 }
@@ -99,12 +99,38 @@ p, div {
 p {
   margin-bottom: 1em;
 }
-ol {
-  list-style-position: inside;
+
+.prose ol {
+  list-style-position: outside;
+  display: inline-block;
 }
-ul {
-  list-style-position: inside;
+
+.prose ul {
+  list-style-position: outside;
+  display: inline-block;
 }
+
+.prose > ol {
+  display: inline-block;
+}
+
+.prose > ul {
+  display: inline-block;
+}
+
+.prose ul > li {
+  margin-left: 16px;
+}
+
+.prose ol > li {
+  margin-left: 16px;
+}
+
+.prose li > p {
+  margin: 0;
+}
+
+
 .prose p {
   margin-bottom: 1em;
 }
@@ -158,10 +184,12 @@ hr {
   border: none;
   border-top: 1px solid var(--raw-bg-color);
 }
+
 ol {
   margin: 0;
   padding: 0;
 }
+
 ul {
   margin: 0;
   padding: 0;
@@ -197,13 +225,6 @@ figcaption {
   padding: 0 0.2em;
 }
 .block-equation {
-  display: grid;
-  place-items: center;
-  overflow-x: auto;
-  padding: 0.5em 0;
-  margin: 1em 0;
-}
-.align {
   display: grid;
   place-items: center;
   overflow-x: auto;

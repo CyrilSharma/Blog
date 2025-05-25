@@ -35,7 +35,7 @@
     // [#attrs.at("inset")] + [#repr(attrs.named())] + [#repr(attrs)] + block(..attrs)[#content]
   } else {
     // [#repr(attrs)] + block(..attrs)[#content]
-    [#attrs.at("inset", default: none)] + block(..attrs)[#content]
+    block(..attrs)[#content]
   }
 ]
 
@@ -106,7 +106,7 @@
       v-align = "text-bottom"
     }
     let s = "text-align: " + h-align + ";" + "vertical-align: " + v-align
-    html.elem("div", attrs: ("style": s))[#it]
+    html.elem("div", attrs: ("style": s, "class": "align"))[#it]
   } else {
     it
   } 

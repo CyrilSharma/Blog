@@ -32,9 +32,6 @@ There are for loops and function calls making table generation and other tasks r
   ]
 ]
 
-
-
-
 To produce indented content like above you can use ```typst#block(args)[content]```.
 
 You can also define variables with the following syntax.
