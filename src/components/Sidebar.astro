@@ -154,7 +154,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
   const sidebarOpen = document.getElementById('sidebar-open');
   if (sidebarToggle && aside && main && sidebarOpen) {
     sidebarToggle.addEventListener('click', () => {
-      main.style.marginLeft = "0%";
+      main.style.marginLeft = "15px";
       aside.style.display = "none";
       sidebarToggle.style.display = 'inline-block';
       sidebarOpen.style.display = 'inline-block';
@@ -182,7 +182,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
 
   aside {
     width: 200px;
-    padding: 1.5em 1em;
+    padding: 15px 15px;
     background: var(--nav-bg-color);
     border-right: 1px solid rgba(var(--black), 5%);
     overflow-y: auto;

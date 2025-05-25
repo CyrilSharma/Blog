@@ -166,14 +166,6 @@ ul {
   margin: 0;
   padding: 0;
 }
-/* @media (max-width: 720px) {
-  body {
-    font-size: 16px;
-  }
-  main {
-    padding: 1em;
-  }
-} */
 
 .sr-only {
   border: 0;

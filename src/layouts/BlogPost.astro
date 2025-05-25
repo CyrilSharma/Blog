@@ -48,8 +48,8 @@ function getTextColor(bg: string): string {
     <BaseHead title={title} description={desc} />
     <style>
       main {
-        margin-left: 200px;
-        padding: 2em;
+        margin-left: 245px;
+        /* padding: 2em; */
         max-width: 100%;
         margin-right: auto;
       }
@@ -57,7 +57,7 @@ function getTextColor(bg: string): string {
         width: 100%;
         max-width: 100%;
         margin: auto;
-        padding: 1em;
+        /* padding: 1em; */
         color: var(--main-color);
       }
       .title {
@@ -165,7 +165,7 @@ function getTextColor(bg: string): string {
   const main = document.querySelector('main');
   if (sidebarToggle && aside && main) {
     sidebarToggle.addEventListener('click', () => {
-      main.style.marginLeft = "200px";
+      main.style.marginLeft = "245px";
       aside.style.width = "200px";
       aside.style.display = "block";
       console.log("sidebar open");
