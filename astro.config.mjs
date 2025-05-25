@@ -2,6 +2,7 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import { typst } from "astro-typst";
+import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,6 +18,9 @@ export default defineConfig({
         default: "html",
         detect: () => "html",
       },
+    }),
+    icon({
+      include: ["mdi"],
     }),
   ],
 });

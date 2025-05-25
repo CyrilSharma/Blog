@@ -11,7 +11,9 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.4.0",
+    "@iconify-json/mdi": "^1.2.3",
     "astro": "^5.7.13",
+    "astro-icon": "^1.1.5",
     "astro-typst": "0.9.0-rc1"
   }
 }

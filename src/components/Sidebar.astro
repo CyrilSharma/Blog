@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import FormattedDate from "./FormattedDate.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+import { Icon } from 'astro-icon/components'
 import { SITE_TITLE, BASE_PATH } from "$consts";
 
 const posts = (await getCollection("blog")).sort(
@@ -16,7 +17,12 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
   <nav>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em;">
       <h3><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
-      <ThemeToggle />
+      <div style="display: flex; gap: 0.5em; align-items: center;">
+        <ThemeToggle />
+        <button id="sidebar-toggle" aria-label="Toggle sidebar">
+          <Icon name="mdi:close" style="width: 1.5rem; height: 1.5rem;" />
+        </button>
+      </div>
     </div>
     
     <div class="tags">
@@ -141,9 +147,39 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
     });
   }
 
+  // Add sidebar toggle functionality
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const aside = document.querySelector('aside');
+  const main = document.querySelector('main');
+  const sidebarOpen = document.getElementById('sidebar-open');
+  if (sidebarToggle && aside && main && sidebarOpen) {
+    sidebarToggle.addEventListener('click', () => {
+      main.style.marginLeft = "0%";
+      aside.style.display = "none";
+      sidebarToggle.style.display = 'inline-block';
+      sidebarOpen.style.display = 'inline-block';
+    });
+  }
 </script>
 
 <style>
+  #sidebar-toggle {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--main-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+
+  #sidebar-toggle:hover {
+    background-color: var(--raw-bg-color);
+  }
+
   aside {
     width: 200px;
     padding: 1.5em 1em;
@@ -156,6 +192,20 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
     left: 0;
     bottom: 0;
     z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  aside.collapsed {
+    transform: translateX(-100%);
+  }
+
+  main {
+    margin-left: 200px;
+    transition: margin-left 0.3s ease;
+  }
+
+  main.expanded {
+    margin-left: 0;
   }
 
   nav {
