@@ -10,7 +10,7 @@ I think a reasonable way to think of life is to imagine you are stuck in a river
 
 *environment*: The river. It does not completely determine where you are going but it has undeniable influence. If the river is flowing very fast, there may be little you can do.
 
-*agency*: The desire, will, and initiative to steer yourself. This doesn't mean you can do anything,your swimming abilities are not infinite. Nonetheless, a high-agency person seeks to shape their trajectory as much as possible.
+*agency*: The desire, will, and initiative to steer yourself. This doesn't mean you can do anything, your swimming abilities are not infinite. Nonetheless, a high-agency person seeks to shape their trajectory as much as possible.
 
 *self-confidence*: How much you think you can change your trajectory. 
 
