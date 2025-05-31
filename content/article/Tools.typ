@@ -3,7 +3,7 @@
   title: "Tools",
   desc: ["Tools I use"],
   date: "2025-05-31T09:30:06-04:00",
-  tags: ("random"),
+  tags: ("random","cs"),
 )
 
 This is a list of tools I use that aren't universal (e.g. Github) but that I think are really cool.
