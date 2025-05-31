@@ -180,10 +180,42 @@
     }
   }
 
+  if not sys-is-html-target {
+    // show the title, date, and tags
+    align(center, [= #title])
+
+    // show the date
+    align(center, [#date.split("T").at(0)])
+    
+    // show the tags
+    align(center, {
+      // choose a random color for each tag
+      let colors = (
+        // rgb("e0e0e0"), // Light gray
+        // rgb("c9d6d5"), // Muted teal-gray
+        // rgb("f6e9d7"), // Soft cream
+        // rgb("d9cfe6"), // Pastel lavender
+        rgb("f2d7d9"),  // Warm blush pink
+        rgb("e0e0e0"), // Light gray
+        rgb("c9d6d5"), // Muted teal-gray
+        rgb("f6e9d7"), // Soft cream
+        rgb("d9cfe6"), // Pastel lavender
+        rgb("f2d7d9")  // Warm blush pink
+      );
+
+      for (i, tag) in tags.enumerate() [
+        // space out the tags
+        #box(tag, fill: colors.at(calc.rem(i, colors.len())), radius: 4pt, outset: 4pt)
+        #h(1em)
+      ]
+    })
+  }
+
+
   [
     #metadata((
       title: title,
-      author: "Myriad-Dreamin",
+      author: "Cyril Sharma",
       desc: desc,
       date: date,
       tags: tags,
