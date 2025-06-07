@@ -22,10 +22,3 @@ So then why is sexual reproduction so common?
     - Asexual populations rely on a class of highly fit individuals to pass on the good genes. If those invididuals were to die, then the population is screwed. Sexual populations are capable of reproducing that set of highly fit individuals every generation. Sexual populations are "fault-tolerant".
   + Bad traits can "go along for the ride" in asexual populations. E.g. whatever traits (good or bad) are on the members of the species with dominant positive mutations will eventually become a part of the entire population. In sexual populations, the set of traits on the fit organism are not as coupled, allowing deleterous mutations to die off.
 ]
-
-
-
-
-
-
-

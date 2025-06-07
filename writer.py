@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 from rich.console import Console
 from rich.prompt import Prompt
-from rich.text import Text
 import datetime
 import os
 import sys
+import subprocess
 
 console = Console()
+BLOG_DIR = './content/article'
 
 def iso_timestamp() -> str:
     """
@@ -26,11 +27,14 @@ def prompt_nonempty(prompt_text: str) -> str:
             return response
         console.print("[red]Input cannot be empty. Please try again.[/red]")
 
-def main():
-    console.print("\n[bold underline]Create a New Typst File[/bold underline]\n")
-    console.print("This script will ask for the necessary information and create a `.typ` file")
-    console.print("with a fixed creation timestamp.\n")
+def open_dir(path):
+    try:
+        subprocess.run(["nvim", path])
+    except FileNotFoundError:
+        console.print("[red]Error:[/red] Could not find 'nvim' in PATH.")
+        sys.exit(1)
 
+def create_new_typst_file():
     # Ask for filename
     while True:
         filename = Prompt.ask("[cyan]Enter filename[/cyan]").strip()
@@ -66,14 +70,35 @@ def main():
     )
 
     # Write to file
-    OUTPUT = './content/article'
+    filepath = f"{BLOG_DIR}/{filename}.typ"
     try:
-        with open(f"{OUTPUT}/{filename}.typ", "w", encoding="utf-8") as f:
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
         console.print(f"\n✅ [green]Created new Typst file:[/green] [bold]{filename}[/bold]")
     except OSError as e:
-        console.print(f"[red]Error writing file:[/red] {e}", file=sys.stderr)
+        console.print(f"[red]Error writing file:[/red] {e}")
         sys.exit(1)
+
+    open_dir(filepath)
+
+
+def main():
+    console.print("\n[bold underline]Typst Blog Helper[/bold underline]\n")
+    console.print("[dim]Choose an option:[/dim]")
+    console.print("1. [green]Create[/green] a new `.typ` file")
+    console.print("2. [blue]Open[/blue] blog directory with Neovim\n")
+
+    try:
+        choice = Prompt.ask("Enter [green]create[/green] or [blue]open[/blue]").strip().lower()
+        if choice == "open":
+            open_dir(BLOG_DIR)
+        elif choice == "create":
+            create_new_typst_file()
+        else:
+            console.print("[red]Invalid choice. Please enter 'create' or 'open'.[/red]")
+    except KeyboardInterrupt:
+        # Silent exit on Ctrl-C
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
