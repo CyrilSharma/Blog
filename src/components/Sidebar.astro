@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import FormattedDate from "./FormattedDate.astro";
-import ThemeToggle from "./ThemeToggle.astro";
 import { Icon } from 'astro-icon/components'
 import { SITE_TITLE, BASE_PATH } from "$consts";
 
@@ -18,7 +17,7 @@ const allTags = [...new Set(posts.flatMap(post => post.data.tags))].sort();
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em;">
       <h3><a href={BASE_PATH}>{SITE_TITLE}</a></h3>
       <div style="display: flex; gap: 0.5em; align-items: center;">
-        <ThemeToggle />
+        <!-- <ThemeToggle /> -->
         <button id="sidebar-toggle" aria-label="Toggle sidebar">
           <Icon name="mdi:close" style="width: 1.5rem; height: 1.5rem;" />
         </button>
