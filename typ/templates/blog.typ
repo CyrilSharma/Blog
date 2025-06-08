@@ -86,7 +86,8 @@
     title: title,
   )
 
-  set text(18pt) if sys-is-html-target
+  // pause... this seems like the issue.
+  // set text(18pt) if sys-is-html-target
 
   // link setting
   show link: set text(fill: dash-color)

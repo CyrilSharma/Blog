@@ -114,7 +114,7 @@ function like linspace and whatnot which make this even easier. I can also read
 data from files, which should enable cool plots based on real data. There's even
 stuff for plotting nodes and edges, and basically any construct you could think
 of. I think I'm becoming more convinced this is an upgrade over an obsidian
-blog. Actually, the rendering is all messed up in the website... sigh...
+blog.
 
 
 
