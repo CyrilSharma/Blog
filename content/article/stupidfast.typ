@@ -24,21 +24,25 @@ And there it is. We're still doing polling, just with fast hardware.
 
 == Locks
 How do you stop two processes from accessing the same resource at the same time? There's an easy solution, make them do different things. If A and B try to access it at the same time, just always give it to A.
+
+
 #columns(2)[
   ```python
+  # a
   a_wants_it = False
   b_wants_it = False
   locked = False
   while (1):
-    b_wants_it = True
-    if not locked and not a_wants_it:
+    a_wants_it = True
+    if not locked:
       locked = True
       # do some work...
       locked = False
-
+    a_wants_it = False
   ```
   #colbreak()
   ```python
+  # b
   a_wants_it = False
   b_wants_it = False
   locked = False
@@ -48,7 +52,17 @@ How do you stop two processes from accessing the same resource at the same time?
       locked = True
       # do some work...
       locked = False
-
+    b_wants_it = False
   ```
 ]
-However, this means we'd have to write different code for each process, which feels unnecessary.
+
+
+Actually this definitely doesn't work see #link("https://en.wikipedia.org/wiki/Dekker%27s_algorithm#:~:text=Dekker's%20algorithm%20is%20the%20first,Dekker%20by%20Edsger%20W.")[Dekker's Algorithm] for a correct implementation. However, this means we'd have to write different code for each process, and it's pretty tricky code too. At which point you're told just use Mutexes or Semaphores. Oh, but what happens if two processes call #ctext(red)[lock]at the same time? Well the cache will ensure only one process can access the memory at a time. But how does it choose? Ah, it does basically the same thing, but just embedded as a hardware circuit.
+
+== Content-Addressable Memory (CAM)
+Hmmm we have all these virtual addresses, and we need to figure out what physical addresses they correspond too. We have a page table for this purpose, but it's kinda slow. We want a recency cache, but that requires a hashtable which seems hard to make fast. Ah, what if instead of a hashtable we just checked every key in parallel.
+
+== Network Communication
+I want to send you an email, but your computer is down. Ah, well I can just send it to a third server which will hold onto the mail, then when your computer wakes up it'll fetch the mail. Hmm how do we do this for cell phones which are constantly moving around? Ah just track where it's going and move the proxies around. 
+
+Actually Celluar is super complicated and the logic behind moving all these proxies around is very hard to follow. Still, there's really no better way of talking with an unavailable agent then just having it send everything through a proxy.

@@ -77,7 +77,7 @@
   #context if shiroa-sys-target() == "html" {
     html.elem("div", attrs: ("style": "column-count: " + str(count) + "; column-gap: 2em;"), content)
   } else {
-    columns(count: count)[#content]
+    columns(count)[#content]
   }
 ]
 
@@ -85,7 +85,7 @@
   #context if shiroa-sys-target() == "html" {
     html.elem("div", attrs: ("style": "break-after: column;"), [])
   } else {
-    columnbreak()
+    colbreak()
   }
 ]
 
@@ -132,6 +132,11 @@
     it
   } 
 
+  // show colbreak: it => context if shiroa-sys-target() == "html" {
+  //   html.elem("div", attrs: ("style": "break-after: column;"), [])
+  // } else {
+  //   colbreak()
+  // }
 
   // math setting
   show math.equation: set text(weight: 500, fill: if is-dark-theme { rgb("#fff") } else { rgb("#111") })
