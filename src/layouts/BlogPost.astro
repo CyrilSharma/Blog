@@ -4,6 +4,7 @@ import BaseHead from "$components/BaseHead.astro";
 import { Sidebar } from "$components/Sidebar.tsx";
 import { SITE_TITLE } from "$consts";
 import ArticleHeader from "$components/ArticleHeader.astro";
+import { ClientRouter } from "astro:transitions";
 
 type Props = CollectionEntry<"blog">["data"];
 
@@ -83,7 +84,7 @@ const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
       }
     </style>
   </head>
-
+  <ClientRouter />
   <body>
     <main>
       <article>
@@ -93,7 +94,7 @@ const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
             </div>
       </article>
     </main>
-    <Sidebar client:load title={SITE_TITLE} posts={posts} allTags={allTags}>
+    <Sidebar transition:persist client:load title={SITE_TITLE} posts={posts} allTags={allTags}>
   </body>
 </html>
 
