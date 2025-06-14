@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import { typst } from "astro-typst";
 import icon from "astro-icon";
+import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,5 +23,6 @@ export default defineConfig({
     icon({
       include: ["mdi"],
     }),
+    react(),
   ],
 });

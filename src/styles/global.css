@@ -49,12 +49,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/* main {
-  /* width: 720px; */
-  /* max-width: calc(100%); */
-  /* margin: auto; */
-  /* padding: 3em 1em; */
-/* } */
+
 h1,
 h2,
 h3,
@@ -177,6 +172,7 @@ blockquote {
   margin: 0px;
   font-size: 1.333em;
 }
+
 hr {
   border: none;
   border-top: 1px solid var(--raw-bg-color);
@@ -255,6 +251,7 @@ html.frame {
   margin-bottom: 1px;
   margin-left: 0.2em;
 }
+
 .tag:hover, .tag.active {
   opacity: 1;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);

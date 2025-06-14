@@ -1,9 +1,7 @@
 ---
 import BaseHead from "$components/BaseHead.astro";
-import Sidebar from "$components/Sidebar.astro";
 import { SITE_TITLE, SITE_DESCRIPTION, BASE_PATH } from "$consts";
 import { getCollection } from "astro:content";
-import FormattedDate from "$components/FormattedDate.astro";
 
 const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -20,64 +18,8 @@ const latestUrl = `${BASE_PATH}/${latest.id}/`;
     <script define:vars={{ latestUrl }}>
       window.location.href = latestUrl;
     </script>
-    <style>
-      .layout {
-        display: flex;
-        min-height: 100vh;
-      }
-      main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        padding: 2em 1em;
-        min-width: 0;
-        box-sizing: border-box;
-        margin-left: 200px;
-      }
-      .content-wrapper {
-        max-width: 800px;
-        width: 100%;
-        margin: 0 auto;
-      }
-      @media (max-width: 1200px) {
-        .layout {
-          flex-direction: column;
-        }
-        main {
-          margin-left: 0;
-          max-width: 100%;
-          width: 100%;
-          padding: 2em;
-        }
-      }
-    </style>
   </head>
   <body>
-    <div class="layout">
-      <Sidebar />
-      <main>
-        <div class="content-wrapper">
-          <section>
-            <ul>
-              {
-                posts.map((post) => (
-                  <li>
-                    <a href={`${BASE_PATH}/${post.id}/`}>
-                      <h4 class="title">{post.data.title}</h4>
-                      <p class="date">
-                        <FormattedDate date={post.data.date} />
-                      </p>
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
-          </section>
-        </div>
-      </main>
-    </div>
     <p>Redirecting to the latest post...</p>
   </body>
 </html>

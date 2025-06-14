@@ -1,63 +1,35 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseHead from "$components/BaseHead.astro";
-import Sidebar from "$components/Sidebar.astro";
-import FormattedDate from "$components/FormattedDate.astro";
-import { Icon } from 'astro-icon/components'
+import { Sidebar } from "$components/Sidebar.tsx";
+import { SITE_TITLE } from "$consts";
+import ArticleHeader from "$components/ArticleHeader.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
 const { title, desc, date, updatedDate, tags } = Astro.props;
 
-// Dark-friendly, high-contrast tag colors
-const tagColors: string[] = [
-  '#3B82F6', // blue
-  '#F59E42', // orange
-  '#10B981', // green
-  '#F43F5E', // red
-  '#A78BFA', // purple
-  '#FBBF24', // yellow
-  '#6366F1', // indigo
-  '#F472B6', // pink
-  '#22D3EE', // cyan
-  '#84CC16', // lime
-  '#E11D48', // rose
-  '#0EA5E9', // sky
-];
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+).map(post => ({
+  id: post.id,
+  title: post.data.title,
+  date: post.data.date,
+  tags: post.data.tags
+}));
 
-function getTagColor(tag: string): string {
-  if (!tag || tag.toLowerCase() === 'all') return 'var(--accent, #a78bfa)';
-  const index = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return tagColors[index % tagColors.length];
-}
-
-function getTextColor(bg: string): string {
-  const hex = bg.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-  return brightness > 140 ? '#222' : '#fff';
-}
-
-
+// Get all unique tags
+const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
 ---
 
 <html lang="en">
   <head>
     <BaseHead title={title} description={desc} />
     <style>
-      main {
-        margin-left: 245px;
-        /* padding: 2em; */
-        max-width: 100%;
-        margin-right: 15px;
-      }
       .prose {
         width: 100%;
         max-width: 100%;
         margin: auto;
-        /* padding: 1em; */
         color: var(--main-color);
       }
       .title {
@@ -90,86 +62,38 @@ function getTextColor(bg: string): string {
       h1, h2, h3, h4, h5, h6, .sidebar-title {
         letter-spacing: normal;
       }
-      #sidebar-open {
-        background: none;
-        border: none;
-        padding: 0.5rem;
-        cursor: pointer;
-        color: var(--main-color);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 0.2s;
-        box-shadow: none;
-        outline: none;
+      main {
+        width: 800px;
+        margin: 0 auto;
       }
-      #sidebar-open:hover {
-        background-color: var(--raw-bg-color);
+
+      /* Responsive design for different screen sizes */
+      @media (max-width: 1200px) {
+        main {
+          width: 90%;
+          max-width: 800px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        main {
+          width: 95%;
+          padding: 0 1rem;
+        }
       }
     </style>
   </head>
 
   <body>
-    <button id="sidebar-open" aria-label="Open sidebar" style="display: none; position: relative; display: inline-block;">
-      <Icon name="mdi:menu" style="width: 1.5rem; height: 1.5rem;" />
-    </button>
-    <Sidebar />
     <main>
       <article>
-        <div class="prose">
-          <div class="title">
-            <h1>{title}</h1>
-            <div class="date">
-              <FormattedDate date={date} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on">
-                    Last updated on <FormattedDate date={updatedDate || date} />
-                  </div>
-                )
-              }
+          <ArticleHeader title={title} date={date} updatedDate={updatedDate} tags={tags} />
+            <div class="prose">
+              <slot />
             </div>
-            {
-              tags && tags.length > 0 && (
-                <div class="tags">
-                  {tags.map(tag => {
-                    const bg = getTagColor(tag);
-                    const fg = getTextColor(bg.replace('var(--accent, ', '').replace(')', '') || bg);
-                    return (
-                      <button 
-                        class="tag" 
-                        data-tag={tag}
-                        style={`background-color: ${bg}; color: ${fg}; border-color: ${bg};`}
-                        onclick={`window.dispatchEvent(new CustomEvent('tagSelected', { detail: '${tag}' }))`}
-                      >
-                        {tag}
-                      </button>
-                    );
-                  })}
-                </div>
-              )
-            }
-            <hr />
-          </div>
-          <slot />
-        </div>
       </article>
-      <br>
     </main>
+    <Sidebar client:load title={SITE_TITLE} posts={posts} allTags={allTags}>
   </body>
 </html>
 
-<script>
-  const sidebarToggle = document.getElementById('sidebar-open');
-  const aside = document.querySelector('aside');
-  const main = document.querySelector('main');
-  if (sidebarToggle && aside && main) {
-    sidebarToggle.addEventListener('click', () => {
-      main.style.marginLeft = "245px";
-      aside.style.width = "200px";
-      aside.style.display = "block";
-      console.log("sidebar open");
-    });
-  }
-</script>

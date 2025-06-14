@@ -1,0 +1,69 @@
+---
+import { getTagColor, getTextColor } from '../tagColors';
+import { formatDate } from '../utils';
+import Tag from './Tag';
+
+interface Props {
+  title: string;
+  date: Date;
+  updatedDate?: Date;
+  tags?: string[];
+}
+
+const { title, date, updatedDate, tags } = Astro.props;
+---
+
+<div class="article-header">
+  <h1>{title}</h1>
+  <div class="date">
+    <div> {formatDate(date)} </div>
+    {updatedDate && (
+      <div class="last-updated-on">
+        Last updated on <small> {formatDate(updatedDate)} </small>
+      </div>
+    )}
+  </div>
+  {tags && tags.length > 0 && (
+    <div class="tags">
+      {tags.map(tag => {
+        return <Tag client:load tag={tag} />
+      })}
+    </div>
+    
+  )}
+  <hr />
+</div>
+
+<style>
+  .article-header {
+    margin-bottom: 1em;
+    padding: 1em 0;
+    text-align: center;
+    line-height: 1;
+  }
+
+  h1 {
+    margin: 0 0 0.5em 0;
+    text-align: center;
+    letter-spacing: normal;
+  }
+
+  .date {
+    margin: 0.5em 0;
+    color: rgb(var(--date-color));
+    font-size: 0.9em;
+  }
+
+  .last-updated-on {
+    font-style: italic;
+    margin-top: 0.3em;
+  }
+
+  .tags {
+    margin: 1em 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    justify-content: center;
+  }
+</style>
