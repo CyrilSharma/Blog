@@ -57,10 +57,12 @@ def create_new_typst_file():
         console.print("[red]Error:[/red] At least one tag is required.")
         sys.exit(1)
     tags_field = ", ".join(f"\"{t}\"" for t in tag_list)
+    if len(tag_list) == 1:
+        tags_field += ","
 
     # Construct the Typst content
     content = (
-        '#import "/typ/templates/blog.typ": main\n'
+        '#import "/typ/templates/blog.typ": *\n'
         "#show: main.with(\n"
         f'  title: "{title}",\n'
         f'  desc: ["{description}"],\n'

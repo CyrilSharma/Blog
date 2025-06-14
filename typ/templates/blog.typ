@@ -72,6 +72,26 @@
   code-extra-colors: code-extra-colors,
 ) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "light")
 
+// Add columns support
+#let mcolumns(count, content) = [
+  #context if shiroa-sys-target() == "html" {
+    html.elem("div", attrs: ("style": "column-count: " + str(count) + "; column-gap: 2em;"), content)
+  } else {
+    columns(count: count)[#content]
+  }
+]
+
+#let mcolbreak() = [
+  #context if shiroa-sys-target() == "html" {
+    html.elem("div", attrs: ("style": "break-after: column;"), [])
+  } else {
+    columnbreak()
+  }
+]
+
+// Override the built-in functions
+#let columns = mcolumns
+#let colbreak = mcolbreak
 
 #let main(
   title: "Untitled",
