@@ -21,14 +21,12 @@ interface SidebarProps {
 
 interface TagListProps {
   allTags: string[];
-  selectedTag: string;
-  setSelectedTag: (tag: string) => void;
 }
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-const TagList = ({ allTags, selectedTag, setSelectedTag }: TagListProps) => {
+const TagList = ({ allTags }: TagListProps) => {
   return (
     <div className="tag-list">
     <Tag tag="All" />
@@ -71,7 +69,7 @@ export const Sidebar = ({ title, posts, allTags }: SidebarProps) => {
           </div>
 
           {showTags && (
-            <TagList allTags={allTags} selectedTag={$selectedTag} setSelectedTag={selectedTag.set}/>
+            <TagList allTags={allTags} />
           )}
         </div>
 
