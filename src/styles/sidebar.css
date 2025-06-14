@@ -127,5 +127,10 @@
   .sidebar {
     width: 95%;
     border-right: none;
+    transform: translateX(0);
+  }
+
+  .hamburger-button {
+    display: none;
   }
 }

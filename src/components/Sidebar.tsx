@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/sidebar.css'; // Regular CSS import
 import { getTagColor, getTextColor } from '../tagColors';
 import { BASE_PATH } from '$consts';
@@ -41,6 +41,24 @@ export const Sidebar = ({ title, posts, allTags }: SidebarProps) => {
   const $selectedTag = useStore(selectedTag);
   const [showTags, setShowTags] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setIsOpen(false);
+    }
+  };
 
   const filteredPosts = $selectedTag
     ? posts.filter((post) => post.tags?.includes($selectedTag) || $selectedTag === 'All')
@@ -76,7 +94,7 @@ export const Sidebar = ({ title, posts, allTags }: SidebarProps) => {
         <ul>
           {filteredPosts.map((post) => (
             <li key={post.id}>
-              <a href={`${BASE_PATH}/${post.id}/`}>
+              <a href={`${BASE_PATH}/${post.id}/`} onClick={handleLinkClick}>
                 <div style={{ wordBreak: 'break-word' }}>{post.title}</div>
                 <small>{formatDate(post.date)}</small>
               </a>
