@@ -4,6 +4,7 @@ import { getTagColor, getTextColor } from '../tagColors';
 import { BASE_PATH } from '$consts';
 import { useStore } from '@nanostores/react';
 import { selectedTag } from '../tagStore';
+import Tag from './Tag';
 
 interface Post {
   id: string;
@@ -30,34 +31,9 @@ const formatDate = (date: Date) =>
 const TagList = ({ allTags, selectedTag, setSelectedTag }: TagListProps) => {
   return (
     <div className="tag-list">
-    <button
-      className={`tag ${selectedTag === '' ? 'active' : ''}`}
-      onClick={() => setSelectedTag('')}
-      style={{
-        backgroundColor: getTagColor('all'),
-        color: getTextColor(getTagColor('all')),
-        borderColor: getTagColor('all'),
-      }}
-    >
-      All
-    </button>
+    <Tag tag="All" />
     {allTags.map((tag) => {
-      const bg = getTagColor(tag);
-      const fg = getTextColor(bg.replace('var(--accent, ', '').replace(')', '') || bg);
-      return (
-        <button
-          key={tag}
-          className={`tag ${selectedTag === tag ? 'active' : ''}`}
-          onClick={() => setSelectedTag(tag)}
-          style={{
-            backgroundColor: bg,
-            color: fg,
-            borderColor: bg,
-          }}
-        >
-          {tag}
-        </button>
-      );
+      return <Tag tag={tag} />
     })}
     </div>
   )
@@ -69,7 +45,7 @@ export const Sidebar = ({ title, posts, allTags }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const filteredPosts = $selectedTag
-    ? posts.filter((post) => post.tags?.includes($selectedTag))
+    ? posts.filter((post) => post.tags?.includes($selectedTag) || $selectedTag === 'All')
     : posts;
 
   return (
