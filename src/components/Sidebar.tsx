@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import '../styles/sidebar.css'; // Regular CSS import
 import { getTagColor, getTextColor } from '../tagColors';
 import { BASE_PATH } from '$consts';
@@ -42,6 +42,11 @@ export const Sidebar = ({ title, posts, allTags }: SidebarProps) => {
   const [showTags, setShowTags] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+
+  const filteredPosts = $selectedTag
+    ? posts.filter((post) => post.tags?.includes($selectedTag) || $selectedTag === 'All')
+    : posts;
 
   useEffect(() => {
     const checkMobile = () => {
@@ -54,19 +59,64 @@ export const Sidebar = ({ title, posts, allTags }: SidebarProps) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // This runs before the screen is repainted
+  // Hence, the scroll position is restored immediately
+  useLayoutEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
+    const key = 'sidebar-scroll-position';
+    
+    const handleNavigation = () => {
+      const data = sessionStorage.getItem(key);
+      if (data) {
+        try {
+          const obj = JSON.parse(data);
+          sidebar.scrollTop = obj.scrollTop || 0;
+        } catch (err) {
+          console.warn('Failed to restore sidebar scroll position on navigation:', err);
+        }
+      }
+    };
+
+    let position = { scrollTop: 0 };
+    let timeout: number | undefined;
+
+    const handleScroll = () => {
+      position.scrollTop = sidebar.scrollTop;
+      if (!timeout) {
+        timeout = window.setTimeout(() => {
+          sessionStorage.setItem(key, JSON.stringify(position));
+          timeout = 0;
+        }, 100);
+      }
+    };
+
+    sidebar.addEventListener('scroll', handleScroll);
+
+    // Listen for Astro navigation events
+    document.addEventListener('astro:page-load', handleNavigation);
+    document.addEventListener('astro:after-swap', handleNavigation);
+
+    return () => {
+      document.removeEventListener('astro:page-load', handleNavigation);
+      document.removeEventListener('astro:after-swap', handleNavigation);
+      sidebar.removeEventListener('scroll', handleScroll);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, []); // Empty dependency array - only set up listeners once
+
   const handleLinkClick = () => {
     if (isMobile) {
       setIsOpen(false);
     }
   };
 
-  const filteredPosts = $selectedTag
-    ? posts.filter((post) => post.tags?.includes($selectedTag) || $selectedTag === 'All')
-    : posts;
-
   return (
     <>
-      <aside className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
+      <aside ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <h2>{title}</h2>
           <button 
