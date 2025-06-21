@@ -1,17 +1,31 @@
 import { getTagColor, getTextColor } from '../tagColors';
 import { selectedTag } from '../tagStore';
-import { useStore } from '@nanostores/react';
 import '../styles/tags.css';
+import { useEffect, useState } from 'react';
 
 const Tag = ({ tag }: { tag: string }) => {
-  // if tag is selected, make it look cool
-  const $selectedTag = useStore(selectedTag);
-  const isSelected = $selectedTag === tag;
+  const [isSelected, setIsSelected] = useState(false);
+  
+  useEffect(() => {
+    const unsubscribe = selectedTag.subscribe(value => {
+      setIsSelected(value === tag);
+    });
+    
+    return unsubscribe;
+  }, [tag]);
 
   const color = getTagColor(tag);
   const textColor = getTextColor(tag);
+  // make tag bold
   return <span className="tag"
-    style={{ backgroundColor: isSelected ? 'var(--accent)' : color, color: isSelected ? 'var(--accent-foreground)' : textColor }}
+    style={{
+      // make background color intense when selected
+      // backgroundColor: isSelected ? 'var(--accent)' : color,
+      backgroundColor: color, // isSelected ? 'var(--accent)' : color,
+      border: isSelected ? '4px solid rgb(0, 0, 0)' : '4px solid transparent',
+      // background: isSelected ? `linear-gradient(rgb(255, 255, 255), ${color})` : color,
+      color: textColor, // isSelected ? 'var(--accent-foreground)' : textColor,
+      fontWeight: isSelected ? 'bold' : 'normal' }}
     onClick={() => selectedTag.set(tag)}
   >{tag}</span>;
 };
