@@ -65,7 +65,7 @@ def create_new_typst_file():
         '#import "/typ/templates/blog.typ": *\n'
         "#show: main.with(\n"
         f'  title: "{title}",\n'
-        f'  desc: ["{description}"],\n'
+        f'  desc: "{description}",\n'
         f'  date: "{timestamp}",\n'
         f'  tags: ({tags_field}),\n'
         ")\n"

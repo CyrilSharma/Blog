@@ -2,7 +2,7 @@
 #import "/typ/templates/blog.typ": main, graphic
 #show: main.with(
   title: "Tree",
-  desc: [Drawing a Tree],
+  desc: "Drawing a Tree",
   date: "2025-05-19",
   tags: ("random",),
 )

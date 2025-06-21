@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
   title: "prob1",
-  desc: ["probability notes"],
+  desc: "probability notes",
   date: "2025-06-15T10:17:05-04:00",
   tags: ("math", "notes"),
 )

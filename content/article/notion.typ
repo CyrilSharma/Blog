@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
   title: "Notion",
-  desc: [My Notion Sites],
+  desc: "My Notion Sites",
   date: "2025-05-19",
   tags: ("random",),
 )

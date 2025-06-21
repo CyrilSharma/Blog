@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
   title: "Tools",
-  desc: ["Tools I use"],
+  desc: "Tools I use",
   date: "2025-05-31T09:30:06-04:00",
   tags: ("random","cs"),
 )

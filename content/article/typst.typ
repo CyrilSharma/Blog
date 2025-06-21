@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
   title: "Learning How To Use Typst",
-  desc: [Typst is like Latex but redesigned to be a usable programming language.],
+  desc: "Typst is like Latex but redesigned to be a usable programming language.",
   date: "2025-05-18",
   tags: ("typst", "tutorial", "programming"),
 )

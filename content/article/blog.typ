@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
   title: "Blog",
-  desc: ["My vision for this blog"],
+  desc: "My vision for this blog",
   date: "2025-05-31T10:32:34-04:00",
   tags: ("meta",),
 )

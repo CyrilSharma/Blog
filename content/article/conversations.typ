@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
   title: "conversations",
-  desc: ["conversations"],
+  desc: "conversations",
   date: "2025-06-12T22:05:26-04:00",
   tags: ("musings",),
 )

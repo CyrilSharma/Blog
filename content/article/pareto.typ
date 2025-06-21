@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main, graphic
 #show: main.with(
   title: "The Pareto Frontier",
-  desc: ["time allocation"],
+  desc: "time allocation",
   date: "2025-06-06T19:18:47-04:00",
   tags: ("musings",),
 )

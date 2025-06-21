@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
   title: "GGS1",
-  desc: [Guns Germs and Steel Part 1],
+  desc: "Guns Germs and Steel Part 1",
   date: "2025-05-20",
   tags: ("guns germs and steel", "books", "notes"),
 )

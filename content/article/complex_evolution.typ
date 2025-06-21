@@ -2,7 +2,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
   title: "Evolution of Complexity",
-  desc: [Trying to answer some basic evolutionary questions],
+  desc: "Trying to answer some basic evolutionary questions",
   date: "2025-05-23T17:00:00",
   tags: ("evolution", "notes"),
 )

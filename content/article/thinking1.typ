@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
   title: "random thoughts on work",
-  desc: ["what should i be trying to do"],
+  desc: "what should i be trying to do",
   date: "2025-06-18T20:33:12-04:00",
   tags: ("musings", "purpose"),
 )
