@@ -37,15 +37,15 @@ def open_dir(path):
 def create_new_typst_file():
     # Ask for filename
     while True:
-        filename = Prompt.ask("[cyan]Enter filename[/cyan]").strip()
+        title = prompt_nonempty("[cyan]Enter title[/cyan]")
+        filename = title.lower().replace(" ", "-")
         if os.path.exists(filename):
-            console.print(f"[red]Error:[/red] '{filename}' already exists. Please choose a different name.")
+            console.print(f"[red]Error:[/red] '{title}' already exists. Please choose a different title.")
             continue
         break
 
     # Ask for title, description, tags
-    title = prompt_nonempty("[cyan]Enter title[/cyan]")
-    description = prompt_nonempty("[cyan]Enter short description[/cyan]")
+    description = "" # prompt_nonempty("[cyan]Enter short description[/cyan]")
     raw_tags = prompt_nonempty("[cyan]Enter comma-separated tags (e.g. evolution,notes)[/cyan]")
 
     # Build ISO timestamp string once
