@@ -7,7 +7,7 @@
 )
 
 The following claim (1) comes up a lot.
-#block(inset: 1em)[
+#quote(block: true)[
   _AI is a major technology that will change the world. Like previous revolutionary technology (e.x. computers, factory robots, etc.), many jobs will be eliminated. However, in their place, many more jobs will arise, to capitalize on all the new opportunities.  _
 ]
 

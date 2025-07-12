@@ -167,10 +167,10 @@ pre > code {
 }
 
 blockquote {
-  border-left: 4px solid var(--accent);
+  border-left: 4px solid rgba(35, 55, 255, 0.3);
   padding: 0 0 0 18px;
   margin: 0px;
-  font-size: 1.333em;
+  /* font-size: 1.333em; */
 }
 
 hr {
