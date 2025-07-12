@@ -178,6 +178,23 @@ hr {
   border-top: 1px solid var(--raw-bg-color);
 }
 
+dt {
+  background: var(--raw-bg-color, #e5e9f0);
+  border-radius: 6px;
+  padding: 0.1em 0.5em;
+  display: inline-block;
+  font-weight: 600;
+  color: var(--main-color);
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+}
+
+dd {
+  display: inline;
+  color: var(--gray-dark);
+  margin-left: 0.1em;
+}
+
 ol {
   margin: 0;
   padding: 0;
@@ -272,4 +289,93 @@ html.frame {
 .prose a:hover {
   background: var(--accent, #2337ff);
   color: #fff;
+}
+
+.parent:has(> [data-typst-label^="footnote-"]) {
+  background: #f0f8ff;
+  border: 2px solid #69c;
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+
+.prose > div:last-child > ol:last-child {
+  /* margin-top: 2em; */
+  margin-bottom: 2em;
+  padding-top: 1em;
+  border-top: 1px solid var(--raw-bg-color, #e5e9f0);
+  font-size: 0.92em;
+  color: var(--gray-dark, #555);
+  list-style: none;
+  counter-reset: footnote;
+  max-width: 40em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.prose > div:last-child > ol:last-child > li {
+  position: relative;
+  margin-bottom: 0.5em;
+  padding-left: 0;
+  min-height: 1.5em;
+  line-height: 1.6;
+  text-indent: 0;
+  counter-increment: footnote;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+}
+
+.prose > div:last-child > ol:last-child > li::before {
+  content: counter(footnote);
+  font-size: 0.75em;
+  font-weight: bold;
+  color: var(--gray-dark, #555);
+  vertical-align: super;
+  line-height: 1;
+  /* True superscript effect: */
+  position: relative;
+  top: -0.4em;
+  margin-right: 0.2em;
+  flex-shrink: 0;
+}
+
+.prose > div:last-child > ol:last-child > li > div {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+
+.prose sup a,
+sup a {
+  all: unset;
+  cursor: pointer;
+  color: var(--gray-dark, #555) !important;
+  /* color: var(--accent, #2337ff) !important; */
+  font-size: 0.85em !important;
+  line-height: 1 !important;
+  margin-left: -0.15em !important;
+  vertical-align: super !important;
+  display: inline !important;
+  font-weight: bold !important;
+}
+
+.prose sup a:hover,
+sup a:hover {
+  color: var(--gray-dark, #555) !important;
+  background: none !important;
+  text-decoration: underline !important;
+}
+
+.prose > div:last-child {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.prose > div:last-child > ol:last-child {
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 100%;
 }

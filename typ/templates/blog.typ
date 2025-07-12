@@ -132,10 +132,23 @@
     it
   } 
 
-  // show colbreak: it => context if shiroa-sys-target() == "html" {
-  //   html.elem("div", attrs: ("style": "break-after: column;"), [])
+  show footnote: it => context if shiroa-sys-target() == "html" {
+    let num = counter(footnote).get().at(0)
+    html.elem("sup")[
+      #html.elem("a", attrs: ("href": "#footnote-" + str(num)), str(num))
+    ]
+  } else {
+    it
+  }
+
+  // Doesn't work for some reason.
+  // Looks like HTML export does not use this.
+  // show footnote.entry: it => context if shiroa-sys-target() == "html" {
+  //   // [HELLO]
+  //   // let num = counter(footnote).get().at(0)
+  //   // html.elem("div", attrs: ("id": "label-footnote-" + str(num)), it)
   // } else {
-  //   colbreak()
+  //   it
   // }
 
   // math setting

@@ -112,6 +112,7 @@ We can also change the alignment of text using ```typst align```.
 ]
 
 
+We can do footnotes #footnote[These don't work natively but I patched them!]. Websites are kind of one massive page, so they'll all be at the very bottom. That's probably fine though.
 
 We can also do fancy graphics and callouts, but sadly all such things require exporting to svg, and typst doesn't support selectable text for this. I think this will be useful for plotting graphs and tables though.
 #align(center)[
@@ -133,10 +134,6 @@ Over time, I might be able to get rid of all this styling though. The library is
 Nevermind this isn't in any release candidate yet. Ok, well I can still do quotes!
 #quote[Typst is pretty cool guys]
 
-
-
-
-
-
-
-
+I can also do terms.
+/ Agency: The ability to choose your path independently of the environment you're placed in.
+/ Book: A fun thing people should use more.
