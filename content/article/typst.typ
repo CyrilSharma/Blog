@@ -137,3 +137,48 @@ Nevermind this isn't in any release candidate yet. Ok, well I can still do quote
 I can also do terms.
 / Agency: The ability to choose your path independently of the environment you're placed in.
 / Book: A fun thing people should use more.
+
+// #set table(
+//   stroke: none,
+//   gutter: 0.2em,
+//   fill: (x, y) =>
+//     if x == 0 or y == 0 { gray },
+//   inset: (right: 1.5em),
+// )
+//
+// #show table.cell: it => {
+//   if it.x == 0 or it.y == 0 {
+//     set text(white)
+//     strong(it)
+//   } else if it.body == [] {
+//     // Replace empty cells with 'N/A'
+//     pad(..it.inset)[_N/A_]
+//   } else {
+//     it
+//   }
+// }
+//
+#let a = table.cell[A]
+#let b = table.cell[B]
+
+Wow, tables work natively!
+```typst
+#let a = table.cell[A]
+#let b = table.cell[B]
+#table(
+  columns: 4,
+  [], [Exam 1], [Exam 2], [Exam 3],
+
+  [John], [], a, [],
+  [Mary], [], a, a,
+  [Robert], b, a, b,
+)
+```
+#table(
+  columns: 4,
+  [], [Exam 1], [Exam 2], [Exam 3],
+
+  [John], [], a, [],
+  [Mary], [], a, a,
+  [Robert], b, a, b,
+)

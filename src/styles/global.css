@@ -135,6 +135,45 @@ input {
 }
 table {
   width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 1em;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+th, td {
+  padding: 0.75em 1em;
+  text-align: left;
+}
+
+th {
+  background: var(--raw-bg-color, #e5e9f0);
+  font-weight: 700;
+  color: var(--main-color);
+  border-bottom: 2px solid var(--raw-bg-color, #e5e9f0);
+}
+
+tr {
+  border-bottom: 1px solid var(--raw-bg-color, #e5e9f0);
+}
+
+tr:nth-child(even) {
+  background: rgba(101, 117, 133, 0.06);
+}
+
+td {
+  color: var(--main-color);
+}
+
+caption {
+  caption-side: bottom;
+  text-align: center;
+  font-size: 0.95em;
+  color: var(--gray-dark, #555);
+  margin-top: 0.5em;
 }
 img {
   max-width: 100%;
