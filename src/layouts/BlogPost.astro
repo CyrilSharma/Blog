@@ -23,21 +23,6 @@ const posts = (await getCollection("blog")).sort(
 const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
 ---
 
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOMContentLoaded');
-    document.querySelectorAll('[data-typst-label]').forEach(el => {
-      const label = el.getAttribute('data-typst-label');
-      if (label) {
-        el.id = label;
-      }
-    });
-  });
-</script>
-
----
-
 <html lang="en">
   <head>
     <BaseHead title={title} description={desc} />
@@ -109,7 +94,18 @@ const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
             </div>
       </article>
     </main>
-    <Sidebar transition:persist client:load title={SITE_TITLE} posts={posts} allTags={allTags}>
+    <Sidebar transition:persist client:load title={SITE_TITLE} posts={posts} allTags={allTags} />
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded');
+        document.querySelectorAll('[data-typst-label]').forEach(el => {
+          const label = el.getAttribute('data-typst-label');
+          if (label) {
+            el.id = label;
+          }
+        });
+      });
+    </script>
   </body>
 </html>
 
