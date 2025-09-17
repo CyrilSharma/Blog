@@ -14,7 +14,7 @@ There are a few major things humans have evolved to be dependent on.
 - Sleep
 
 
-I have a strong aversion to depending on anything that isn't in this list. I don't want to depend on coffee to feel awake, on alcohol to be social, or on Youtube to fall asleep.
+I have a strong aversion to depending on anything that isn't in this list. I don't want to depend on coffee to feel awake, on alcohol to be social, on Youtube to fall asleep, on Spotify to keep me "entertained" during my walk to class.
 
 There are a few reasons why.
 

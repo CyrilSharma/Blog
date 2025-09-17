@@ -71,8 +71,8 @@ $ (X_1 + dots + X_n)/sqrt(n) &arrow D \
 
 Hence $D + D arrow sqrt(2)D$. Generalizing this, we have $D + dots + D$ = $sqrt(n)D$. Then
 $ phi(t)^n &= phi(sqrt(n) t) \
-  n log(phi(t)) &= log(phi(sqrt(t))) \
-  n w(t) &= w(sqrt(t)) \
+  n log(phi(t)) &= log(phi(sqrt(n) t)) \
+  n w(t) &= w(sqrt(n) t) \
    w(t) &= c t^2 \
    phi(t) &= e^(c t^2) $
 
