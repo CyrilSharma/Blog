@@ -28,13 +28,10 @@ dependencies:
     version: 19.1.6(@types/react@19.1.8)
   astro:
     specifier: ^5.7.13
-    version: 5.7.13(typescript@5.8.3)
+    version: 5.7.13(typescript@5.9.3)
   astro-icon:
     specifier: ^1.1.5
     version: 1.1.5
-  astro-typst:
-    specifier: 0.9.0-rc1
-    version: 0.9.0-rc1(astro@5.7.13)
   install:
     specifier: ^0.13.0
     version: 0.13.0
@@ -378,8 +375,8 @@ packages:
       - encoding
     dev: false
 
-  /@emnapi/runtime@1.4.3:
-    resolution: {integrity: sha512-pBPWdu6MLKROBX05wSNKcNb++m5Er+KQ9QkB+WVM+pW2Kx9hoSrVTnu3BdkI5eBLZoKu/J6mW/B6i6bJB2ytXQ==}
+  /@emnapi/runtime@1.7.1:
+    resolution: {integrity: sha512-PVtJr5CmLwYAU9PZDMITZoR5iAOShYREoR45EyyLrbntV50mdePTgUn4AmOw90Ifcj+x2kRjdzr1HP3RrNiHGA==}
     requiresBuild: true
     dependencies:
       tslib: 2.8.1
@@ -935,7 +932,7 @@ packages:
     cpu: [wasm32]
     requiresBuild: true
     dependencies:
-      '@emnapi/runtime': 1.4.3
+      '@emnapi/runtime': 1.7.1
     dev: false
     optional: true
 
@@ -987,141 +984,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.5.0
     dev: false
 
-  /@myriaddreamin/typst-ts-node-compiler-android-arm-eabi@0.6.0-rc1:
-    resolution: {integrity: sha512-O3wMPVB2qdCC67fYt1KmimT93Q8LW02VNsz6l6UOQJy5Ez8VloYF569kT6D+UqRUr17QBeJWpjTdxoaCbRmnkg==}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-android-arm64@0.6.0-rc1:
-    resolution: {integrity: sha512-QcBYLMrjJP6jyt0fLBgq1YzwaGyoRLSvyUNoOP2otJ0eYxGTprBKo18SIPmJtt/P4/MR/KnyQrXrS4LFie1rkw==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-darwin-arm64@0.6.0-rc1:
-    resolution: {integrity: sha512-UNfyLcVTZVtaKaBYzSfnTQQ/UZ/457iZXeh8sOJfX0QHfhOS1iL09KiqYypOlfFnikCDfHEertSKDAkS+xEw+w==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-darwin-x64@0.6.0-rc1:
-    resolution: {integrity: sha512-X9O/w7+OUhuMa4ZruXrZoH13+Z0KGzlwhUM5UwrqnxBt87MJTaFIdKtWlhlLhPGKhM5gczHa0PllwwJKS0pzhg==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-linux-arm-gnueabihf@0.6.0-rc1:
-    resolution: {integrity: sha512-3ifgaOazVFnXgCXMFtQVaE7lJkeuLuOtTnGVk6Wjg2KCatRtjUmrsh9OkpXVtPfWVQcZ8GtIOtyZqR1iFrqfvg==}
-    engines: {node: '>= 10'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-linux-arm64-gnu@0.6.0-rc1:
-    resolution: {integrity: sha512-kURYtWh1ferKbhib043wanDZVmr4tHlktRcjTEfrBWjpyQ5NTZz43pc5kLqPgY7OGiKlMRBjKOrKbLTZCFkkrw==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-linux-arm64-musl@0.6.0-rc1:
-    resolution: {integrity: sha512-xUkhhx5Yjzauz1J8u9FOJLT7qWaqg4hPpY012OuT+q/BxFCIe3w9kASJssOueiwOKsE9uP1KK0dHaQdgG6caSg==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-linux-x64-gnu@0.6.0-rc1:
-    resolution: {integrity: sha512-mdIomFVLExBdKF01jE38kjhPjJ9SZ1zflSgEJmkxV9Cds5GSY7RWokxbeM4YhPVTDp92JPx7aDScSsgOeDiMHA==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-linux-x64-musl@0.6.0-rc1:
-    resolution: {integrity: sha512-x3/Qc+W2DYbKBrm5zYQlBrEogTBdZk0aMh4YX0iuZaafau/14s2VPxnC+Vp8xLXN/oyNpBOo9E1pb7yzN5m1ow==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-win32-arm64-msvc@0.6.0-rc1:
-    resolution: {integrity: sha512-olV1bkxz3JjSQe7zuQgCfkd917+yw6TEDHTsMbnt0yGphn9Pm2qknwo6oATV6NDXOnXlq8LSpQtRAfxtEFVkhA==}
-    engines: {node: '>= 10'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler-win32-x64-msvc@0.6.0-rc1:
-    resolution: {integrity: sha512-JhDd6aIhc8WZcdL5OkS38+6O8FZqq4zvz75SRA/RxZFSnPE4Ogs9OWWqoq1+Yk014KYv/9qHxbvh09Tecu2p1A==}
-    engines: {node: '>= 10'}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /@myriaddreamin/typst-ts-node-compiler@0.6.0-rc1:
-    resolution: {integrity: sha512-ZmPbazjvAYni6js5FlEPf9V0GepsV7XZEZmeWs7JzTCnjsqNcwNFLKjH/woe8Mfu884jiewJ46NkvJcIWVhtSA==}
-    engines: {node: '>= 10'}
-    optionalDependencies:
-      '@myriaddreamin/typst-ts-node-compiler-android-arm-eabi': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-android-arm64': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-darwin-arm64': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-darwin-x64': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-linux-arm-gnueabihf': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-linux-arm64-gnu': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-linux-arm64-musl': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-linux-x64-gnu': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-linux-x64-musl': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-win32-arm64-msvc': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-node-compiler-win32-x64-msvc': 0.6.0-rc1
-    dev: false
-
-  /@myriaddreamin/typst-ts-renderer@0.6.0-rc1:
-    resolution: {integrity: sha512-WZ3VpkGch2dOIZnAp73n5FpZNMntbL4D+TvywqPgfcKJFvTeKtYWcVOwGUnlf2LkDWsGCWxw723AreLkVcUyLw==}
-    dev: false
-
-  /@myriaddreamin/typst.ts@0.6.0-rc1(@myriaddreamin/typst-ts-renderer@0.6.0-rc1):
-    resolution: {integrity: sha512-RQFiiIFzzX6HCmpW2sj8kOBLZfd4W/NP6E+4sRCAItJmCJ+qoD6F0yZM3gVtRJiz0/Ll4hRfOPbuKLJyL1buOQ==}
-    peerDependencies:
-      '@myriaddreamin/typst-ts-renderer': ^0.6.0-rc1
-      '@myriaddreamin/typst-ts-web-compiler': ^0.6.0-rc1
-    peerDependenciesMeta:
-      '@myriaddreamin/typst-ts-renderer':
-        optional: true
-      '@myriaddreamin/typst-ts-web-compiler':
-        optional: true
-    dependencies:
-      '@myriaddreamin/typst-ts-renderer': 0.6.0-rc1
-      idb: 7.1.1
-    dev: false
-
   /@nanostores/react@1.0.0(nanostores@1.0.1)(react@19.1.0):
     resolution: {integrity: sha512-eDduyNy+lbQJMg6XxZ/YssQqF6b4OXMFEZMYKPJCCmBevp1lg0g+4ZRi94qGHirMtsNfAWKNwsjOhC+q1gvC+A==}
     engines: {node: ^20.0.0 || >=22.0.0}
@@ -1143,22 +1005,6 @@ packages:
 
   /@rolldown/pluginutils@1.0.0-beta.11:
     resolution: {integrity: sha512-L/gAA/hyCSuzTF1ftlzUSI/IKr2POHsv1Dd78GfqkR83KMNuswWD61JxGV2L7nRwBBBSDr6R1gCkdTmoN7W4ag==}
-    dev: false
-
-  /@rollup/plugin-node-resolve@16.0.1:
-    resolution: {integrity: sha512-tk5YCxJWIG81umIvNkSod2qK5KyQW19qcBF/B78n1bjtOON6gzKoVeSzAE8yHCZEDmqkHKkxplExA8KzdJLJpA==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      rollup: ^2.78.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-    dependencies:
-      '@rollup/pluginutils': 5.1.4
-      '@types/resolve': 1.20.2
-      deepmerge: 4.3.1
-      is-module: 1.0.0
-      resolve: 1.22.10
     dev: false
 
   /@rollup/pluginutils@5.1.4:
@@ -1488,10 +1334,6 @@ packages:
       csstype: 3.1.3
     dev: false
 
-  /@types/resolve@1.20.2:
-    resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-    dev: false
-
   /@types/sax@1.2.7:
     resolution: {integrity: sha512-rO73L89PJxeYM3s3pPPjiPgVVcymqU490g0YO5n5By0k2Erzj6tay/4lr1CHAAU4JyOWd1rpQ8bCf6cZfHU96A==}
     dependencies:
@@ -1590,13 +1432,6 @@ packages:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
     dev: false
 
-  /ast-types@0.16.1:
-    resolution: {integrity: sha512-6t10qk83GOG8p0vKmaCr8eiilZwO171AvbROMtvvNiwrTly62t+7XkA8RdIIVbpMhCASAsxgAzdRSwh6nw/5Dg==}
-    engines: {node: '>=4'}
-    dependencies:
-      tslib: 2.8.1
-    dev: false
-
   /astro-icon@1.1.5:
     resolution: {integrity: sha512-CJYS5nWOw9jz4RpGWmzNQY7D0y2ZZacH7atL2K9DeJXJVaz7/5WrxeyIxO8KASk1jCM96Q4LjRx/F3R+InjJrw==}
     dependencies:
@@ -1608,34 +1443,7 @@ packages:
       - supports-color
     dev: false
 
-  /astro-integration-kit@0.18.0(astro@5.7.13):
-    resolution: {integrity: sha512-Z0QW5IQjosuKQDEGYYkvUX6EhEtrmE4/oViqWz23QveV8U7AuyFsTdg00WRNPevWZl/5a4lLUeDpv4bCRynRRg==}
-    peerDependencies:
-      astro: ^4.12.0 || ^5.0.0
-    dependencies:
-      astro: 5.7.13(typescript@5.8.3)
-      pathe: 1.1.2
-      recast: 0.23.11
-    dev: false
-
-  /astro-typst@0.9.0-rc1(astro@5.7.13):
-    resolution: {integrity: sha512-FbQ2FuKZ/7yEXUcI+lLruJeYNGkB47Z3zhribgfm04fRZl8EYI4u5M7a4bmOzlaqu5REXGwCABhQPnqexd9zlg==}
-    peerDependencies:
-      astro: '>= 3.0.0'
-    dependencies:
-      '@myriaddreamin/typst-ts-node-compiler': 0.6.0-rc1
-      '@myriaddreamin/typst-ts-renderer': 0.6.0-rc1
-      '@myriaddreamin/typst.ts': 0.6.0-rc1(@myriaddreamin/typst-ts-renderer@0.6.0-rc1)
-      '@rollup/plugin-node-resolve': 16.0.1
-      astro: 5.7.13(typescript@5.8.3)
-      astro-integration-kit: 0.18.0(astro@5.7.13)
-      cheerio: 1.0.0
-    transitivePeerDependencies:
-      - '@myriaddreamin/typst-ts-web-compiler'
-      - rollup
-    dev: false
-
-  /astro@5.7.13(typescript@5.8.3):
+  /astro@5.7.13(typescript@5.9.3):
     resolution: {integrity: sha512-cRGq2llKOhV3XMcYwQpfBIUcssN6HEK5CRbcMxAfd9OcFhvWE7KUy50zLioAZVVl3AqgUTJoNTlmZfD2eG0G1w==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
@@ -1686,7 +1494,7 @@ packages:
       shiki: 3.4.2
       tinyexec: 0.3.2
       tinyglobby: 0.2.13
-      tsconfck: 3.1.5(typescript@5.8.3)
+      tsconfck: 3.1.5(typescript@5.9.3)
       ultrahtml: 1.6.0
       unifont: 0.5.0
       unist-util-visit: 5.0.0
@@ -1699,7 +1507,7 @@ packages:
       yocto-spinner: 0.2.2
       zod: 3.24.4
       zod-to-json-schema: 3.24.5(zod@3.24.4)
-      zod-to-ts: 1.2.0(typescript@5.8.3)(zod@3.24.4)
+      zod-to-ts: 1.2.0(typescript@5.9.3)(zod@3.24.4)
     optionalDependencies:
       sharp: 0.33.5
     transitivePeerDependencies:
@@ -2106,11 +1914,6 @@ packages:
       character-entities: 2.0.2
     dev: false
 
-  /deepmerge@4.3.1:
-    resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
-    engines: {node: '>=0.10.0'}
-    dev: false
-
   /defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
     dev: false
@@ -2325,12 +2128,6 @@ packages:
   /escape-string-regexp@5.0.0:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
-    dev: false
-
-  /esprima@4.0.1:
-    resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
-    engines: {node: '>=4'}
-    hasBin: true
     dev: false
 
   /estree-walker@2.0.2:
@@ -2700,10 +2497,6 @@ packages:
       safer-buffer: 2.1.2
     dev: false
 
-  /idb@7.1.1:
-    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
-    dev: false
-
   /import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
@@ -2759,10 +2552,6 @@ packages:
     hasBin: true
     dependencies:
       is-docker: 3.0.0
-    dev: false
-
-  /is-module@1.0.0:
-    resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
     dev: false
 
   /is-plain-obj@4.1.0:
@@ -3649,17 +3438,6 @@ packages:
     engines: {node: '>= 14.18.0'}
     dev: false
 
-  /recast@0.23.11:
-    resolution: {integrity: sha512-YTUo+Flmw4ZXiWfQKGcwwc11KnoRAYgzAE2E7mXKCjSviTKShtxBsN6YUUBB2gtaBzKzeKunxhUwNHQuRryhWA==}
-    engines: {node: '>= 4'}
-    dependencies:
-      ast-types: 0.16.1
-      esprima: 4.0.1
-      source-map: 0.6.1
-      tiny-invariant: 1.3.3
-      tslib: 2.8.1
-    dev: false
-
   /regex-recursion@6.0.2:
     resolution: {integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg==}
     dependencies:
@@ -3948,11 +3726,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /source-map@0.6.1:
-    resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
-    engines: {node: '>=0.10.0'}
-    dev: false
-
   /space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
     dev: false
@@ -4043,10 +3816,6 @@ packages:
     resolution: {integrity: sha512-pkY1fj1cKHb2seWDy0B16HeWyczlJA9/WW3u3c4z/NiWDsO3DOU5D7nhTLE9CF0yXv/QZFY7sEJmj24dK+Rrqw==}
     dev: false
 
-  /tiny-invariant@1.3.3:
-    resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
-    dev: false
-
   /tinyexec@0.3.2:
     resolution: {integrity: sha512-KQQR9yN7R5+OSwaK0XQoj22pwHoTlgYqmUscPYoknOoWCWfj/5/ABTMRi69FrKU5ffPVh5QcFikpWJI/P1ocHA==}
     dev: false
@@ -4075,7 +3844,7 @@ packages:
     resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
     dev: false
 
-  /tsconfck@3.1.5(typescript@5.8.3):
+  /tsconfck@3.1.5(typescript@5.9.3):
     resolution: {integrity: sha512-CLDfGgUp7XPswWnezWwsCRxNmgQjhYq3VXHM0/XIRxhVrKw0M1if9agzryh1QS3nxjCROvV+xWxoJO1YctzzWg==}
     engines: {node: ^18 || >=20}
     hasBin: true
@@ -4085,7 +3854,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      typescript: 5.8.3
+      typescript: 5.9.3
     dev: false
 
   /tslib@2.8.1:
@@ -4097,8 +3866,8 @@ packages:
     engines: {node: '>=16'}
     dev: false
 
-  /typescript@5.8.3:
-    resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
+  /typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
@@ -4485,13 +4254,13 @@ packages:
       zod: 3.24.4
     dev: false
 
-  /zod-to-ts@1.2.0(typescript@5.8.3)(zod@3.24.4):
+  /zod-to-ts@1.2.0(typescript@5.9.3)(zod@3.24.4):
     resolution: {integrity: sha512-x30XE43V+InwGpvTySRNz9kB7qFU8DlyEy7BsSTCHPH1R0QasMmHWZDCzYm6bVXtj/9NNJAZF3jW8rzFvH5OFA==}
     peerDependencies:
       typescript: ^4.9.4 || ^5.0.2
       zod: ^3
     dependencies:
-      typescript: 5.8.3
+      typescript: 5.9.3
       zod: 3.24.4
     dev: false
 

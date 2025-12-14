@@ -18,7 +18,6 @@
     "@types/react-dom": "^19.1.6",
     "astro": "^5.7.13",
     "astro-icon": "^1.1.5",
-    "astro-typst": "0.9.0-rc1",
     "install": "^0.13.0",
     "nanostores": "^1.0.1",
     "react": "^19.1.0",
