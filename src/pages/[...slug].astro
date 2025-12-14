@@ -1,21 +1,62 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
+import fs from "node:fs";
+import path from "node:path";
+import BaseHead from "$components/BaseHead.astro";
 import BlogPost from "$layouts/BlogPost.astro";
-import { render } from "astro:content";
 
+// Expose every public html file:
+// - public/<slug>/index.html => slug
+// - public/<name>.html       => name
 export async function getStaticPaths() {
-  const posts = await getCollection("blog");
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: post,
+  const results: Array<{ slug: string; file: string }> = [];
+
+  const walk = (dir: string, rel = "") => {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const e of entries) {
+      if (e.name.startsWith("_astro")) continue;
+      const full = path.join(dir, e.name);
+      const relPath = path.join(rel, e.name);
+      if (e.isDirectory()) {
+        const indexFile = path.join(full, "index.html");
+        if (fs.existsSync(indexFile)) {
+          results.push({ slug: relPath, file: indexFile });
+        }
+        walk(full, relPath);
+      } else if (e.isFile() && e.name.endsWith(".html")) {
+        const slug = e.name.replace(/\.html$/, "");
+        results.push({ slug, file: full });
+      }
+    }
+  };
+
+  walk("public");
+
+  // Deduplicate by slug (prefer first found)
+  const seen = new Map<string, string>();
+  for (const { slug, file } of results) {
+    if (!seen.has(slug)) seen.set(slug, file);
+  }
+
+  return Array.from(seen.entries()).map(([slug, file]) => ({
+    params: { slug },
+    props: { file, slug },
   }));
 }
-type Props = CollectionEntry<"blog">;
 
-const post = Astro.props;
-const { Content } = await render(post);
+const { file, slug } = Astro.props as { file: string; slug: string };
+const html = fs.readFileSync(file, "utf8");
 ---
 
-<BlogPost {...post.data}>
-  <Content />
+<BlogPost
+  title={slug}
+  desc="Generated page"
+  date=""
+  updatedDate=""
+  tags={[]}
+  posts={[]}
+  allTags={[]}
+>
+  <BaseHead title={slug} description="Generated page" />
+  <link rel="stylesheet" href="/Blog/global.css" />
+  <div set:html={html} />
 </BlogPost>

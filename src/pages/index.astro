@@ -7,7 +7,7 @@ const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 const latest = posts[0];
-const latestUrl = `${BASE_PATH}/${latest.id}/`;
+const latestUrl = `${BASE_PATH}/typst/`;
 ---
 
 <!doctype html>

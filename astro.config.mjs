@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
-import { typst } from "astro-typst";
 import icon from "astro-icon";
 import react from "@astrojs/react";
 
@@ -13,13 +12,6 @@ export default defineConfig({
 
   integrations: [
     sitemap(),
-    typst({
-      // Always builds HTML files
-      mode: {
-        default: "html",
-        detect: () => "html",
-      },
-    }),
     icon({
       include: ["mdi"],
     }),

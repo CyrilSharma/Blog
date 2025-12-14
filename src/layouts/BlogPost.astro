@@ -5,27 +5,12 @@ import { Sidebar } from "$components/Sidebar.tsx";
 import { SITE_TITLE } from "$consts";
 import ArticleHeader from "$components/ArticleHeader.astro";
 import { ClientRouter } from "astro:transitions";
-
-type Props = CollectionEntry<"blog">["data"];
-
-const { title, desc, date, updatedDate, tags } = Astro.props;
-
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-).map(post => ({
-  id: post.id,
-  title: post.data.title,
-  date: post.data.date,
-  tags: post.data.tags
-}));
-
-// Get all unique tags
-const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={title} description={desc} />
+    <meta charset="utf-8" />
+    <!-- <BaseHead title={title} description={desc} /> -->
     <style>
       .prose {
         width: 100%;
@@ -88,24 +73,11 @@ const allTags = [...new Set(posts.flatMap(post => post.tags))].sort();
   <body>
     <main>
       <article>
-          <ArticleHeader title={title} date={date} updatedDate={updatedDate} tags={tags} />
-            <div class="prose">
-              <slot />
-            </div>
+          <div class="prose">
+            <slot />
+          </div>
       </article>
     </main>
-    <Sidebar transition:persist client:load title={SITE_TITLE} posts={posts} allTags={allTags} />
-    <script is:inline>
-      document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded');
-        document.querySelectorAll('[data-typst-label]').forEach(el => {
-          const label = el.getAttribute('data-typst-label');
-          if (label) {
-            el.id = label;
-          }
-        });
-      });
-    </script>
   </body>
 </html>
 
