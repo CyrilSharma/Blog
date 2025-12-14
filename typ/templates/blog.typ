@@ -100,17 +100,18 @@
   tags: [],
   body,
 ) = {
-  // // set basic document metadata
+  // set basic document metadata
   set document(
     author: ("Cyril Sharma"),
     title: title,
   )
 
-  // pause... this seems like the issue.
-  // set text(18pt) if sys-is-html-target
-
-  // link setting
   show link: set text(fill: dash-color)
+  // show link: it => context if shiroa-sys-target() == "html" {
+  //   html.elem("a", attrs: ("class": "link"))[#it]
+  // } else {
+  //   it
+  // }
 
   show align: it => context if shiroa-sys-target() == "html" {
     let h-align = "center";
@@ -132,21 +133,11 @@
     it
   } 
 
-  show footnote: it => context if shiroa-sys-target() == "html" {
-    let num = counter(footnote).get().at(0)
-    html.elem("sup")[
-      #html.elem("a", attrs: ("href": "#footnote-" + str(num)), str(num))
-    ]
-  } else {
-    it
-  }
-
-  // Doesn't work for some reason.
-  // Looks like HTML export does not use this.
-  // show footnote.entry: it => context if shiroa-sys-target() == "html" {
-  //   // [HELLO]
-  //   // let num = counter(footnote).get().at(0)
-  //   // html.elem("div", attrs: ("id": "label-footnote-" + str(num)), it)
+  // show footnote: it => context if shiroa-sys-target() == "html" {
+  //   let num = counter(footnote).get().at(0)
+  //   html.elem("sup")[
+  //     #html.elem("a", attrs: ("href": "#footnote-" + str(num)), str(num))
+  //   ]
   // } else {
   //   it
   // }
@@ -212,13 +203,6 @@
     )
   }
 
-  if sys-is-html-target {
-    show footnote: it => context {
-      let num = counter(footnote).get().at(0)
-      link(label("footnote-" + str(num)), super(str(num)))
-    }
-  }
-
   if not sys-is-html-target {
     // show the title, date, and tags
     align(center, [= #title])
@@ -265,19 +249,4 @@
   set par(justify: true)
 
   body
-  context if sys-is-html-target {
-    query(footnote)
-      .enumerate()
-      .map(((idx, it)) => {
-        enum.item[
-          #html.elem(
-            "div",
-            attrs: ("data-typst-label": "footnote-" + str(idx + 1)),
-            it.body,
-          )
-        ]
-      })
-      .join()
-  }
-
 }
