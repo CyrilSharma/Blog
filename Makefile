@@ -5,6 +5,9 @@ META_JSON := meta.json
 META_SCRIPT := scripts/gen_meta.py
 
 # Find all .typ sources
+TEMPLATE_DIR := typ/templates
+TEMPLATE_SRC := $(wildcard $(TEMPLATE_DIR)/*.typ)
+TEMPLATE_CFG := $(wildcard $(TEMPLATE_DIR)/*.toml)
 TYP_SRC := $(wildcard $(TYP_SRC_DIR)/*.typ)
 # Quote each source for safe shell passing (handles parentheses/whitespace)
 TYP_SRC_ESC := $(foreach f,$(TYP_SRC),'$(f)')
@@ -19,7 +22,7 @@ typst: $(TYP_HTML)
 meta: $(META_JSON)
 
 # Compile each .typ to a per-slug index.html
-$(TYP_OUT_DIR)/%/index.html: $(TYP_SRC_DIR)/%.typ
+$(TYP_OUT_DIR)/%/index.html: $(TYP_SRC_DIR)/%.typ $(TEMPLATE_SRC) $(TEMPLATE_CFG)
 	@mkdir -p $(TYP_OUT_DIR)/'$*'/
 	typst compile '$<' '$@' --format html --features html --root .
 

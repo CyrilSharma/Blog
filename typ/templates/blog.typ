@@ -3,7 +3,8 @@
 #import "@preview/shiroa:0.2.3": templates
 #import "@preview/cetz:0.4.2"
 #import templates: *
-#import "mod.typ": *
+
+#let sys-is-html-target = ("target" in dictionary(std))
 
 #let code-font = (
   "DejaVu Sans Mono",
@@ -55,7 +56,7 @@
 // mblock is a strict super set of block.
 #let block = mblock;
 
-// Theme (Colors)
+#let theme = "light"
 #let (
   style: theme-style,
   is-dark: is-dark-theme,
@@ -63,7 +64,7 @@
   main-color: main-color,
   dash-color: dash-color,
   code-extra-colors: code-extra-colors,
-) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: "light")
+) = book-theme-from(toml("theme-style.toml"), xml: it => xml(it), target: theme)
 
 // Add columns support
 #let mcolumns(count, content) = [
