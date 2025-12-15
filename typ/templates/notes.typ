@@ -4,7 +4,7 @@
 #let h1_marker = counter("h1")
 #let h2_marker = counter("h2")
 
-#let note_block(body, class: "Block", fill: rgb("#FFFFFF"), stroke: rgb("#000000")) = {
+#let note_block(body, class: "Block", fill: rgb("#FFFFFF"), stroke: rgb("#000000"), name: "") = {
   let block_counter = counter(class)
 
   context {
@@ -15,8 +15,8 @@
     ).map(str).join(".")
 
     let serial_label = label(class + " " + serial_num)
-        
-    ctext(12pt, weight: "bold")[#class #serial_num #serial_label #block_counter.step()]
+    let wrapped_name = if name != "" { " (" + name + ")" } else { "" }
+    ctext(12pt, weight: "bold")[#class #serial_num #serial_label #block_counter.step() #wrapped_name]
     block(
       above: -8pt,
       fill:fill,
@@ -30,23 +30,23 @@
 }
 
 // You can change the class name or color here
-#let definition(body) = note_block(
-  body, class: "Definition", fill: rgb("#EDF1D6"), stroke: rgb("#609966")
+#let definition(body, name: "") = note_block(
+  body, class: "Definition", fill: rgb("#EDF1D6"), stroke: rgb("#609966"), name: name
 )
 
-#let theorem(body) = note_block(
-  body, class: "Theorem", fill: rgb("#FEF2F4"), stroke: rgb("#EE6983")
+#let theorem(body, name: "") = note_block(
+  body, class: "Theorem", fill: rgb("#FEF2F4"), stroke: rgb("#EE6983"), name: name
 )
 
-#let lemma(body) = note_block(
-  body, class: "Lemma", fill: rgb("#FFF4E0"), stroke: rgb("#F4B183")
+#let lemma(body, name: "") = note_block(
+  body, class: "Lemma", fill: rgb("#FFF4E0"), stroke: rgb("#F4B183"), name: name
 )
 
-#let corollary(body) = note_block(
-  body, class: "Corollary", fill: rgb("#F7FBFC"), stroke: rgb("#769FCD")
+#let corollary(body, name: "") = note_block(
+  body, class: "Corollary", fill: rgb("#F7FBFC"), stroke: rgb("#769FCD"), name: name
 )
 
-#let notefig(path, width: 100%) = {
+#let notefig(figure) = {
   let figure_counter = counter("Figure")
   
   context {
@@ -56,11 +56,11 @@
       figure_counter.get().last() + 1
     ).map(str).join(".")
 
+    block(width: 100%, inset:8pt, align(center)[#figure])
     let serial_label = label("Figure" + " " + serial_num)
-    block(width: 100%, inset:8pt, align(center)[#image(path, width: width)])
-
-    set align(center)
-    text(12pt, weight: "bold")[Figure #serial_num #serial_label #figure_counter.step()]
+    align(center, 
+      ctext(12pt, weight: "bold")[Figure #serial_num #serial_label #figure_counter.step()]
+    )
   }
 }
 

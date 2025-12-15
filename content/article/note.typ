@@ -1,4 +1,5 @@
 #import "/typ/templates/blog.typ": main, graphic
+#import "@preview/lilaq:0.3.0" as lq
 #import "/typ/templates/notes.typ": *
 #show: main.with(
   title: "Note",
@@ -45,7 +46,7 @@ $ cal(A) := { x in RR | x "is natural" } $
 #theorem[#lorem(30)]
 
 == The concept of measurability
-#definition[#lorem(10)]
+#definition(name: "CLT")[#lorem(10)]
 
 #lorem(80)
 
@@ -73,4 +74,11 @@ This is an example where you can easily reference and jump to a block of a defin
 
 #proof[#lorem(70)]
 
-which is consistent with the pattern in.
+Which is consistent with the pattern in.
+#let x = lq.linspace(0, 10)
+#notefig[#graphic[
+  #lq.diagram(
+    lq.plot(x, x.map(x => x * x)),
+    grid: none,
+  )
+]]
