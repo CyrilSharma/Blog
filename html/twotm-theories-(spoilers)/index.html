@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TWOTM Theories (Spoilers)</title>
+    <meta name="authors" content="Cyril Sharma">
+  </head>
+  <body>
+    <style>
+      @layer components {
+        .expressive-code {
+          position: relative;
+          font-family: var(
+            --ec-uiFontFamily,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif
+          );
+          font-size: var(--ec-uiFontSize, 0.9rem);
+          font-weight: var(--ec-uiFontWeight, 400);
+          line-height: var(--ec-uiLineHeight, 1.65);
+          text-size-adjust: none;
+          -webkit-text-size-adjust: none;
+        }
+      
+        .expressive-code *:not(:is(svg, svg *)) {
+          box-sizing: border-box;
+        }
+      
+        .expressive-code::selection {
+          background: var(--ec-uiSelBg, var(--ec-codeBg, #0d1117));
+          color: var(--ec-uiSelFg, currentColor);
+        }
+      
+        .expressive-code pre {
+          display: flex;
+          margin: 0;
+          padding: 0;
+          border: var(--ec-borderWd, 1.5px) solid
+            var(--ec-borderCol, rgba(148, 163, 184, 0.25));
+          border-radius: calc(
+            var(--ec-borderRad, 0.3rem) + var(--ec-borderWd, 1.5px)
+          );
+          background: var(--ec-codeBg, #0d1117);
+          color: var(--ec-codeFg, #c9d1d9);
+          overflow-x: auto;
+          position: relative;
+          z-index: 1;
+          container-type: inline-size;
+        }
+      
+        .expressive-code pre:focus-visible {
+          outline: 3px solid var(--ec-focusBorder, #3b82f6);
+          outline-offset: -3px;
+        }
+      
+        .expressive-code pre > code {
+          all: unset;
+          display: block;
+          flex: 1 0 100%;
+          padding: var(--ec-codePadBlk, 0.5rem) 0;
+          color: var(--ec-codeFg, #c9d1d9);
+          font-family: var(
+            --ec-codeFontFamily,
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            "Liberation Mono",
+            "Courier New",
+            monospace
+          );
+          font-size: var(--ec-codeFontSize, 0.85rem);
+          font-weight: var(--ec-codeFontWeight, 400);
+          line-height: var(--ec-codeLineHeight, 1.35);
+        }
+      
+        .expressive-code pre > code::selection {
+          background: var(--ec-codeSelBg, rgba(56, 189, 248, 0.35));
+          color: inherit;
+        }
+      
+        .expressive-code pre.wrap .ec-line .code {
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          min-width: min(20ch, var(--ecMaxLine, 20ch));
+        }
+      
+        /* When lines are allowed to wrap, the absolute overlay can overlap
+           wrapped text. Disable the overlay in wrap mode and rely on per-slot
+           borders for guides (these are handled by .indent-slot). */
+        .expressive-code pre.wrap .ec-line .code .indent-overlay {
+          display: none;
+        }
+      
+        .expressive-code pre.wrap .ec-line .code::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          /* use the code line-height times the element font-size to match one line */
+          height: calc(var(--ec-codeLineHeight, 1.65) * 1em);
+          width: max(0px, calc(var(--ecIndent, 0) - 2px));
+          pointer-events: none;
+          background-image: repeating-linear-gradient(
+            to right,
+            transparent 0,
+            transparent calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              var(--ec-indentStep, 4ch)
+          );
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          mix-blend-mode: multiply;
+          opacity: 0.85;
+          z-index: 0;
+        }
+      
+        .expressive-code pre.wrap .ec-line .code span.indent {
+          white-space: pre;
+        }
+      
+        .expressive-code .ec-line .code .indent {
+          display: inline-flex;
+          white-space: pre;
+        }
+      
+        .expressive-code .ec-line .code .indent-slot {
+          display: inline-flex;
+          white-space: pre;
+          position: relative;
+        }
+      
+        .expressive-code.has-indent-guides .ec-line .code .indent-slot {
+          border-inline-end: 1px solid
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35));
+        }
+      
+        .expressive-code.has-indent-guides
+          .ec-line
+          .code
+          .indent-slot.indent-slot-partial {
+          border-inline-end: none;
+        }
+      
+        .expressive-code pre::-webkit-scrollbar,
+        .expressive-code pre::-webkit-scrollbar-track {
+          background-color: inherit;
+          border-radius: calc(
+            var(--ec-borderRad, 0.3rem) + var(--ec-borderWd, 1.5px)
+          );
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+        }
+      
+        .expressive-code pre::-webkit-scrollbar-thumb {
+          background-color: var(--ec-scrollbarThumbCol, rgba(148, 163, 184, 0.4));
+          border: 4px solid transparent;
+          background-clip: content-box;
+          border-radius: 10px;
+        }
+      
+        .expressive-code pre::-webkit-scrollbar-thumb:hover {
+          background-color: var(
+            --ec-scrollbarThumbHoverCol,
+            rgba(148, 163, 184, 0.55)
+          );
+        }
+      
+        .expressive-code .code-lang {
+          position: absolute;
+          top: 0.25rem;
+          right: 0.6rem;
+          padding: 0;
+          display: inline-flex;
+          align-items: baseline;
+          gap: 0.25rem;
+          background: none;
+          color: var(--ec-langFg, var(--ec-codeFg, currentColor));
+          font-size: 0.68em;
+          pointer-events: none;
+          opacity: 0.6;
+          transition: opacity 160ms ease, color 160ms ease;
+          z-index: 2;
+        }
+      
+        .expressive-code:focus-within .code-lang,
+        .expressive-code:hover .code-lang {
+          opacity: 1;
+          color: var(--ec-langFg, var(--ec-codeFg, currentColor));
+        }
+      
+        .expressive-code .copy-button {
+          position: absolute;
+          top: 0.6rem;
+          right: 0.6rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 2.3rem;
+          height: 2.3rem;
+          border-radius: 0.45rem;
+          border: 1px solid rgba(148, 163, 184, 0.28);
+          background-color: var(--ec-copyBg, rgba(15, 23, 42, 0.04));
+          color: var(--ec-copyFg, rgba(15, 23, 42, 0.7));
+          cursor: pointer;
+          opacity: 0;
+          pointer-events: auto;
+          transition: opacity 160ms ease, transform 160ms ease,
+            background-color 140ms ease, color 140ms ease;
+          transform: translateY(-0.3rem);
+          background-image: url("data:image/svg+xml,%3Csvg xmlns%3D%27http://www.w3.org/2000/svg%27 viewBox%3D%270 0 24 24%27 fill%3D%27none%27 stroke%3D%27currentColor%27 stroke-width%3D%271.75%27 stroke-linecap%3D%27round%27 stroke-linejoin%3D%27round%27%3E%3Cpath d%3D%27M3 19a2 2 0 0 1-1-2V3a2 2 0 0 1 1-1h13a2 2 0 0 1 2 1%27/%3E%3Crect x%3D%276%27 y%3D%275%27 width%3D%2716%27 height%3D%2718%27 rx%3D%271.6%27 ry%3D%271.6%27/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 60%;
+          z-index: 3;
+        }
+      
+        .expressive-code .copy-button:is(:hover, :focus-visible, :active) {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      
+        .expressive-code .copy-button:focus-visible {
+          outline: 2px solid rgba(148, 163, 184, 0.55);
+          outline-offset: 2px;
+          background-color: var(--ec-copyBgFocus, rgba(15, 23, 42, 0.16));
+          color: var(--ec-copyFgFocus, rgba(15, 23, 42, 1));
+        }
+      
+        .expressive-code .copy-button::before {
+          content: "";
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          background: transparent;
+          border: none;
+          pointer-events: none;
+        }
+      
+        .expressive-code .copy-button::after {
+          content: none;
+          pointer-events: none;
+        }
+      
+        .expressive-code .copy-button .copy-label,
+        .expressive-code .copy-button .copy-feedback {
+          display: none;
+        }
+      
+        .expressive-code .copy-button:hover {
+          background-color: var(--ec-copyBgHover, rgba(15, 23, 42, 0.12));
+          color: var(--ec-copyFgHover, rgba(15, 23, 42, 0.9));
+        }
+      
+        .expressive-code .copy-button span[aria-hidden="true"] {
+          font-family: var(--ec-uiFontFamily, inherit);
+        }
+      
+        .expressive-code .ec-header,
+        .expressive-code .ec-footer {
+          display: block;
+          padding: 0.35rem var(--ec-codePadInl, 1.35rem);
+          color: var(--ec-uiFg, currentColor);
+        }
+      
+        .expressive-code .ec-header.ec-ext,
+        .expressive-code .ec-footer.ec-ext {
+          padding: 0.25rem var(--ec-codePadInl, 1.35rem);
+        }
+      
+        .expressive-code .ec-line {
+          direction: ltr;
+          unicode-bidi: isolate;
+          display: grid;
+          grid-template-areas: "gutter code";
+          grid-template-columns: auto 1fr;
+          column-gap: var(--ec-gutterGap, 0.25rem);
+          position: relative;
+          --lineBg: var(--ec-codeBg, #0d1117);
+          background: var(--lineBg);
+        }
+      
+        .expressive-code:not(.has-gutter) .ec-line {
+          grid-template-columns: 1fr;
+        }
+      
+        .expressive-code:not(.has-gutter) .ec-line .code {
+          padding-inline: var(--ec-codePadInl, 1.35rem);
+        }
+      
+        .expressive-code .ec-line .gutter {
+          grid-area: gutter;
+          color: var(--ec-gtrFg, rgba(148, 163, 184, 0.8));
+          position: sticky;
+          left: 0;
+          z-index: 2;
+          background: var(--lineBg, var(--ec-gutterBg, var(--ec-codeBg, #0d1117)));
+          box-shadow: 1px 0 0 var(--ec-gtrBrdCol, rgba(148, 163, 184, 0.2));
+        }
+      
+        .expressive-code .ec-line .gutter > * {
+          pointer-events: none;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+      
+        .expressive-code .ec-line .gutter ~ .code {
+          --ecLineBrdCol: var(--ec-gtrBrdCol, rgba(148, 163, 184, 0.2));
+        }
+      
+        .expressive-code .ec-line.highlight .gutter {
+          color: var(--ec-gtrHighlightFg, rgba(226, 232, 240, 0.95));
+        }
+      
+        .expressive-code .ec-line .gutter .ln {
+          display: inline-flex;
+          justify-content: flex-end;
+          align-items: flex-start;
+          box-sizing: content-box;
+          min-width: var(--lnWidth, 2ch);
+          padding-inline-start: var(--ec-gutterPadLeft, 0.5rem);
+          padding-inline-end: var(--ec-codePadInl, 1.35rem);
+          font-size: var(--ec-codeFontSize, 0.85rem);
+          font-variant-numeric: tabular-nums;
+          color: inherit;
+        }
+      
+        .expressive-code .ec-line .gutter .ln > span + span {
+          margin-inline-start: 0.25em;
+        }
+      
+        .expressive-code .ec-line .code {
+          position: relative;
+          z-index: 1;
+        }
+      
+        .expressive-code .ec-line .code .indent-overlay {
+          display: none;
+        }
+      
+        .expressive-code.has-indent-guides .ec-line .code .indent-overlay {
+          position: absolute;
+          inset: 0 auto 0 0;
+          display: block;
+          /* Shrink overlay by 1px to avoid drawing a vertical guide at the very end of
+             the inline area (prevents an extra line appearing at each row end).
+             Use max(...) to avoid negative values when --ecIndent is small. */
+          width: max(0px, calc(var(--ecIndent, 0) - 2px));
+          pointer-events: none;
+          background-image: repeating-linear-gradient(
+            to right,
+            transparent 0,
+            transparent calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              var(--ec-indentStep, 4ch)
+          );
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          mix-blend-mode: multiply;
+          opacity: 0.85;
+          z-index: 0;
+        }
+        .expressive-code .ec-comment {
+          grid-column: 1 / -1;
+          padding: 0.55rem calc(var(--ec-codePadInl, 1.35rem) + 0.25rem);
+          font-size: 0.85em;
+          background: var(--ec-commentBg, rgba(56, 189, 248, 0.18));
+          color: var(--ec-commentFg, currentColor);
+          box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.08),
+            inset 0 -1px 0 rgba(15, 23, 42, 0.06);
+          position: sticky;
+          left: 0;
+          z-index: 2;
+          width: 100cqw;
+          box-sizing: border-box;
+        }
+      
+        .expressive-code .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border-width: 0;
+        }
+      
+        code.expressive-code-inline {
+          display: inline-block;
+          padding: 0 var(--ec-inlinePadInl, 0.4rem);
+          border-radius: calc(var(--ec-borderRad, 0.3rem) / 1.2);
+          background: var(--ec-inlineBg, rgba(148, 163, 184, 0.2));
+          color: var(--ec-inlineFg, inherit);
+          font-family: var(
+            --ec-codeFontFamily,
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            "Liberation Mono",
+            "Courier New",
+            monospace
+          );
+          font-size: 0.95em;
+          line-height: 1.2;
+          white-space: pre;
+        }
+      }
+    </style>
+    <script>
+      const CODE_BLOCK_SELECTOR = ".expressive-code";
+      const COPY_BUTTON_SELECTOR = ".copy-button";
+      
+      const selectCodeBlocks = () =>
+        Array.from(document.querySelectorAll(CODE_BLOCK_SELECTOR));
+      
+      const extractCodeText = (codeBlock) =>
+        Array.from(codeBlock.querySelectorAll(".ec-line .code"))
+          .map((line) => {
+            const indent = line.dataset.indent ?? "";
+            const content = line.textContent
+              .replace(/\u00a0/g, " ")
+              .replace(/\u200b/gi, "");
+            return indent + content;
+          })
+          .join("\n");
+      
+      const fallbackCopy = (text) => {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        /** @type {any} */ (document).execCommand("copy");
+        document.body.removeChild(textarea);
+      };
+      
+      const setStateWithTimeout = (button, state, delay = 1600) => {
+        button.dataset.state = state;
+        if (state === "copied") {
+          setTimeout(() => {
+            if (button.dataset.state === "copied") {
+              button.dataset.state = "idle";
+            }
+          }, delay);
+        }
+      };
+      
+      const bindCopyButton = (codeBlock) => {
+        if (!codeBlock || codeBlock.dataset.copyBound === "true") return;
+      
+        const copyButton = codeBlock.querySelector(COPY_BUTTON_SELECTOR);
+        if (!copyButton) return;
+      
+        codeBlock.dataset.copyBound = "true";
+      
+        const copyHandler = async () => {
+          const code = extractCodeText(codeBlock);
+      
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(code);
+            } else {
+              fallbackCopy(code);
+            }
+            setStateWithTimeout(copyButton, "copied");
+          } catch (error) {
+            try {
+              fallbackCopy(code);
+              setStateWithTimeout(copyButton, "copied");
+            } catch (fallbackError) {
+              setStateWithTimeout(copyButton, "error", 2200);
+            }
+          }
+        };
+      
+        const resetHandler = () => {
+          if (copyButton.dataset.state === "copied") {
+            copyButton.dataset.state = "idle";
+          }
+        };
+      
+        copyButton.addEventListener("click", copyHandler);
+        copyButton.addEventListener("blur", resetHandler);
+        copyButton.addEventListener("mouseleave", resetHandler);
+      };
+      
+      selectCodeBlocks().forEach(bindCopyButton);
+      
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          mutation.addedNodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) return;
+            if (node.matches?.(CODE_BLOCK_SELECTOR)) {
+              bindCopyButton(node);
+            } else {
+              node
+                .querySelectorAll?.(CODE_BLOCK_SELECTOR)
+                .forEach((block) => bindCopyButton(block));
+            }
+          });
+        }
+      });
+      
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+      });
+    </script>
+    <ol>
+      <li value="1">Emissa is not a “traitor”. She expressed clearly to Vin before the Iudicium that the outcome of the competition mattered to her, and that they should stay together regardless. Hence, her stating that she needs to win isn’t treasonous, I’m sure she had a ton of pressure to win as well. As for the stabbing, she only did that after noticing his injury. I think the blood-taint that Veridus mentioned is probably why. It did feel cold, she stabbed him without a word of explanation of comfort, but it seems plausible this was how she was trained to react. She did cry, so I believe she truly loved him and felt it was necessary.</li>
+      <li value="2">That said, Emissa is hiding things. She was obviously trying to get to know him from the very start. Unlike Callidus and Eidhn who confessed very revealing secrets to Vis, she never did, and it’s not because she’s innocent. She knows about blood-taints, she was able to use will despite all of the security measures, she had an obsidian knife (obsidian seems to have some religious significance and all the husks are stabbed with it). She also knew Indol’s deepest secret despite him not telling her. She knew the same dead language only Eidhn and Vis could speak…</li>
+      <li value="3">Now that I think about it, Emissa seems too smart to have gotten caught in a riptide. If she can sneak will on to the island, she definitely could’ve used some to keep her calm and swim away. Perhaps she knows Diago’s past? Maybe she put the boat on his table? Reddit claims will doesn’t directly help with this but I’m not that sure. It would’ve made her stronger, possible strong enough to just swim against the riptide. It’s also very clear she’s no low-level will user given how easily she kills the Sextus and stabs Vis at the end. It seems impossible for her to have perfectly manipulated Indol into telling Vis she was going to be at a risky place where she might drown though. So… maybe not? After this point she might’ve been able to deduce he was Diago though.</li>
+      <li value="4">The Alupi is honestly way too smart. It finds him immediately after he gets close to the temple (the forest is quite big). It tries to dissuade him from going in the temple. It kills everyone he thinks is an antagonist, <strong>even when he’s not there</strong>. For example, it killed the person attacking Callidus. It also hates being pet. It feels like it’s practically human.</li>
+      <li value="5">The needle thing that Vis was given was for protection, as Relucia said. I think it just makes it clear to Mullior who in the crowd has Anguis ties. I think it also might have allowed him to get close to Mullior, as it seemed like Vis was going through some kind of barrier as he got close, and the needle kept increasing in heat.</li>
+      <li value="6">Mullior is still alive. The guardsmen at the end said “Mullior is watching” and I don’t think it’s metaphorical considering that he had other-worldly powers and almost certainly through Synchronism himself. It also explains why he was willing to commit suicide, and why when Vis told him “be careful” he kind of disregarded it. Of course, he was literally planning on committing suicide, but I think he knows the Hierarchy will never be able to truly kill him considering his Synchronism.</li>
+      <li value="7">Synchronism just means being alive in all three worlds at once. Makes a lot of sense. Synchronism is death also makes sense, as it seems like the temple was trying to kill Vis. It is clear that your clones are initially linked to you, and your bodies suffer equivalent damage and such. Hence, killing the version in Res could kill all your other versions, which is what Caeror is so worried about. Hence, inscribing letters in Vis’s arms (R U …). However, it seems like once you leave that chamber the link becomes way more fragile (as Caeror also said) hence the letter N not appearing.</li>
+      <li value="8">Caeror and Lanista ran the maze together and they both made it to the cloning chamber. It feels unlikely either of them died in the maze on the way back, because it should be a lot easier. Neither was captured or killed in the main chamber or all versions of both of them would be dead. Hence, the husks outside the maze probably got to them.</li>
+      <li value="9">Lanista was captured and the husk conversion process was started (but I don’t think this truly kills you because the husks can kind of understand human language and Lanista would be dead otherwise). It seems husk conversion is a standard punishment for what the zombies do to you if you try to achieve Synchronism as stated by all of the Labyrinth guides.</li>
+      <li value="10">I’m not sure what happened to Caeror. My guess is his body was never found, hence Ulcisisor not knowing what really happened to him and wanting Vis to run through the Labyrinth. I initially thought this meant he could’ve died in the labyrinth on the way out but I think it’s unlikely, I also think that could kill his clones. Hence, maybe he made it out, made it past the husks but got so injured and infected that he died in Res. OR. Maybe both him and Lanista made it out of the maze, and Veridius was there. Lanista gets bitten or something early into the fight, and Caeror tells Veridius tells him to take her and run “sacrificing” himself to give her a chance to live. They do seem to have been in love. I think this makes the most sense. I doubt Veridius could’ve gone back and retrieved Lanista (it would’ve awakened all the corpses) nor would it line up with the timeline of Caeror’s death. I also doubt Veridius would kill Caeror even if he got bitten because then why haul Lanista back.</li>
+      <li value="11">That one dude “teleports” by moving into a different realm, walking around there, and then switching back realms. He says people are watching. Maybe because there’s some kind of disturbance if two copies of yourself exists in the same realm? Also, I imagine the pain he feels is because of the realm hopping.</li>
+      <li value="12">Veridius is not evil but he’s some kind of hyper-utilitarian who believes preventing the next cataclysm is worth sacrificing students for.</li>
+      <li value="13">Who could’ve know about Vis’s ability to use the palace tunnels? Initially, this made me think one of his sisters must be alive but we seem to have good evidence that one was hanged and the other drowned at sea. Vis at least knew his sister had drowned, and pushed her back into the ocean. I guess it’s possible Vis’s former tutor lied about the hanging, he’s one of three people who actually saw it… it’s hard to prove anything about who was actually hanged. Still, given Vis’s tutor knew about the tunnels, there are probably other Suus informants who could’ve known as well, so maybe there’s not much we can deduce from here.</li>
+      <li value="14">What was the secret the Hierarchy wanted from Suus? If it was related to these other worldly powers, then the knowledge clearly hasn’t been distilled to the rest of the Military. On the other hand, perhaps the head of the military, the guy responsible for the invasion of Suus, who openly is ok with the Anguis killing anyone, perhaps he is an Anguis plant and this is why the knowledge has not been spread. Perhaps this is why the Anguis seem to have gotten “bolder” recently, because they only recently captured Suus. My guess is that Suus has its own gate. Why else would Mullior imply his weapon has anything to do with Suus heritage? It also seems the Anguis are actively putting people through the gate. Like the guy with the scar we see at the end. He clearly is just getting used to his new powers as evidence by his discussion with Relucia. Getting onto the Academy without permission seems really hard (and possibly the gate is also more dangerous). This also makes it seem possible Vis’s father is alive in one of the other realms, as he definitely knew whatever secret Suus had.</li>
+      <li value="15">Pretty obvious, but the blood on the cloak and the insane aggression of the safety team was because the Anguis had killed the safety team and put on their uniforms.</li>
+      <li value="16">Another thing I’m wondering is, can Will users detect lies? It seems like if Vis really wanted to achieve his dream of getting rank 1, choosing an ideal position, and then not ceding will he would’ve been better off just saying he found Caeror’s huskified bodies in one of the chambers. Or he overhead Vedelius saying he killed him or something. From my perspective, seems to be blindly trusting Vis. Perhaps the reason he trusts him is because Lanista remembers more then she lets on, and she can partially verify that the things that Vis saw are real.</li>
+      <li value="17">Ulcisisor knows far more then he lets on. Why does he have a private copy of the Labyrinth? First of all, the Labyrinth itself is a temple relic, and the instruction for how to obtain it would’ve been really hard to get. Second, you can make it all the way to class four before Labyrinth skills really start to become important. Class 4 is good enough if all you care about if finding out what happened to Caeror. There are simpler ways we could’ve chosen to create a “Labyrinth”-esque environment. It makes me thing he knew Vis would have to run the Labyrinth all along. The fact that he wasn’t direct about it makes me doubt this, because it doesn’t seem like such a bad thing to tell Vis. I think it’s probably because he was also just interested in everything else going on in the island, and he didn’t even know where the labyrinth was. Once he knew where it was, Vis was very clearly told he HAD to do it.</li>
+      <li value="18">Cataclysm’s are a recurring phenomenon. This would explain why Veridius thinks one is impending. We know so little about pre-cataclysm life that it seems possible it could’ve actually happened many times. I wonder if reending is the same thing as a cataclysm.</li>
+      <li value="19">Nobody? Has made it through the labyrinth (and survived) except Vis. Otherwise, how come Caeror doesn’t know Veridius is principalis? On the other hand, he does seem to expect Veridius to keep sending students through, which I almost implies Veridius knows Caeror is alive. But more likely, I think it implies Veridius has read through the ruins and knows the value of having someone achieve synchronicity.</li>
+      <li value="20">Something I saw on Reddit: the Suus tunnels are connected to the Suus gate. Makes a lot of sense!</li>
+      <li value="21">So long as the Husks have Obsidian in them they stay dead. Evidence is that Vis notices the husks basically only die if you stab their necks, normal injuries aren’t enough. So, either you do that, or… you carry around a specialized weapon which can kill them like Emissa. It also explains why the husks all have Obsidian in them, why the obsidian blades in the cloning chamber subdued the first wave of husks, and so on.</li>
+      <li value="22">Callidus’s observation that there are way too few Sextus’s is actually very significant. I just interpreted it as good positions are harder to get then they tell you, but actually it means will in the system is “leaking”. There are unknown forces extracting will out of a large portion of people…</li>
+    </ol>
+  </body>
+</html>

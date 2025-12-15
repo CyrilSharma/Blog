@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tree</title>
+    <meta name="authors" content="Cyril Sharma">
+  </head>
+  <body>
+    <style>
+      @layer components {
+        .expressive-code {
+          position: relative;
+          font-family: var(
+            --ec-uiFontFamily,
+            ui-sans-serif,
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif
+          );
+          font-size: var(--ec-uiFontSize, 0.9rem);
+          font-weight: var(--ec-uiFontWeight, 400);
+          line-height: var(--ec-uiLineHeight, 1.65);
+          text-size-adjust: none;
+          -webkit-text-size-adjust: none;
+        }
+      
+        .expressive-code *:not(:is(svg, svg *)) {
+          box-sizing: border-box;
+        }
+      
+        .expressive-code::selection {
+          background: var(--ec-uiSelBg, var(--ec-codeBg, #0d1117));
+          color: var(--ec-uiSelFg, currentColor);
+        }
+      
+        .expressive-code pre {
+          display: flex;
+          margin: 0;
+          padding: 0;
+          border: var(--ec-borderWd, 1.5px) solid
+            var(--ec-borderCol, rgba(148, 163, 184, 0.25));
+          border-radius: calc(
+            var(--ec-borderRad, 0.3rem) + var(--ec-borderWd, 1.5px)
+          );
+          background: var(--ec-codeBg, #0d1117);
+          color: var(--ec-codeFg, #c9d1d9);
+          overflow-x: auto;
+          position: relative;
+          z-index: 1;
+          container-type: inline-size;
+        }
+      
+        .expressive-code pre:focus-visible {
+          outline: 3px solid var(--ec-focusBorder, #3b82f6);
+          outline-offset: -3px;
+        }
+      
+        .expressive-code pre > code {
+          all: unset;
+          display: block;
+          flex: 1 0 100%;
+          padding: var(--ec-codePadBlk, 0.5rem) 0;
+          color: var(--ec-codeFg, #c9d1d9);
+          font-family: var(
+            --ec-codeFontFamily,
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            "Liberation Mono",
+            "Courier New",
+            monospace
+          );
+          font-size: var(--ec-codeFontSize, 0.85rem);
+          font-weight: var(--ec-codeFontWeight, 400);
+          line-height: var(--ec-codeLineHeight, 1.35);
+        }
+      
+        .expressive-code pre > code::selection {
+          background: var(--ec-codeSelBg, rgba(56, 189, 248, 0.35));
+          color: inherit;
+        }
+      
+        .expressive-code pre.wrap .ec-line .code {
+          white-space: pre-wrap;
+          overflow-wrap: break-word;
+          min-width: min(20ch, var(--ecMaxLine, 20ch));
+        }
+      
+        /* When lines are allowed to wrap, the absolute overlay can overlap
+           wrapped text. Disable the overlay in wrap mode and rely on per-slot
+           borders for guides (these are handled by .indent-slot). */
+        .expressive-code pre.wrap .ec-line .code .indent-overlay {
+          display: none;
+        }
+      
+        .expressive-code pre.wrap .ec-line .code::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          /* use the code line-height times the element font-size to match one line */
+          height: calc(var(--ec-codeLineHeight, 1.65) * 1em);
+          width: max(0px, calc(var(--ecIndent, 0) - 2px));
+          pointer-events: none;
+          background-image: repeating-linear-gradient(
+            to right,
+            transparent 0,
+            transparent calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              var(--ec-indentStep, 4ch)
+          );
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          mix-blend-mode: multiply;
+          opacity: 0.85;
+          z-index: 0;
+        }
+      
+        .expressive-code pre.wrap .ec-line .code span.indent {
+          white-space: pre;
+        }
+      
+        .expressive-code .ec-line .code .indent {
+          display: inline-flex;
+          white-space: pre;
+        }
+      
+        .expressive-code .ec-line .code .indent-slot {
+          display: inline-flex;
+          white-space: pre;
+          position: relative;
+        }
+      
+        .expressive-code.has-indent-guides .ec-line .code .indent-slot {
+          border-inline-end: 1px solid
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35));
+        }
+      
+        .expressive-code.has-indent-guides
+          .ec-line
+          .code
+          .indent-slot.indent-slot-partial {
+          border-inline-end: none;
+        }
+      
+        .expressive-code pre::-webkit-scrollbar,
+        .expressive-code pre::-webkit-scrollbar-track {
+          background-color: inherit;
+          border-radius: calc(
+            var(--ec-borderRad, 0.3rem) + var(--ec-borderWd, 1.5px)
+          );
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+        }
+      
+        .expressive-code pre::-webkit-scrollbar-thumb {
+          background-color: var(--ec-scrollbarThumbCol, rgba(148, 163, 184, 0.4));
+          border: 4px solid transparent;
+          background-clip: content-box;
+          border-radius: 10px;
+        }
+      
+        .expressive-code pre::-webkit-scrollbar-thumb:hover {
+          background-color: var(
+            --ec-scrollbarThumbHoverCol,
+            rgba(148, 163, 184, 0.55)
+          );
+        }
+      
+        .expressive-code .code-lang {
+          position: absolute;
+          top: 0.25rem;
+          right: 0.6rem;
+          padding: 0;
+          display: inline-flex;
+          align-items: baseline;
+          gap: 0.25rem;
+          background: none;
+          color: var(--ec-langFg, var(--ec-codeFg, currentColor));
+          font-size: 0.68em;
+          pointer-events: none;
+          opacity: 0.6;
+          transition: opacity 160ms ease, color 160ms ease;
+          z-index: 2;
+        }
+      
+        .expressive-code:focus-within .code-lang,
+        .expressive-code:hover .code-lang {
+          opacity: 1;
+          color: var(--ec-langFg, var(--ec-codeFg, currentColor));
+        }
+      
+        .expressive-code .copy-button {
+          position: absolute;
+          top: 0.6rem;
+          right: 0.6rem;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 2.3rem;
+          height: 2.3rem;
+          border-radius: 0.45rem;
+          border: 1px solid rgba(148, 163, 184, 0.28);
+          background-color: var(--ec-copyBg, rgba(15, 23, 42, 0.04));
+          color: var(--ec-copyFg, rgba(15, 23, 42, 0.7));
+          cursor: pointer;
+          opacity: 0;
+          pointer-events: auto;
+          transition: opacity 160ms ease, transform 160ms ease,
+            background-color 140ms ease, color 140ms ease;
+          transform: translateY(-0.3rem);
+          background-image: url("data:image/svg+xml,%3Csvg xmlns%3D%27http://www.w3.org/2000/svg%27 viewBox%3D%270 0 24 24%27 fill%3D%27none%27 stroke%3D%27currentColor%27 stroke-width%3D%271.75%27 stroke-linecap%3D%27round%27 stroke-linejoin%3D%27round%27%3E%3Cpath d%3D%27M3 19a2 2 0 0 1-1-2V3a2 2 0 0 1 1-1h13a2 2 0 0 1 2 1%27/%3E%3Crect x%3D%276%27 y%3D%275%27 width%3D%2716%27 height%3D%2718%27 rx%3D%271.6%27 ry%3D%271.6%27/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 60%;
+          z-index: 3;
+        }
+      
+        .expressive-code .copy-button:is(:hover, :focus-visible, :active) {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      
+        .expressive-code .copy-button:focus-visible {
+          outline: 2px solid rgba(148, 163, 184, 0.55);
+          outline-offset: 2px;
+          background-color: var(--ec-copyBgFocus, rgba(15, 23, 42, 0.16));
+          color: var(--ec-copyFgFocus, rgba(15, 23, 42, 1));
+        }
+      
+        .expressive-code .copy-button::before {
+          content: "";
+          width: 100%;
+          height: 100%;
+          border-radius: inherit;
+          background: transparent;
+          border: none;
+          pointer-events: none;
+        }
+      
+        .expressive-code .copy-button::after {
+          content: none;
+          pointer-events: none;
+        }
+      
+        .expressive-code .copy-button .copy-label,
+        .expressive-code .copy-button .copy-feedback {
+          display: none;
+        }
+      
+        .expressive-code .copy-button:hover {
+          background-color: var(--ec-copyBgHover, rgba(15, 23, 42, 0.12));
+          color: var(--ec-copyFgHover, rgba(15, 23, 42, 0.9));
+        }
+      
+        .expressive-code .copy-button span[aria-hidden="true"] {
+          font-family: var(--ec-uiFontFamily, inherit);
+        }
+      
+        .expressive-code .ec-header,
+        .expressive-code .ec-footer {
+          display: block;
+          padding: 0.35rem var(--ec-codePadInl, 1.35rem);
+          color: var(--ec-uiFg, currentColor);
+        }
+      
+        .expressive-code .ec-header.ec-ext,
+        .expressive-code .ec-footer.ec-ext {
+          padding: 0.25rem var(--ec-codePadInl, 1.35rem);
+        }
+      
+        .expressive-code .ec-line {
+          direction: ltr;
+          unicode-bidi: isolate;
+          display: grid;
+          grid-template-areas: "gutter code";
+          grid-template-columns: auto 1fr;
+          column-gap: var(--ec-gutterGap, 0.25rem);
+          position: relative;
+          --lineBg: var(--ec-codeBg, #0d1117);
+          background: var(--lineBg);
+        }
+      
+        .expressive-code:not(.has-gutter) .ec-line {
+          grid-template-columns: 1fr;
+        }
+      
+        .expressive-code:not(.has-gutter) .ec-line .code {
+          padding-inline: var(--ec-codePadInl, 1.35rem);
+        }
+      
+        .expressive-code .ec-line .gutter {
+          grid-area: gutter;
+          color: var(--ec-gtrFg, rgba(148, 163, 184, 0.8));
+          position: sticky;
+          left: 0;
+          z-index: 2;
+          background: var(--lineBg, var(--ec-gutterBg, var(--ec-codeBg, #0d1117)));
+          box-shadow: 1px 0 0 var(--ec-gtrBrdCol, rgba(148, 163, 184, 0.2));
+        }
+      
+        .expressive-code .ec-line .gutter > * {
+          pointer-events: none;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+      
+        .expressive-code .ec-line .gutter ~ .code {
+          --ecLineBrdCol: var(--ec-gtrBrdCol, rgba(148, 163, 184, 0.2));
+        }
+      
+        .expressive-code .ec-line.highlight .gutter {
+          color: var(--ec-gtrHighlightFg, rgba(226, 232, 240, 0.95));
+        }
+      
+        .expressive-code .ec-line .gutter .ln {
+          display: inline-flex;
+          justify-content: flex-end;
+          align-items: flex-start;
+          box-sizing: content-box;
+          min-width: var(--lnWidth, 2ch);
+          padding-inline-start: var(--ec-gutterPadLeft, 0.5rem);
+          padding-inline-end: var(--ec-codePadInl, 1.35rem);
+          font-size: var(--ec-codeFontSize, 0.85rem);
+          font-variant-numeric: tabular-nums;
+          color: inherit;
+        }
+      
+        .expressive-code .ec-line .gutter .ln > span + span {
+          margin-inline-start: 0.25em;
+        }
+      
+        .expressive-code .ec-line .code {
+          position: relative;
+          z-index: 1;
+        }
+      
+        .expressive-code .ec-line .code .indent-overlay {
+          display: none;
+        }
+      
+        .expressive-code.has-indent-guides .ec-line .code .indent-overlay {
+          position: absolute;
+          inset: 0 auto 0 0;
+          display: block;
+          /* Shrink overlay by 1px to avoid drawing a vertical guide at the very end of
+             the inline area (prevents an extra line appearing at each row end).
+             Use max(...) to avoid negative values when --ecIndent is small. */
+          width: max(0px, calc(var(--ecIndent, 0) - 2px));
+          pointer-events: none;
+          background-image: repeating-linear-gradient(
+            to right,
+            transparent 0,
+            transparent calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              calc(var(--ec-indentStep, 4ch) - 1px),
+            var(--ec-indentGuideCol, rgba(148, 163, 184, 0.35))
+              var(--ec-indentStep, 4ch)
+          );
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          mix-blend-mode: multiply;
+          opacity: 0.85;
+          z-index: 0;
+        }
+        .expressive-code .ec-comment {
+          grid-column: 1 / -1;
+          padding: 0.55rem calc(var(--ec-codePadInl, 1.35rem) + 0.25rem);
+          font-size: 0.85em;
+          background: var(--ec-commentBg, rgba(56, 189, 248, 0.18));
+          color: var(--ec-commentFg, currentColor);
+          box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.08),
+            inset 0 -1px 0 rgba(15, 23, 42, 0.06);
+          position: sticky;
+          left: 0;
+          z-index: 2;
+          width: 100cqw;
+          box-sizing: border-box;
+        }
+      
+        .expressive-code .sr-only {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border-width: 0;
+        }
+      
+        code.expressive-code-inline {
+          display: inline-block;
+          padding: 0 var(--ec-inlinePadInl, 0.4rem);
+          border-radius: calc(var(--ec-borderRad, 0.3rem) / 1.2);
+          background: var(--ec-inlineBg, rgba(148, 163, 184, 0.2));
+          color: var(--ec-inlineFg, inherit);
+          font-family: var(
+            --ec-codeFontFamily,
+            ui-monospace,
+            SFMono-Regular,
+            Menlo,
+            Monaco,
+            Consolas,
+            "Liberation Mono",
+            "Courier New",
+            monospace
+          );
+          font-size: 0.95em;
+          line-height: 1.2;
+          white-space: pre;
+        }
+      }
+    </style>
+    <script>
+      const CODE_BLOCK_SELECTOR = ".expressive-code";
+      const COPY_BUTTON_SELECTOR = ".copy-button";
+      
+      const selectCodeBlocks = () =>
+        Array.from(document.querySelectorAll(CODE_BLOCK_SELECTOR));
+      
+      const extractCodeText = (codeBlock) =>
+        Array.from(codeBlock.querySelectorAll(".ec-line .code"))
+          .map((line) => {
+            const indent = line.dataset.indent ?? "";
+            const content = line.textContent
+              .replace(/\u00a0/g, " ")
+              .replace(/\u200b/gi, "");
+            return indent + content;
+          })
+          .join("\n");
+      
+      const fallbackCopy = (text) => {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "true");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        /** @type {any} */ (document).execCommand("copy");
+        document.body.removeChild(textarea);
+      };
+      
+      const setStateWithTimeout = (button, state, delay = 1600) => {
+        button.dataset.state = state;
+        if (state === "copied") {
+          setTimeout(() => {
+            if (button.dataset.state === "copied") {
+              button.dataset.state = "idle";
+            }
+          }, delay);
+        }
+      };
+      
+      const bindCopyButton = (codeBlock) => {
+        if (!codeBlock || codeBlock.dataset.copyBound === "true") return;
+      
+        const copyButton = codeBlock.querySelector(COPY_BUTTON_SELECTOR);
+        if (!copyButton) return;
+      
+        codeBlock.dataset.copyBound = "true";
+      
+        const copyHandler = async () => {
+          const code = extractCodeText(codeBlock);
+      
+          try {
+            if (navigator.clipboard?.writeText) {
+              await navigator.clipboard.writeText(code);
+            } else {
+              fallbackCopy(code);
+            }
+            setStateWithTimeout(copyButton, "copied");
+          } catch (error) {
+            try {
+              fallbackCopy(code);
+              setStateWithTimeout(copyButton, "copied");
+            } catch (fallbackError) {
+              setStateWithTimeout(copyButton, "error", 2200);
+            }
+          }
+        };
+      
+        const resetHandler = () => {
+          if (copyButton.dataset.state === "copied") {
+            copyButton.dataset.state = "idle";
+          }
+        };
+      
+        copyButton.addEventListener("click", copyHandler);
+        copyButton.addEventListener("blur", resetHandler);
+        copyButton.addEventListener("mouseleave", resetHandler);
+      };
+      
+      selectCodeBlocks().forEach(bindCopyButton);
+      
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          mutation.addedNodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) return;
+            if (node.matches?.(CODE_BLOCK_SELECTOR)) {
+              bindCopyButton(node);
+            } else {
+              node
+                .querySelectorAll?.(CODE_BLOCK_SELECTOR)
+                .forEach((block) => bindCopyButton(block));
+            }
+          });
+        }
+      });
+      
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+      });
+    </script>
+    <div style="text-align: center;vertical-align: text-top" class="align">
+      <svg class="typst-frame" style="overflow: visible; width: 22.423596277738014em; height: 7.097120973514675em;" viewBox="0 0 246.65955905511814 78.06833070866143" width="246.65955905511814pt" height="78.06833070866143pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml"><g><g class="typst-group"><g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 101.99252952755904 0)" d="M 0 0h 32.098 v 18.238 h -32.098 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 101.9925294015748 -0.00000012598425165042427)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.5000001259842515 12.738000000000001)"><use xlink:href="#gC11A923A3576A63BB83CEDDA0872DDCD" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3327BD91FC4F03221B501330CCDAEF0E" x="6.457" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3327BD91FC4F03221B501330CCDAEF0E" x="12.078" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gBD50C79C191731108EDF808BD8EF609B" x="17.622" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 164.25104921259842 29.915165354330707)" d="M 0 0h 35.332 v 18.238 h -35.332 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 164.2510491338583 29.915165228346453)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.500000078740159 12.738000000000001)"><use xlink:href="#gC11A923A3576A63BB83CEDDA0872DDCD" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g75C283EB1E46FE54F74FB73EFE2B0DC6" x="6.457" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3CE75885A2AD54FAA8547D4EC3DFBA2" x="9.438" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gE64944288105F2476F4150F428DD2575" x="14.938" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gBD50C79C191731108EDF808BD8EF609B" x="20.856" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 184.57555905511813 59.830330708661414)" d="M 0 0h 62.084 v 18.238 h -62.084 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 184.575558992126 59.83033058267717)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.500000062992126 12.738000000000001)"><use xlink:href="#gC11A923A3576A63BB83CEDDA0872DDCD" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g75C283EB1E46FE54F74FB73EFE2B0DC6" x="6.457" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3CE75885A2AD54FAA8547D4EC3DFBA2" x="9.438" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gE64944288105F2476F4150F428DD2575" x="14.938" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gBD50C79C191731108EDF808BD8EF609B" x="20.856" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g54862864D7AB710E5118D723ADEC5E09" x="24.332" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gC11A923A3576A63BB83CEDDA0872DDCD" x="26.752000000000002" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g75C283EB1E46FE54F74FB73EFE2B0DC6" x="33.209" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3CE75885A2AD54FAA8547D4EC3DFBA2" x="36.190000000000005" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gE64944288105F2476F4150F428DD2575" x="41.690000000000005" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gBD50C79C191731108EDF808BD8EF609B" x="47.608000000000004" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 120.70003937007874 59.830330708661414)" d="M 0 0h 55.033 v 18.238 h -55.033 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 120.70003929133857 59.83033058267717)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.500000078740159 12.738000000000001)"><use xlink:href="#gC11A923A3576A63BB83CEDDA0872DDCD" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g75C283EB1E46FE54F74FB73EFE2B0DC6" x="6.457" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3CE75885A2AD54FAA8547D4EC3DFBA2" x="9.438" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gE64944288105F2476F4150F428DD2575" x="14.938" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gBD50C79C191731108EDF808BD8EF609B" x="20.856" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g54862864D7AB710E5118D723ADEC5E09" x="24.332" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g6639C1B174646D61B62901AAF7C08EEC" x="26.752000000000002" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g2CC07E1F58202425D569E0CC2F4B6698" x="32.56" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gF554FEF638A648D562FF7FB94DE36B33" x="37.477000000000004" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 40.025509842519675 29.915165354330707)" d="M 0 0h 28.281 v 18.238 h -28.281 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 40.02550974803148 29.915165228346453)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.500000094488189 12.738000000000001)"><use xlink:href="#g6639C1B174646D61B62901AAF7C08EEC" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g2CC07E1F58202425D569E0CC2F4B6698" x="5.808" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gF554FEF638A648D562FF7FB94DE36B33" x="10.725000000000001" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 56.824519685039355 59.830330708661414)" d="M 0 0h 55.033 v 18.238 h -55.033 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 56.824519606299205 59.83033058267717)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.500000078740156 12.738000000000001)"><use xlink:href="#g6639C1B174646D61B62901AAF7C08EEC" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g2CC07E1F58202425D569E0CC2F4B6698" x="5.808" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gF554FEF638A648D562FF7FB94DE36B33" x="10.725000000000001" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g54862864D7AB710E5118D723ADEC5E09" x="17.281000000000002" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gC11A923A3576A63BB83CEDDA0872DDCD" x="19.701" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g75C283EB1E46FE54F74FB73EFE2B0DC6" x="26.158" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g3CE75885A2AD54FAA8547D4EC3DFBA2" x="29.139000000000003" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gE64944288105F2476F4150F428DD2575" x="34.639" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gBD50C79C191731108EDF808BD8EF609B" x="40.557" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" transform="matrix(1 0 0 1 0 59.830330708661414)" d="M 0 0h 47.982 v 18.238 h -47.982 v -18.238 Z "/><g class="typst-group"><g><g class="typst-group" transform="matrix(1 0 0 1 -0.00000009448819947988162 59.83033058267717)"><g><g class="typst-text" transform="matrix(1 0 0 -1 5.500000094488189 12.738000000000001)"><use xlink:href="#g6639C1B174646D61B62901AAF7C08EEC" x="0" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g2CC07E1F58202425D569E0CC2F4B6698" x="5.808" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gF554FEF638A648D562FF7FB94DE36B33" x="10.725000000000001" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g54862864D7AB710E5118D723ADEC5E09" x="17.281000000000002" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g6639C1B174646D61B62901AAF7C08EEC" x="19.701" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#g2CC07E1F58202425D569E0CC2F4B6698" x="25.509" y="0" fill="#0074d9" fill-rule="nonzero"/><use xlink:href="#gF554FEF638A648D562FF7FB94DE36B33" x="30.426000000000002" y="0" fill="#0074d9" fill-rule="nonzero"/></g></g></g></g></g><path class="typst-shape" fill="none" stroke="#0074d9" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" transform="matrix(1 0 0 1 54.16600984251968 18.238)" d="M 0 0m 63.87552 0 l -63.87552 11.677165 "/><path class="typst-shape" fill="none" stroke="#0074d9" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" transform="matrix(1 0 0 1 118.04152952755905 18.238)" d="M 0 0l 63.87552 11.677165 "/><path class="typst-shape" fill="none" stroke="#0074d9" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" transform="matrix(1 0 0 1 148.21653937007872 48.1531653543307)" d="M 0 0m 33.70051 0 l -33.70051 11.677165 "/><path class="typst-shape" fill="none" stroke="#0074d9" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" transform="matrix(1 0 0 1 181.91704921259844 48.1531653543307)" d="M 0 0l 33.70051 11.677165 "/><path class="typst-shape" fill="none" stroke="#0074d9" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" transform="matrix(1 0 0 1 23.99099999999999 48.1531653543307)" d="M 0 0m 30.17501 0 l -30.17501 11.677165 "/><path class="typst-shape" fill="none" stroke="#0074d9" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="4" transform="matrix(1 0 0 1 54.16600984251968 48.1531653543307)" d="M 0 0l 30.17501 11.677165 "/></g></g></g><defs id="glyph"><symbol id="gC11A923A3576A63BB83CEDDA0872DDCD" overflow="visible"><path d="M 0 0m 2.079 1.342 v 1.859 c 0.924 0 1.1329999 -0.16499996 1.287 -0.41799998 l 1.1769998 -1.914 c 0.31900024 -0.517 0.7920003 -0.97900003 1.4520001 -0.97900003 c 0.16499996 0 0.35200024 0.022 0.4619999 0.077 c 0.04400015 0.077 0.032999992 0.176 -0.01099968 0.264 c -0.49500036 0 -0.77 0.374 -1.0560002 0.84699994 l -1.3859997 2.31 c 0.47299957 0.15400004 1.4629998 0.72599983 1.4629998 1.881 c 0 0.5499997 -0.18700027 1.0009999 -0.5830002 1.375 c -0.5279999 0.4949999 -1.2099998 0.5279999 -1.9029999 0.5279999 c -0.51699996 0 -0.97899985 -0.07700014 -1.375 -0.07700014 c -0.385 0 -0.90199995 0.011000156 -1.4189999 0.022000313 c -0.06600001 -0.065999985 -0.06600001 -0.29699993 0 -0.36299992 c 0.77 -0.032999992 0.957 -0.0880003 0.957 -1.0010004 v -4.411 c 0 -0.913 -0.18700004 -0.968 -0.957 -1.001 c -0.06600001 -0.065999985 -0.06600001 -0.297 0 -0.36299998 c 0.49499997 0.011 1.012 0.022 1.43 0.022 c 0.4180001 0 0.93500006 -0.011 1.419 -0.022 c 0.065999985 0.066 0.065999985 0.297 0 0.36299998 c -0.77 0.033000022 -0.957 0.088 -0.957 1.001 Z m 0.9130001 5.456 c 0.67099977 0 1.4629998 -0.2420001 1.4629998 -1.54 c 0 -1.375 -0.7809999 -1.6829998 -1.848 -1.6829998 h -0.5279999 v 2.5189998 c 0 0.31900024 0.13199997 0.704 0.9130001 0.704 Z "/></symbol><symbol id="g3327BD91FC4F03221B501330CCDAEF0E" overflow="visible"><path d="M 0 0m 0.451 2.2549999 c 0 -1.1219999 0.748 -2.3649998 2.31 -2.3649998 c 0.704 0 1.2430003 0.25300002 1.6169999 0.616 c 0.49500036 0.48400003 0.71500015 1.177 0.71500015 1.848 c 0 1.1439998 -0.62699986 2.475 -2.31 2.475 c -0.7260001 0 -1.32 -0.29699993 -1.727 -0.77 c -0.39600003 -0.47300005 -0.605 -1.1110001 -0.605 -1.8040001 Z m 2.167 2.189 c 0.94599986 0 1.5289998 -0.8579998 1.5289998 -2.4419997 c 0 -1.3860002 -0.7149999 -1.7270001 -1.2319999 -1.7270001 c -1.1439999 0 -1.518 1.386 -1.518 2.2329998 c 0 0.957 0.23100007 1.9359999 1.2210001 1.9359999 Z "/></symbol><symbol id="gBD50C79C191731108EDF808BD8EF609B" overflow="visible"><path d="M 0 0m 0.473 4.719 c -0.15399998 0 -0.19799998 -0.13199997 -0.19799998 -0.21999979 v -0.14300013 c 0 -0.05499983 0.011000007 -0.065999985 0.054999977 -0.065999985 h 0.649 v -3.3109999 c 0 -0.78099996 0.34099996 -1.089 0.847 -1.089 c 0.50600004 0 1.056 0.242 1.4849999 0.726 c -0.021999836 0.110000014 -0.08799982 0.176 -0.19799995 0.18699998 c -0.286 -0.21999997 -0.61599994 -0.30799997 -0.90199995 -0.30799997 c -0.29699993 0 -0.36299992 0.32999998 -0.36299992 1.012 v 2.783 h 1.144 c 0.109999895 0 0.26399994 0.04400015 0.26399994 0.14300013 v 0.21999979 c 0 0.04400015 -0.032999992 0.065999985 -0.08800006 0.065999985 h -1.3199999 v 0.4289999 c 0 0.71500015 0.04399991 1.1550002 0.04399991 1.1550002 c 0 0.065999985 -0.032999992 0.09899998 -0.08799994 0.09899998 c -0.04400003 0 -0.143 -0.04400015 -0.24199998 -0.09899998 c -0.12100005 -0.065999985 -0.23100007 -0.12099981 -0.37400007 -0.1539998 c -0.13199997 -0.04400015 -0.24199998 -0.07700014 -0.24199998 -0.15400028 c 0 -0.13199997 0.032999992 -0.05499983 0.032999992 -1.276 Z "/></symbol><symbol id="g75C283EB1E46FE54F74FB73EFE2B0DC6" overflow="visible"><path d="M 0 0m 1.9909999 1.342 v 2.189 c 0 0.54999995 0.04400015 1.254 0.04400015 1.254 c 0 0.04400015 -0.055000067 0.07700014 -0.14300013 0.07700014 c -0.30799997 -0.12099981 -0.7479999 -0.21999979 -1.507 -0.31900024 c -0.021999985 -0.065999985 0 -0.24199963 0.022000015 -0.3079996 c 0.60499996 -0.055000305 0.715 -0.12100029 0.715 -0.74800014 v -2.145 c 0 -0.913 -0.12099993 -0.946 -0.792 -1.001 c -0.065999985 -0.065999985 -0.065999985 -0.297 0 -0.36299998 c 0.36300004 0.011 0.792 0.022 1.2320001 0.022 c 0.44000006 0 0.85800004 -0.011 1.221 -0.022 c 0.065999985 0.066 0.065999985 0.297 0 0.36299998 c -0.671 0.044 -0.79200006 0.088 -0.79200006 1.001 Z m -1.0009999 5.2469997 c 0 -0.28599977 0.26399994 -0.57199955 0.528 -0.57199955 c 0.30799997 0 0.5719999 0.29699993 0.5719999 0.5279999 c 0 0.26399994 -0.23099995 0.572 -0.5279999 0.572 c -0.26400006 0 -0.572 -0.26399994 -0.572 -0.52800035 Z "/></symbol><symbol id="g3CE75885A2AD54FAA8547D4EC3DFBA2" overflow="visible"><path d="M 0 0m 4.884 4.257 c 0.20900011 0 0.40700006 0.19799995 0.40700006 0.41800022 c 0 0.23099995 -0.20900011 0.4069996 -0.50600004 0.4069996 c -0.28599977 0 -0.8139999 -0.1869998 -1.0999999 -0.5609999 c -0.13199997 0.0880003 -0.4949999 0.3080001 -1.144 0.3080001 c -0.97899985 0 -1.8809999 -0.65999985 -1.8809999 -1.6719999 c 0 -0.5940001 0.26400006 -0.9350002 0.572 -1.2320001 c -0.30799997 -0.26399994 -0.48399997 -0.737 -0.48399997 -1.111 c 0 -0.39600003 0.21999997 -0.704 0.5059999 -0.847 c -0.594 -0.352 -0.90199995 -0.858 -0.90199995 -1.331 c 0 -0.95700014 0.90199995 -1.2540001 1.7490001 -1.2540001 c 1.4849999 0 3.0909998 0.71500003 3.0909998 1.9030001 c 0 0.35199997 -0.16499996 0.627 -0.48399973 0.891 c -0.42900038 0.352 -1.1990001 0.36299998 -1.6060002 0.36299998 c -0.19799995 0 -0.47300005 -0.021999955 -0.737 -0.054999977 c -0.16499996 -0.011000007 -0.2750001 -0.021999985 -0.32999992 -0.021999985 c -0.31900012 0 -0.7040001 0.15399998 -0.7040001 0.627 c 0 0.22000003 0.065999985 0.45099998 0.19800007 0.638 c 0.26399994 -0.15400004 0.572 -0.23099995 1.0009999 -0.23099995 c 0.96799994 0 1.859 0.605 1.859 1.6829998 c 0 0.5170002 -0.1539998 0.8140001 -0.47300005 1.144 c 0.07700014 0.11000013 0.29699993 0.26399994 0.44000006 0.26399994 c 0.07700014 0 0.1539998 -0.032999992 0.22000027 -0.13199997 c 0.043999672 -0.08799982 0.1869998 -0.19799995 0.3079996 -0.19799995 Z m -3.4319997 -4.367 c 0.12099993 -0.033000007 0.29699993 -0.054999992 0.43999994 -0.054999992 c 0.34100008 0 0.6489999 0.032999992 0.803 0.032999992 c 0.54999995 0 1.0120001 -0.011000007 1.3310001 -0.187 c 0.4289999 -0.24199998 0.5609999 -0.39599997 0.5609999 -0.68200004 c 0 -0.79199994 -1.1659999 -1.2099999 -2.156 -1.2099999 c -0.3959999 0 -1.32 0.319 -1.32 1.0669999 c 0 0.37400007 0.022000074 0.64900005 0.34100008 1.034 Z m 2.0570002 3.179 c 0 -1.023 -0.51699996 -1.232 -0.924 -1.232 c -0.924 0 -1.023 0.781 -1.023 1.485 c 0 0.77 0.27499998 1.1659999 0.8799999 1.1659999 c 0.6930001 0 1.0670002 -0.50600004 1.0670002 -1.4189999 Z "/></symbol><symbol id="gE64944288105F2476F4150F428DD2575" overflow="visible"><path d="M 0 0m 1.837 3.146 c 0 0.23100019 0.09899998 0.36300015 0.18699992 0.46200013 c 0.41799998 0.40699983 0.9790001 0.6489999 1.408 0.6489999 c 0.22000003 0 0.45099998 -0.14300013 0.58299994 -0.3959999 c 0.11000013 -0.22000003 0.13199997 -0.5170002 0.13199997 -0.8470001 v -1.6719999 c 0 -0.902 -0.10999966 -0.946 -0.6819999 -1.001 c -0.05499983 -0.065999985 -0.05499983 -0.297 0 -0.36299998 c 0.3080001 0.011 0.6819999 0.022 1.122 0.022 c 0.44000006 0 0.803 -0.011 1.1659999 -0.022 c 0.055000305 0.066 0.055000305 0.297 0 0.36299998 c -0.6159997 0.055000007 -0.737 0.09900001 -0.737 1.001 v 1.6389999 c 0 0.605 -0.043999672 1.144 -0.29699993 1.474 c -0.1869998 0.2420001 -0.5279999 0.37400007 -0.91299987 0.37400007 c -0.53900003 0 -1.1990001 -0.14300013 -1.87 -0.89100003 c 0 -0.010999918 -0.011000037 -0.010999918 -0.021999955 -0.022000074 c -0.032999992 -0.04399991 -0.08800006 -0.109999895 -0.08800006 0.022000074 l 0.011000037 2.4750001 c 0 0.7149997 0.04400003 1.1549997 0.04400003 1.1549997 c 0 0.07700014 -0.04400003 0.11000013 -0.143 0.11000013 c -0.2750001 -0.11000013 -1.1 -0.26399994 -1.5400001 -0.29699993 c -0.022 -0.0880003 0 -0.26399994 0.066 -0.32999992 c 0.032999992 0 0.065999985 0 0.09900001 0 c 0.484 -0.032999992 0.605 -0.032999992 0.605 -0.90199995 v -4.807 c 0 -0.913 -0.13200003 -0.957 -0.77 -1.001 c -0.066 -0.065999985 -0.066 -0.297 0 -0.36299998 c 0.36299998 0.011 0.77 0.022 1.21 0.022 c 0.41799998 0 0.7809999 -0.011 1.089 -0.022 c 0.065999985 0.066 0.065999985 0.297 0 0.36299998 c -0.561 0.044 -0.65999997 0.088 -0.65999997 1.001 Z "/></symbol><symbol id="g54862864D7AB710E5118D723ADEC5E09" overflow="visible"><path d="M 0 0m 0.627 0.473 c 0 -0.319 0.264 -0.583 0.58300006 -0.583 c 0.319 0 0.58299994 0.264 0.58299994 0.583 c 0 0.319 -0.26399994 0.583 -0.58299994 0.583 c -0.31900007 0 -0.58300006 -0.264 -0.58300006 -0.583 Z "/></symbol><symbol id="g6639C1B174646D61B62901AAF7C08EEC" overflow="visible"><path d="M 0 0m 1.6389999 0 h 2.343 c 0.29699993 0 1.309 -0.022 1.309 -0.022 c 0.11000013 0.55 0.22000027 1.265 0.28600025 1.8369999 c -0.11000013 0.055000067 -0.23099995 0.07700002 -0.3630004 0.055000067 c -0.21999979 -0.79200006 -0.62699986 -1.441 -1.7929997 -1.441 h -0.6930001 c -0.4289999 0 -0.62699986 0.20900002 -0.62699986 0.77 v 4.554 c 0 0.9130001 0.18700004 0.9680004 0.957 1.0010004 c 0.065999985 0.065999985 0.065999985 0.29699993 0 0.36299992 c -0.49500012 -0.011000156 -1.0120001 -0.022000313 -1.4300001 -0.022000313 c -0.39600003 0 -0.91300005 0.011000156 -1.419 0.022000313 c -0.065999985 -0.065999985 -0.065999985 -0.29699993 0 -0.36299992 c 0.77 -0.032999992 0.957 -0.0880003 0.957 -1.0010004 v -4.411 c 0 -0.913 -0.18700004 -0.968 -0.957 -1.001 c -0.065999985 -0.065999985 -0.065999985 -0.297 0 -0.36299998 c 0.42900002 0.011 1.056 0.022 1.43 0.022 Z "/></symbol><symbol id="g2CC07E1F58202425D569E0CC2F4B6698" overflow="visible"><path d="M 0 0m 4.246 1.023 c -0.40699983 -0.41799998 -0.72599983 -0.594 -1.3639998 -0.594 c -0.3959999 0 -0.85800004 0.23099998 -1.199 0.79199994 c -0.22000003 0.36300004 -0.352 0.86899996 -0.352 1.507 l 2.926 -0.021999836 c 0.13199997 0 0.20900011 0.065999985 0.20900011 0.1869998 c 0 0.924 -0.32999992 1.9140003 -1.8590002 1.9140003 c -0.9569999 0 -2.1999998 -0.9130001 -2.1999998 -2.5850003 c 0 -0.61599994 0.15399998 -1.2099999 0.517 -1.6279999 c 0.37399995 -0.44 0.8909999 -0.704 1.6829998 -0.704 c 0.8360002 0 1.4300003 0.385 1.8699999 0.957 c -0.032999992 0.110000014 -0.09899998 0.16499996 -0.23099995 0.176 Z m -2.882 2.079 c 0.20899999 1.2429998 0.979 1.3419998 1.2429999 1.3419998 c 0.41800022 0 0.9130001 -0.23099995 0.9130001 -1.1549997 c 0 -0.09899998 -0.04399991 -0.15400004 -0.16499996 -0.15400004 Z "/></symbol><symbol id="gF554FEF638A648D562FF7FB94DE36B33" overflow="visible"><path d="M 0 0m 1.925 4.29 h 2.134 v -3.3109999 c 0 -0.78099996 0.34100008 -1.089 0.8470001 -1.089 c 0.50600004 0 1.0559998 0.242 1.4849997 0.726 c -0.021999836 0.110000014 -0.08799982 0.176 -0.19799995 0.18699998 c -0.28599977 -0.21999997 -0.6159997 -0.30799997 -0.90199995 -0.30799997 c -0.29699993 0 -0.36299992 0.32999998 -0.36299992 1.012 v 2.783 h 1.144 c 0.11000013 0 0.26399994 0.04400015 0.26399994 0.14300013 v 0.21999979 c 0 0.04400015 -0.032999992 0.065999985 -0.08799982 0.065999985 h -1.3200002 v 0.4289999 c 0 0.71500015 0.04400015 1.1550002 0.04400015 1.1550002 c 0 0.07700014 -0.04400015 0.11000013 -0.14300013 0.11000013 l -0.638 -0.28600025 c -0.011000156 -0.01099968 -0.032999992 -0.021999836 -0.05499983 -0.032999992 c -0.055000305 -0.021999836 -0.09899998 -0.05499983 -0.09899998 -0.10999966 c 0.021999836 -0.2420001 0.021999836 -0.34100008 0.021999836 -1.144 c 0 -0.04400015 0 -0.07700014 0 -0.12100029 h -2.134 v 0.62700033 c 0 0.1869998 0 0.3739996 0 0.53899956 c -0.010999918 0.46200037 -0.021999955 0.8140001 0.04400003 1.0010004 c 0.08799994 0.26399994 0.33000004 0.41799974 0.495 0.41799974 c 0.3080001 0 0.4619999 -0.1869998 0.5940001 -0.50600004 c 0.0769999 -0.1869998 0.20899987 -0.3080001 0.4289999 -0.3080001 c 0.20900011 0 0.36299992 0.16499996 0.36299992 0.3960004 c 0 0.17599964 -0.09899998 0.36299992 -0.319 0.5279999 c -0.22000003 0.16499996 -0.54999995 0.26399994 -0.96799994 0.26399994 c -0.319 0 -0.8249999 -0.17600012 -1.089 -0.5279999 c -0.32999992 -0.44000006 -0.41799998 -1.0230002 -0.41799998 -1.9910002 v -0.44000006 h -0.561 c -0.19800001 0 -0.25300002 -0.13199997 -0.25300002 -0.21999979 v -0.14300013 c 0 -0.05499983 0.0109999925 -0.065999985 0.054999992 -0.065999985 h 0.759 v -2.948 c 0 -0.913 -0.12099999 -0.957 -0.71500003 -1.001 c -0.065999985 -0.065999985 -0.065999985 -0.297 0 -0.36299998 c 0.37399998 0.011 0.77 0.022 1.1550001 0.022 c 0.385 0 0.85800004 -0.011 1.2979999 -0.022 c 0.065999985 0.066 0.065999985 0.297 0 0.36299998 c -0.7479999 0.044 -0.86899996 0.088 -0.86899996 1.001 Z "/></symbol></defs></svg>
+    </div>
+  </body>
+</html>
