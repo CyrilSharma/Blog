@@ -1,4 +1,3 @@
-// #import "@preview/zebraw:0.5.2": zebraw-init, zebraw
 #import "@preview/zebraw:0.6.1": zebraw-init, zebraw
 #import "@preview/shiroa:0.2.3": templates
 #import "@preview/cetz:0.4.2"
