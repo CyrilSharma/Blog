@@ -1,7 +1,7 @@
 ---
-import { getTagColor, getTextColor } from '../tagColors';
-import { formatDate } from '../utils';
-import Tag from './Tag';
+import { formatDate } from "../utils";
+import Tag from "./Tag";
+import { BASE_PATH } from "$consts";
 
 interface Props {
   title: string;
@@ -14,7 +14,9 @@ const { title, date, updatedDate, tags } = Astro.props;
 ---
 
 <div class="article-header">
-  <h1>{title}</h1>
+  <h1>
+    <a href={`${BASE_PATH}/`} class="home-link">{title}</a>
+  </h1>
   <div class="date">
     <div> {formatDate(date)} </div>
     {updatedDate && (
@@ -46,6 +48,16 @@ const { title, date, updatedDate, tags } = Astro.props;
     margin: 0 0 0.5em 0;
     text-align: center;
     letter-spacing: normal;
+  }
+
+  .home-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .home-link:hover,
+  .home-link:focus-visible {
+    text-decoration: underline;
   }
 
   .date {
