@@ -11,6 +11,7 @@
 )
 
 #let author = "Cyril Sharma"
+#set heading(numbering: "1.1.")
 
 
 /// Creates an embedded block typst frame.
@@ -26,14 +27,41 @@
   }
 ]
 
+
+#let css-len(v) = {
+  if type(v) == relative {
+    let parts = ()
+    if v.ratio != 0% { parts.push(str(v.ratio)) }
+    if v.length != 0pt { parts.push(str(v.length.pt()) + "pt") }
+    if parts.len() == 0 { "0" }
+    else if parts.len() == 1 { parts.at(0) }
+    else { "calc(" + parts.join(" + ") + ")" }
+  } else if type(v) == length {
+    str(str(v.pt()) + "pt")
+  } else {
+    str(v)
+  }
+}
+
 #let mblock(..attrs, content) = [
   #context if shiroa-sys-target() == "html" {
+    let style = ()
     if attrs.at("inset", default: none) != none {
       let inset = repr(attrs.at("inset"))
-      html.elem("div", attrs: ("style": "padding-left: " + inset + ";" + "padding-right: " + inset), content)
-    } else {
-      block(..attrs)[#content]
+      style.push("padding-left: " + inset + ";")
+      style.push("padding-right: " + inset + ";") 
     }
+    if attrs.at("fill", default: none) != none {
+      style.push("background: " + attrs.at("fill").to-hex() + ";")
+    }
+    if attrs.at("radius", default: none) != none {
+      style.push("border-radius:" + css-len(attrs.at("radius")) + ";");
+    }
+    if attrs.at("stroke", default: none) != none {
+      style.push("border-color: " + attrs.at("stroke").to-hex() + ";")
+      style.push("border-width: 2pt; border-style: solid;")
+    }
+    html.elem("div", attrs: ("style": "" + style.join(" ")), content)
   } else {
     block(..attrs)[#content]
   }
@@ -41,11 +69,14 @@
 
 #let ctext(..attrs, content) = [
   #context if shiroa-sys-target() == "html" {
+    let style = ()
     if attrs.at("fill", default: none) != none {
-      html.elem("span", attrs: ("style": "color: " + attrs.at("fill").to-hex()), content)
-    } else {
-      text(..attrs)[#content]
+      style.push("color: " + attrs.at("fill").to-hex() + ";") 
     }
+    if attrs.at("weight", default: none) != none {
+      style.push("font-weight: " + attrs.at("weight") + ";") 
+    }
+    html.elem("span", attrs: ("style": "" + style.join(" ")), content)
   } else {
     text(..attrs)[#content]
   }
@@ -120,21 +151,6 @@
   } else {
     it
   } 
-
-  let css-len(v) = {
-    if type(v) == relative {
-      let parts = ()
-      if v.ratio != 0% { parts.push(str(v.ratio)) }
-      if v.length != 0pt { parts.push(str(v.length.pt()) + "pt") }
-      if parts.len() == 0 { "0" }
-      else if parts.len() == 1 { parts.at(0) }
-      else { "calc(" + parts.join(" + ") + ")" }
-    } else if type(v) == length {
-      str(v.pt() + "pt")
-    } else {
-      str(v)
-    }
-  }
 
   show box: it => context if shiroa-sys-target() == "html" {
     let style = ()
