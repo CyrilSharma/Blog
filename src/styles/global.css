@@ -349,52 +349,6 @@ html.frame {
   border-radius: 0.5em;
 }
 
-.prose > div:last-child > ol:last-child {
-  /* margin-top: 2em; */
-  margin-bottom: 2em;
-  padding-top: 1em;
-  border-top: 1px solid var(--raw-bg-color, #e5e9f0);
-  font-size: 0.92em;
-  color: var(--gray-dark, #555);
-  list-style: none;
-  counter-reset: footnote;
-  max-width: 40em;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.prose > div:last-child > ol:last-child > li {
-  position: relative;
-  margin-bottom: 0.5em;
-  padding-left: 0;
-  min-height: 1.5em;
-  line-height: 1.6;
-  text-indent: 0;
-  counter-increment: footnote;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.4em;
-}
-
-.prose > div:last-child > ol:last-child > li::before {
-  content: counter(footnote);
-  font-size: 0.75em;
-  font-weight: bold;
-  color: var(--gray-dark, #555);
-  vertical-align: super;
-  line-height: 1;
-  /* True superscript effect: */
-  position: relative;
-  top: -0.4em;
-  margin-right: 0.2em;
-  flex-shrink: 0;
-}
-
-.prose > div:last-child > ol:last-child > li > div {
-  display: inline;
-  margin: 0;
-  padding: 0;
-}
 
 .prose sup,
 sup {
