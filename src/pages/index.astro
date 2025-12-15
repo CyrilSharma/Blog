@@ -2,24 +2,49 @@
 import BaseHead from "$components/BaseHead.astro";
 import { SITE_TITLE, SITE_DESCRIPTION, BASE_PATH } from "$consts";
 import { getCollection } from "astro:content";
+import PostGrid from "$components/PostGrid.tsx";
 
-const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
-const latest = posts[0];
-const latestUrl = `${BASE_PATH}/typst/`;
+const posts = (await getCollection("blog"))
+  .map((post) => ({
+    id: post.id,
+    title: post.data.title,
+    date: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
+    dateMs:
+      post.data.date instanceof Date
+        ? post.data.date.valueOf()
+        : new Date(post.data.date as unknown as string).valueOf(),
+    tags: post.data.tags ?? [],
+    desc: typeof post.data.desc === "string" ? post.data.desc : "",
+  }))
+  .sort((a, b) => b.dateMs - a.dateMs);
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <meta http-equiv="refresh" content={`0; url=${latestUrl}`} />
-    <script define:vars={{ latestUrl }}>
-      window.location.href = latestUrl;
-    </script>
+    <style>
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem 1rem 3rem;
+      }
+      h1 {
+        margin: 0 0 0.25em 0;
+        font-size: clamp(2rem, 3vw, 2.6rem);
+      }
+      p.lead {
+        margin: 0 0 1.5em 0;
+        color: #555;
+        font-size: 1rem;
+      }
+    </style>
   </head>
   <body>
-    <p>Redirecting to the latest post...</p>
+    <main>
+      <h1>{SITE_TITLE}</h1>
+      <p class="lead">{SITE_DESCRIPTION}</p>
+      <PostGrid client:load posts={posts} basePath={BASE_PATH} />
+    </main>
   </body>
 </html>

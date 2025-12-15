@@ -3,56 +3,37 @@ import fs from "node:fs";
 import path from "node:path";
 import BaseHead from "$components/BaseHead.astro";
 import BlogPost from "$layouts/BlogPost.astro";
+import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
-  const results: Array<{ slug: string; file: string }> = [];
-
-  const walk = (dir: string, rel = "") => {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const e of entries) {
-      if (e.name.startsWith("_astro")) continue;
-      const full = path.join(dir, e.name);
-      const relPath = path.join(rel, e.name);
-      if (e.isDirectory()) {
-        const indexFile = path.join(full, "index.html");
-        if (fs.existsSync(indexFile)) {
-          results.push({ slug: relPath, file: indexFile });
-        }
-        walk(full, relPath);
-      } else if (e.isFile() && e.name.endsWith(".html")) {
-        const slug = e.name.replace(/\.html$/, "");
-        results.push({ slug, file: full });
-      }
-    }
-  };
-
-  walk("html");
-
-  // Deduplicate by slug (prefer first found)
-  const seen = new Map<string, string>();
-  for (const { slug, file } of results) {
-    if (!seen.has(slug)) seen.set(slug, file);
-  }
-
-  return Array.from(seen.entries()).map(([slug, file]) => ({
-    params: { slug },
-    props: { file, slug },
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: {
+      file: path.join("html", post.id, "index.html"),
+      slug: post.id,
+    },
   }));
 }
 
 const { file, slug } = Astro.props as { file: string; slug: string };
 const html = fs.readFileSync(file, "utf8");
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const post = posts.find((p) => p.id === slug)!;
+const allTags = Array.from(
+  new Set(posts.flatMap((p) => p.data.tags ?? []))
+).sort();
 ---
 
 <BlogPost
-  title={slug}
-  desc="Generated page"
-  date=""
-  updatedDate=""
-  tags={[]}
-  posts={[]}
-  allTags={[]}
+  title={post.data.title}
+  desc={post.data.desc}
+  date={post.data.date}
+  updatedDate={post.data.updatedDate}
+  tags={post.data.tags}
 >
-  <BaseHead title={slug} description="Generated page" />
+  <BaseHead title={post.data.title} description={post.data.desc} />
   <div set:html={html} />
 </BlogPost>

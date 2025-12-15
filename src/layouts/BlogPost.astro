@@ -5,6 +5,10 @@ import { Sidebar } from "$components/Sidebar.tsx";
 import { SITE_TITLE } from "$consts";
 import ArticleHeader from "$components/ArticleHeader.astro";
 import { ClientRouter } from "astro:transitions";
+
+type Props = CollectionEntry<"blog">["data"];
+const { title, desc, date, updatedDate, tags } = Astro.props;
+
 ---
 
 <html lang="en">
@@ -73,6 +77,7 @@ import { ClientRouter } from "astro:transitions";
   <body>
     <main>
       <article>
+          <ArticleHeader title={title} date={date} updatedDate={updatedDate} tags={tags} />
           <div class="prose">
             <slot />
           </div>

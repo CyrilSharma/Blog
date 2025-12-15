@@ -1,33 +1,40 @@
-import { getTagColor, getTextColor } from '../tagColors';
-import { selectedTag } from '../tagStore';
-import '../styles/tags.css';
-import { useEffect, useState } from 'react';
+import { getTagColor, getTextColor } from "../tagColors";
+import "../styles/tags.css";
+import { useMemo } from "react";
 
-const Tag = ({ tag }: { tag: string }) => {
-  const [isSelected, setIsSelected] = useState(false);
-  
-  useEffect(() => {
-    const unsubscribe = selectedTag.subscribe(value => {
-      setIsSelected(value === tag);
-    });
-    
-    return unsubscribe;
-  }, [tag]);
+type TagProps = {
+  tag: string;
+  size?: "sm" | "md";
+  selectable?: boolean;
+  active?: boolean;
+  onClick?: () => void;
+};
 
+const Tag = ({ tag, size = "md", selectable = true, active = false, onClick }: TagProps) => {
   const color = getTagColor(tag);
   const textColor = getTextColor(tag);
-  // make tag bold
-  return <span className="tag"
-    style={{
-      // make background color intense when selected
-      // backgroundColor: isSelected ? 'var(--accent)' : color,
-      backgroundColor: color, // isSelected ? 'var(--accent)' : color,
-      border: isSelected ? '4px solid rgb(0, 0, 0)' : '4px solid transparent',
-      // background: isSelected ? `linear-gradient(rgb(255, 255, 255), ${color})` : color,
-      color: textColor, // isSelected ? 'var(--accent-foreground)' : textColor,
-      fontWeight: isSelected ? 'bold' : 'normal' }}
-    onClick={() => selectedTag.set(tag)}
-  >{tag}</span>;
+
+  const styles = useMemo(
+    () => ({
+      backgroundColor: color,
+      border: active ? "3px solid rgb(0, 0, 0)" : "3px solid transparent",
+      color: textColor,
+      fontWeight: active ? "bold" : "normal",
+      fontSize: size === "sm" ? "0.8rem" : "0.95rem",
+      padding: size === "sm" ? "0.15rem 0.45rem" : "0.2rem 0.65rem",
+    }),
+    [color, textColor, active, size]
+  );
+
+  return (
+    <span
+      className="tag"
+      style={styles}
+      onClick={() => selectable && onClick?.()}
+    >
+      {tag}
+    </span>
+  );
 };
 
 export default Tag;
