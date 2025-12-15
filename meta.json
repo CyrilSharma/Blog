@@ -1,0 +1,221 @@
+{
+  "agency": {
+    "title": "some definitions",
+    "author": "Cyril Sharma",
+    "desc": "some definitions",
+    "date": "2025-05-26T21:05:39-04:00",
+    "tags": [
+      "agency",
+      "reflection"
+    ]
+  },
+  "ai-is-a-step-change": {
+    "title": "AI is a step change",
+    "author": "Cyril Sharma",
+    "desc": "",
+    "date": "2025-07-04T12:32:58-04:00",
+    "tags": [
+      "musings"
+    ]
+  },
+  "alcohol-research": {
+    "title": "Alcohol Research",
+    "author": "Cyril Sharma",
+    "desc": "",
+    "date": "2025-07-18T21:11:36-04:00",
+    "tags": [
+      "musings",
+      "values",
+      "notes"
+    ]
+  },
+  "blog": {
+    "title": "Blog",
+    "author": "Cyril Sharma",
+    "desc": "My vision for this blog",
+    "date": "2025-05-31T10:32:34-04:00",
+    "tags": [
+      "meta"
+    ]
+  },
+  "cmu-db1": {
+    "title": "cmu-db1",
+    "author": "Cyril Sharma",
+    "desc": "notes",
+    "date": "2025-06-10T21:41:05-04:00",
+    "tags": [
+      "cs",
+      "notes"
+    ]
+  },
+  "complex_evolution": {
+    "title": "Evolution of Complexity",
+    "author": "Cyril Sharma",
+    "desc": "Trying to answer some basic evolutionary questions",
+    "date": "2025-05-23T17:00:00",
+    "tags": [
+      "evolution",
+      "notes"
+    ]
+  },
+  "conversations": {
+    "title": "conversations",
+    "author": "Cyril Sharma",
+    "desc": "conversations",
+    "date": "2025-06-12T22:05:26-04:00",
+    "tags": [
+      "musings"
+    ]
+  },
+  "dependencies": {
+    "title": "Dependencies",
+    "author": "Cyril Sharma",
+    "desc": "",
+    "date": "2025-08-09T13:04:53-04:00",
+    "tags": [
+      "musings"
+    ]
+  },
+  "ggs1": {
+    "title": "GGS1",
+    "author": "Cyril Sharma",
+    "desc": "Guns Germs and Steel Part 1",
+    "date": "2025-05-20",
+    "tags": [
+      "guns germs and steel",
+      "books",
+      "notes"
+    ]
+  },
+  "massive-input-1": {
+    "title": "Massive Input 1",
+    "author": "Cyril Sharma",
+    "desc": "",
+    "date": "2025-07-12T13:04:49-04:00",
+    "tags": [
+      "notes",
+      "bio"
+    ]
+  },
+  "note": {
+    "title": "Note",
+    "author": "Cyril Sharma",
+    "desc": {
+      "func": "text",
+      "text": "This is a blog post."
+    },
+    "date": "2025-12-14",
+    "tags": [
+      "notes"
+    ]
+  },
+  "notion": {
+    "title": "Notion",
+    "author": "Cyril Sharma",
+    "desc": "My Notion Sites",
+    "date": "2025-05-19",
+    "tags": [
+      "random"
+    ]
+  },
+  "pareto": {
+    "title": "The Pareto Frontier",
+    "author": "Cyril Sharma",
+    "desc": "time allocation",
+    "date": "2025-06-06T19:18:47-04:00",
+    "tags": [
+      "musings"
+    ]
+  },
+  "prob1": {
+    "title": "prob1",
+    "author": "Cyril Sharma",
+    "desc": "probability notes",
+    "date": "2025-06-15T10:17:05-04:00",
+    "tags": [
+      "math",
+      "notes"
+    ]
+  },
+  "sselection": {
+    "title": "Sexual Selection, what's the point?",
+    "author": "Cyril Sharma",
+    "desc": "Random notes",
+    "date": "2025-05-23T14:00:00",
+    "tags": [
+      "evolution",
+      "notes"
+    ]
+  },
+  "stupidfast": {
+    "title": "Do Stupid Fast",
+    "author": "Cyril Sharma",
+    "desc": "do stupid fast!",
+    "date": "2025-06-13T19:51:36-04:00",
+    "tags": [
+      "musings",
+      "cs"
+    ]
+  },
+  "thinking1": {
+    "title": "random thoughts on work",
+    "author": "Cyril Sharma",
+    "desc": "what should i be trying to do",
+    "date": "2025-06-18T20:33:12-04:00",
+    "tags": [
+      "musings",
+      "purpose"
+    ]
+  },
+  "Tools": {
+    "title": "Tools",
+    "author": "Cyril Sharma",
+    "desc": "Tools I use",
+    "date": "2025-05-31T09:30:06-04:00",
+    "tags": [
+      "random",
+      "cs"
+    ]
+  },
+  "tree": {
+    "title": "Tree",
+    "author": "Cyril Sharma",
+    "desc": "Drawing a Tree",
+    "date": "2025-05-19",
+    "tags": [
+      "random"
+    ]
+  },
+  "twotm-theories-(spoilers)": {
+    "title": "TWOTM Theories (Spoilers)",
+    "author": "Cyril Sharma",
+    "desc": "",
+    "date": "2025-09-27T15:08:31-04:00",
+    "tags": [
+      "thoughts",
+      "books"
+    ]
+  },
+  "typst": {
+    "title": "Learning How To Use Typst",
+    "author": "Cyril Sharma",
+    "desc": "Typst is like Latex but redesigned to be a usable programming language.",
+    "date": "2025-05-18",
+    "tags": [
+      "typst",
+      "tutorial",
+      "programming"
+    ]
+  },
+  "what-i-want": {
+    "title": "More thoughts on work",
+    "author": "Cyril Sharma",
+    "desc": "i don't like writing descriptions",
+    "date": "2025-06-22T12:08:59-04:00",
+    "tags": [
+      "work",
+      "musings",
+      "purpose"
+    ]
+  }
+}
