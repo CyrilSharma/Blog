@@ -1,6 +1,7 @@
-#import "@preview/zebraw:0.5.2": zebraw-init, zebraw
+// #import "@preview/zebraw:0.5.2": zebraw-init, zebraw
+#import "@preview/zebraw:0.6.1": zebraw-init, zebraw
 #import "@preview/shiroa:0.2.3": templates
-#import "@preview/cetz:0.3.1"
+#import "@preview/cetz:0.4.2"
 #import templates: *
 #import "mod.typ": *
 
@@ -8,6 +9,7 @@
   "DejaVu Sans Mono",
 )
 
+#let author = "Cyril Sharma"
 
 
 /// Creates an embedded block typst frame.
@@ -31,10 +33,7 @@
     } else {
       block(..attrs)[#content]
     }
-    
-    // [#attrs.at("inset")] + [#repr(attrs.named())] + [#repr(attrs)] + block(..attrs)[#content]
   } else {
-    // [#repr(attrs)] + block(..attrs)[#content]
     block(..attrs)[#content]
   }
 ]
@@ -46,7 +45,6 @@
     } else {
       text(..attrs)[#content]
     }
-    // text(..attrs)[#content]
   } else {
     text(..attrs)[#content]
   }
@@ -56,11 +54,6 @@
 // Without having to change how we write typst code.
 // mblock is a strict super set of block.
 #let block = mblock;
-
-// Sadly, this is not possible.
-// See: https://forum.typst.app/t/how-do-i-read-the-api-documentation-in-regards-to-named-parameters-that-act-positionally/1148
-// Hopefully, a more mature version of html export will fix this.
-// #let text = ctext;
 
 // Theme (Colors)
 #let (
@@ -102,17 +95,11 @@
 ) = {
   // set basic document metadata
   set document(
-    author: ("Cyril Sharma"),
+    author: (author),
     title: title,
   )
 
   show link: set text(fill: dash-color)
-  // show link: it => context if shiroa-sys-target() == "html" {
-  //   html.elem("a", attrs: ("class": "link"))[#it]
-  // } else {
-  //   it
-  // }
-
   show align: it => context if shiroa-sys-target() == "html" {
     let h-align = "center";
     if it.alignment.x == left {
@@ -128,23 +115,44 @@
       v-align = "text-bottom"
     }
     let s = "text-align: " + h-align + ";" + "vertical-align: " + v-align
-    html.elem("div", attrs: ("style": s, "class": "align"))[#it]
+    html.elem("div", attrs: ("style": s, "class": "align"))[#it.body]
   } else {
     it
   } 
 
-  // show footnote: it => context if shiroa-sys-target() == "html" {
-  //   let num = counter(footnote).get().at(0)
-  //   html.elem("sup")[
-  //     #html.elem("a", attrs: ("href": "#footnote-" + str(num)), str(num))
-  //   ]
-  // } else {
-  //   it
-  // }
+  let css-len(v) = {
+    if type(v) == relative {
+      let parts = ()
+      if v.ratio != 0% { parts.push(str(v.ratio)) }
+      if v.length != 0pt { parts.push(str(v.length.pt()) + "pt") }
+      if parts.len() == 0 { "0" }
+      else if parts.len() == 1 { parts.at(0) }
+      else { "calc(" + parts.join(" + ") + ")" }
+    } else if type(v) == length {
+      str(v.pt() + "pt")
+    } else {
+      str(v)
+    }
+  }
+
+  show box: it => context if shiroa-sys-target() == "html" {
+    let style = ()
+    if it.fill != none {
+      style.push("background:" + it.fill.to-hex() + ";");
+    }
+    if type(it.radius) == relative {
+      style.push("border-radius:" + css-len(it.radius) + ";");
+    }
+    if type(it.outset) == relative {
+      style.push("margin:" + css-len(it.outset) + ";");
+    }
+    html.elem("div", attrs: ("style": "" + style.join(" ")))[#it.body]
+  } else {
+    it
+  }
 
   // math setting
   show math.equation: set text(weight: 500, fill: if is-dark-theme { rgb("#fff") } else { rgb("#111") })
-
   show math.equation.where(block: true): it => context if shiroa-sys-target() == "html" {
     p-frame(attrs: ("class": "block-equation"), it)
   } else {
@@ -204,21 +212,11 @@
   }
 
   if not sys-is-html-target {
-    // show the title, date, and tags
     align(center, [= #title])
-
-    // show the date
     align(center, [#date.split("T").at(0)])
-    
-    // show the tags
     align(center, {
-      // choose a random color for each tag
       let colors = (
-        // rgb("e0e0e0"), // Light gray
-        // rgb("c9d6d5"), // Muted teal-gray
-        // rgb("f6e9d7"), // Soft cream
-        // rgb("d9cfe6"), // Pastel lavender
-        rgb("f2d7d9"),  // Warm blush pink
+        rgb("f2d7d9"), // Warm blush pink
         rgb("e0e0e0"), // Light gray
         rgb("c9d6d5"), // Muted teal-gray
         rgb("f6e9d7"), // Soft cream
@@ -227,7 +225,6 @@
       );
 
       for (i, tag) in tags.enumerate() [
-        // space out the tags
         #box(tag, fill: colors.at(calc.rem(i, colors.len())), radius: 4pt, outset: 4pt)
         #h(1em)
       ]
@@ -238,7 +235,7 @@
   [
     #metadata((
       title: title,
-      author: "Cyril Sharma",
+      author: author,
       desc: desc,
       date: date,
       tags: tags,
