@@ -1,8 +1,5 @@
 #import "/typ/templates/blog.typ": block, ctext
 
-/* Blocks */
-// Pls add or remove elements in this array first,
-// if you want to add or remove the class of blocks
 #let classes = ("Definition", "Lemma", "Theorem", "Corollary")
 #let h1_marker = counter("h1")
 #let h2_marker = counter("h2")
@@ -11,23 +8,17 @@
   let block_counter = counter(class)
 
   context {
-    // Returns the serial number of the current block
-    // The format is just like "Definition 1.3.1"
     let serial_num = (
-    h1_marker.get().last(),
-    h2_marker.get().last(),
-    block_counter.get().last() + 1)
-    .map(str)
-    .join(".")
+      h1_marker.get().last(),
+      h2_marker.get().last(),
+      block_counter.get().last() + 1
+    ).map(str).join(".")
 
     let serial_label = label(class + " " + serial_num)
         
-    v(2pt)
     ctext(12pt, weight: "bold")[#class #serial_num #serial_label #block_counter.step()]
-    v(-8pt)
-
-    // [HI]
     block(
+      above: -8pt,
       fill:fill,
       width: 100%,
       inset:8pt,
@@ -55,43 +46,33 @@
   body, class: "Corollary", fill: rgb("#F7FBFC"), stroke: rgb("#769FCD")
 )
 
-
-/* Figures */
-// The numbering policy is as before, and the default display is centered
 #let notefig(path, width: 100%) = {
   let figure_counter = counter("Figure")
   
   context {
     let serial_num = (
-    h1_marker.get().last(),
-    h2_marker.get().last(),
-    figure_counter.get().last() + 1)
-    .map(str)
-    .join(".")
+      h1_marker.get().last(),
+      h2_marker.get().last(),
+      figure_counter.get().last() + 1
+    ).map(str).join(".")
 
     let serial_label = label("Figure" + " " + serial_num)
-
-    block(width: 100%,
-    inset:8pt,
-    align(center)[#image(path, width: width)])
+    block(width: 100%, inset:8pt, align(center)[#image(path, width: width)])
 
     set align(center)
     text(12pt, weight: "bold")[Figure #serial_num #serial_label #figure_counter.step()]
   }
 }
 
-
 /* Proofs */
 #let proof(body) = {
-  [*#smallcaps("Proof"): *]
+  [*#smallcaps("Proof: ")*]
 
   [#body]
 
-  align(right)[*End of Proof*]
+  align(right)[$qed$]
 }
 
-
-/* References of blocks */
 // Automatically jump to the corresponding blocks
 // The form of the input should look something like "Definition 1.3.1"
 #let refto(class_with_serial_num, alias: none) = {
@@ -102,10 +83,7 @@
   }
 }
 
-
-/* Headings of various levels */
 // Templates support up to three levels of headings,
-// and notes with more than three headings are usually mess :)
 #let set_headings(body) = {
   set heading(
     numbering: "1.1.1."
@@ -120,21 +98,9 @@
     #counter("h2").update(0)
     #counter("Figure").update(0)
 
-    // Start a new page unless this is the first chapter
-    #context {
-      let h1_before = query(
-        heading.where(level: 1).before(here())
-      )
-
-      if h1_before.len() != 1 {
-        pagebreak()
-      }
-    }
-
     // Font size and white space
     #set text(20pt, weight: "bold")
     #block[#it]
-    #v(25pt)
     #h1_marker.step()
   ]
 
@@ -154,53 +120,11 @@
   body
 }
 
-
-/* Cover page */
-// Create a note cover with the course name, author, and time
-// Modify parameters here if you want to add or modify information item
-#let cover_page(title, author, professor, creater, time, abstract) = {
-  // block(height:25%,fill:none)
-  align(center, text(18pt)[*Lecture Notes: #title*])
-  align(center, text(12pt)[*By #author*])
-  align(center, text(11pt)[_Taught by Prof. #professor _])
-
-  v(7.5%)
-  abstract
-  // block(height:35%,fill:none)
-  align(center,[*#creater, #time*])
-}
-
-
-/* Outline page */
-// Defualt depth is 2
-#let outline_page(title) = {  
-  show outline.entry.where(
-      level: 1
-    ): it => {
-      v(12pt, weak: true)
-      strong("§ " + it)
-    }
-
-  align(center, text(18pt, weight: "bold")[#title])
-  v(15pt)
-  outline(title: none, depth: 2, indent: auto)
-}
-
-
-/* Body text page */
-// Format the headers and headings of the body
-#let body_page(title, body) = {
+#let body_page(body) = {
   set_headings(body)
 }
 
-
-/* All pages */
-// Organize all types of pages
-// If you want to add or modify other global Settings, please do so here
-#let note_page(title, author, professor, creater, time, abstract, body) = {
-  set document(title: title, author: author)
-  set par(justify: true)    
-  cover_page(title, author, professor, creater, time, abstract)
-  outline_page("Outline")
-  body_page(title, body)
+#let note_page(body) = {
+  outline(title: "Outline", depth: 2, indent: auto)
+  body_page(body)
 }

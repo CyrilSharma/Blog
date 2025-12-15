@@ -1,20 +1,11 @@
 #import "/typ/templates/blog.typ": main, graphic
+#import "/typ/templates/notes.typ": *
 #show: main.with(
   title: "Note",
   date: "2025-12-15",
   tags: ("random",),
 )
-
-#import "/typ/templates/notes.typ": *
-
-#let title = "Real and Complex Analysis"
-#let author = "Walter Rudin"
-#let professor = "Ming Li"
-#let creater = "Beitian Ma"
-#let time = "Spring 2023"
-#let abstract = lorem(60)
-
-#show: body_page.with(title)
+#show: note_page
 
 = Abstract Integration
 #lorem(80)
@@ -79,5 +70,7 @@ $ cal(A) := { x in RR | x "is natural" } $
 This is an example where you can easily reference and jump to a block of a definition, theorem, or picture under this template. From #refto("Lemma 1.2.1"), we can get
 
 #corollary[#lorem(40)]
+
+#proof[#lorem(70)]
 
 which is consistent with the pattern in.

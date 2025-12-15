@@ -37,7 +37,13 @@
     else if parts.len() == 1 { parts.at(0) }
     else { "calc(" + parts.join(" + ") + ")" }
   } else if type(v) == length {
-    str(str(v.pt()) + "pt")
+    let amt = calc.abs(v.pt());
+    let sgn = v.pt() >= 0;
+    if sgn {
+      str(str(amt) + "pt")
+    } else {
+      str("-" + str(amt) + "pt") 
+    }
   } else {
     str(v)
   }
@@ -60,6 +66,17 @@
     if attrs.at("stroke", default: none) != none {
       style.push("border-color: " + attrs.at("stroke").to-hex() + ";")
       style.push("border-width: 2pt; border-style: solid;")
+    }
+    let above = attrs.at("above", default: none)
+    let below = attrs.at("below", default: none)
+    if above != none or below != none {
+      style.push("position: relative;");
+    }
+    if above != none {
+      style.push("top:" + css-len(attrs.at("above")) + ";");
+    }
+    if below != none {
+      style.push("margin-bottom:" + css-len(attrs.at("below")) + ";");
     }
     html.elem("div", attrs: ("style": "" + style.join(" ")), content)
   } else {
@@ -151,6 +168,20 @@
   } else {
     it
   } 
+
+  show v: it => context if shiroa-sys-target() == "html" {
+    let style = ()
+    style.push("inline-block;")
+    let amount = it.amount.pt();
+    if amount > 0 {
+      style.push("margin-top: " + str(it.amount.pt()) + "pt;")
+    } else {
+      style.push("margin-bottom: " + str(it.amount.pt()) + "pt;") 
+    }
+    html.elem("div", attrs: ("style": "" + style.join(" ")))[]
+  } else {
+    it
+  }
 
   show box: it => context if shiroa-sys-target() == "html" {
     let style = ()
