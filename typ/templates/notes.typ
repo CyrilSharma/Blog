@@ -16,16 +16,18 @@
 
     let serial_label = label(class + " " + serial_num)
     let wrapped_name = if name != "" { " (" + name + ")" } else { "" }
-    ctext(12pt, weight: "bold")[#class #serial_num #serial_label #block_counter.step() #wrapped_name]
-    block(
-      above: -8pt,
-      fill:fill,
-      width: 100%,
-      inset:8pt,
-      radius: 4pt,
-      stroke:stroke,
-      body
-    )
+    block()[
+      #ctext(12pt, weight: "bold")[#class #serial_num #serial_label #block_counter.step() #wrapped_name]
+      #block(
+        above: -8pt,
+        fill:fill,
+        width: 100%,
+        inset:8pt,
+        radius: 4pt,
+        stroke:stroke,
+        body
+      )
+    ]
   }
 }
 
