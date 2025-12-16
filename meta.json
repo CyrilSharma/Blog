@@ -97,6 +97,15 @@
       "bio"
     ]
   },
+  "neuro": {
+    "title": "neuro 1",
+    "author": "Cyril Sharma",
+    "desc": "how does memory work??",
+    "date": "2025-12-15",
+    "tags": [
+      "notes"
+    ]
+  },
   "note": {
     "title": "Note",
     "author": "Cyril Sharma",
