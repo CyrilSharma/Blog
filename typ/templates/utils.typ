@@ -106,7 +106,7 @@
 
 #let mcolbreak() = [
   #context if shiroa-sys-target() == "html" {
-    html.elem("div", attrs: ("style": "break-after: column;"), [])
+    // html.elem("div", attrs: ("style": "break-after: column;"), [])
   } else {
     colbreak()
   }

@@ -1,4 +1,4 @@
-#import "/typ/templates/utils.typ": block, ctext
+#import "/typ/templates/utils.typ": block, ctext, columns, colbreak
 
 #let classes = ("Definition", "Lemma", "Theorem", "Corollary")
 #let h1_marker = counter("h1")
@@ -18,13 +18,19 @@
     ).map(str).join(".")
 
     let serial_label = label(class + " " + serial_num)
-    let wrapped_name = if name != "" { " (" + name + ")" } else { "" }
     block()[
-      #if header [
-        #block(above: 8pt, below: 4pt)[
-          *#class #serial_num #serial_label #block_counter.step() #wrapped_name*
+      #block(above: 8pt, below: 4pt)[
+        #if name != "" [
+          #columns(2)[
+            #align(left)[*#name*]
+            #colbreak()
+            #align(right)[*#class #serial_num #serial_label #block_counter.step()*]
+          ]
+        ] else [
+          *#class #serial_num #serial_label #block_counter.step()*
         ]
       ]
+
       #block(
         above: 4pt,
         fill:fill,
