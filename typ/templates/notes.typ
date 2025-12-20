@@ -19,15 +19,17 @@
 
     let serial_label = label(class + " " + serial_num)
     block()[
-      #block(above: 8pt, below: 4pt)[
-        #if name != "" [
-          #columns(2)[
-            #align(left)[*#name*]
-            #colbreak()
-            #align(right)[*#class #serial_num #serial_label #block_counter.step()*]
+      #if header [
+        #block(above: 8pt, below: 4pt)[
+          #if name != "" [
+            #columns(2)[
+              #align(left)[*#name*]
+              #colbreak()
+              #align(right)[*#class #serial_num #serial_label #block_counter.step()*]
+            ]
+          ] else [
+            *#class #serial_num #serial_label #block_counter.step()*
           ]
-        ] else [
-          *#class #serial_num #serial_label #block_counter.step()*
         ]
       ]
 
