@@ -27,13 +27,6 @@ def prompt_nonempty(prompt_text: str) -> str:
             return response
         console.print("[red]Input cannot be empty. Please try again.[/red]")
 
-def open_dir(path):
-    try:
-        subprocess.run(["nvim", path])
-    except FileNotFoundError:
-        console.print("[red]Error:[/red] Could not find 'nvim' in PATH.")
-        sys.exit(1)
-
 def create_new_typst_file():
     # Ask for filename
     while True:
@@ -81,26 +74,10 @@ def create_new_typst_file():
         console.print(f"[red]Error writing file:[/red] {e}")
         sys.exit(1)
 
-    open_dir(filepath)
-
 
 def main():
     console.print("\n[bold underline]Typst Blog Helper[/bold underline]\n")
-    console.print("[dim]Choose an option:[/dim]")
-    console.print("1. [green]Create[/green] a new `.typ` file")
-    console.print("2. [blue]Open[/blue] blog directory with Neovim\n")
-
-    try:
-        choice = Prompt.ask("Enter [green]create[/green] or [blue]open[/blue]").strip().lower()
-        if choice == "open":
-            open_dir(BLOG_DIR)
-        elif choice == "create":
-            create_new_typst_file()
-        else:
-            console.print("[red]Invalid choice. Please enter 'create' or 'open'.[/red]")
-    except KeyboardInterrupt:
-        # Silent exit on Ctrl-C
-        sys.exit(0)
+    create_new_typst_file()
 
 if __name__ == "__main__":
     main()
