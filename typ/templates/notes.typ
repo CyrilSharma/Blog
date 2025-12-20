@@ -1,10 +1,13 @@
-#import "/typ/templates/blog.typ": block, ctext
+#import "/typ/templates/utils.typ": block, ctext
 
 #let classes = ("Definition", "Lemma", "Theorem", "Corollary")
 #let h1_marker = counter("h1")
 #let h2_marker = counter("h2")
 
-#let note_block(body, class: "Block", fill: rgb("#FFFFFF"), stroke: rgb("#000000"), name: "") = {
+#let note_block(
+  body, class: "Block", fill: rgb("#FFFFFF"), stroke: rgb("#000000"),
+  name: "", header: true
+) = {
   let block_counter = counter(class)
 
   context {
@@ -17,9 +20,13 @@
     let serial_label = label(class + " " + serial_num)
     let wrapped_name = if name != "" { " (" + name + ")" } else { "" }
     block()[
-      #ctext(12pt, weight: "bold")[#class #serial_num #serial_label #block_counter.step() #wrapped_name]
+      #if header [
+        #block(above: 8pt, below: 4pt)[
+          *#class #serial_num #serial_label #block_counter.step() #wrapped_name*
+        ]
+      ]
       #block(
-        above: -8pt,
+        above: 4pt,
         fill:fill,
         width: 100%,
         inset:8pt,
@@ -32,20 +39,20 @@
 }
 
 // You can change the class name or color here
-#let definition(body, name: "") = note_block(
-  body, class: "Definition", fill: rgb("#EDF1D6"), stroke: rgb("#609966"), name: name
+#let definition(body, ..args) = note_block(
+  body, class: "Definition", fill: rgb("#EDF1D6"), stroke: rgb("#609966"), ..args
 )
 
-#let theorem(body, name: "") = note_block(
-  body, class: "Theorem", fill: rgb("#FEF2F4"), stroke: rgb("#EE6983"), name: name
+#let theorem(body, ..args) = note_block(
+  body, class: "Theorem", fill: rgb("#FEF2F4"), stroke: rgb("#EE6983"), ..args
 )
 
-#let lemma(body, name: "") = note_block(
-  body, class: "Lemma", fill: rgb("#FFF4E0"), stroke: rgb("#F4B183"), name: name
+#let lemma(body, ..args) = note_block(
+  body, class: "Lemma", fill: rgb("#FFF4E0"), stroke: rgb("#F4B183"), ..args
 )
 
-#let corollary(body, name: "") = note_block(
-  body, class: "Corollary", fill: rgb("#F7FBFC"), stroke: rgb("#769FCD"), name: name
+#let corollary(body, ..args) = note_block(
+  body, class: "Corollary", fill: rgb("#F7FBFC"), stroke: rgb("#769FCD"), ..args
 )
 
 #let notefig(figure) = {
@@ -126,7 +133,9 @@
   set_headings(body)
 }
 
-#let note_page(body) = {
-  outline(title: "Outline", depth: 2, indent: auto)
+#let note_page(should_outline: true, body) = {
+  if should_outline {
+    outline(title: "Outline", depth: 2, indent: auto)
+  }
   body_page(body)
 }

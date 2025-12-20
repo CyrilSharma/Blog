@@ -88,26 +88,21 @@ a {
 a:hover {
   color: var(--accent-dark);
 }
-p {
-  margin-bottom: 1em;
-}
 
 .prose ol {
+  padding-left: 4pt;
   list-style-position: outside;
   display: inline-block;
 }
 
 .prose ul {
+  padding-left: 4pt;
   list-style-position: outside;
   display: inline-block;
 }
 
-.prose > ol {
-  display: inline-block;
-}
-
-.prose > ul {
-  display: inline-block;
+.prose p:has(+ ul), p:has(+ ol) {
+  margin-bottom: 0;
 }
 
 .prose ul > li {
@@ -122,9 +117,14 @@ p {
   margin: 0;
 }
 
+.prose div > p:first-child {
+  margin-top: 0;
+}
 
 .prose p {
-  margin-bottom: 1em;
+  /* margin-top: 0em; */
+  /* margin-bottom: 0em; */
+  /* margin-bottom: 1em; */
 }
 textarea {
   width: 100%;
