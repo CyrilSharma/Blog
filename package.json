@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "concurrently \"astro dev\" \"just make\"",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -23,5 +23,8 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-pro-sidebar": "^1.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
