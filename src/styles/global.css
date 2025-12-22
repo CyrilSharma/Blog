@@ -322,24 +322,26 @@ html.frame {
 }
 
 .prose a {
-  display: inline-block;
-  /* background: var(--raw-bg-color, #e5e9f0); */
-  /* color: var(--accent, #1d1d20);   */
-  color: rgb(149, 84, 164);
+  color: rgb(112, 172, 210);
   font-size: 0.95em;
   font-weight: 500;
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
 }
 .prose a:hover {
-  color: #669cc0;
+  text-decoration: underline;
 }
-/* .prose a[role] {
-  all: unset;
-  color: inherit;
+.prose a sup {
   text-decoration: none;
-  cursor: pointer;
-} */
+}
+
+.prose a[role="doc-noteref"], a[role="doc-backlink"] {
+  color: inherit;
+}
+.prose a[role="doc-noteref"]:hover, a[role="doc-backlink"]:hover {
+  text-decoration: none;
+}
+
 
 .parent:has(> [data-typst-label^="footnote-"]) {
   background: #f0f8ff;
@@ -348,19 +350,17 @@ html.frame {
   border-radius: 0.5em;
 }
 
-
+/*
 .prose sup,
 sup {
   text-decoration: underline;
 }
-
 
 .prose sup a,
 sup a {
   all: unset;
   cursor: pointer;
   color: var(--gray-dark, #555) !important;
-  /* color: var(--accent, #2337ff) !important; */
   font-size: 0.85em !important;
   line-height: 1 !important;
   margin-left: -0.15em !important;
@@ -369,6 +369,7 @@ sup a {
   display: inline !important;
   font-weight: bold !important;
 }
+ */
 
 .prose sup a:hover,
 sup a:hover {

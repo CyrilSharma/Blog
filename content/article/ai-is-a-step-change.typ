@@ -1,6 +1,6 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
-  title: "AI is a step change",
+  title: "AI Is A Step Change",
   desc: "",
   date: "2025-07-04T12:32:58-04:00",
   tags: ("musings",),

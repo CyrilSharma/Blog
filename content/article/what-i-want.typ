@@ -1,7 +1,6 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
-  title: "More thoughts on work",
-  desc: "i don't like writing descriptions",
+  title: "More Thoughts On Work",
   date: "2025-06-22T12:08:59-04:00",
   tags: ("work", "musings", "purpose"),
 )

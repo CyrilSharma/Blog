@@ -1,8 +1,8 @@
 {
   "agency": {
-    "title": "some definitions",
+    "title": "Agency",
     "author": "Cyril Sharma",
-    "desc": "some definitions",
+    "desc": "Some definitions",
     "date": "2025-05-26T21:05:39-04:00",
     "tags": [
       "agency",
@@ -10,7 +10,7 @@
     ]
   },
   "ai-is-a-step-change": {
-    "title": "AI is a step change",
+    "title": "AI Is A Step Change",
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-07-04T12:32:58-04:00",
@@ -39,9 +39,12 @@
     ]
   },
   "cmu-db1": {
-    "title": "cmu-db1",
+    "title": "CMU Databases",
     "author": "Cyril Sharma",
-    "desc": "notes",
+    "desc": {
+      "func": "text",
+      "text": "This is a blog post."
+    },
     "date": "2025-06-10T21:41:05-04:00",
     "tags": [
       "cs",
@@ -59,9 +62,9 @@
     ]
   },
   "conversations": {
-    "title": "conversations",
+    "title": "Conversations",
     "author": "Cyril Sharma",
-    "desc": "conversations",
+    "desc": "Conversations",
     "date": "2025-06-12T22:05:26-04:00",
     "tags": [
       "musings"
@@ -77,12 +80,14 @@
     ]
   },
   "ggs1": {
-    "title": "GGS1",
+    "title": "Guns Germs and Steel",
     "author": "Cyril Sharma",
-    "desc": "Guns Germs and Steel Part 1",
+    "desc": {
+      "func": "text",
+      "text": "This is a blog post."
+    },
     "date": "2025-05-20",
     "tags": [
-      "guns germs and steel",
       "books",
       "notes"
     ]
@@ -98,24 +103,12 @@
     ]
   },
   "neuro": {
-    "title": "neuro 1",
+    "title": "Neuroscience",
     "author": "Cyril Sharma",
-    "desc": "how does memory work??",
+    "desc": "How does memory work?",
     "date": "2025-12-15",
     "tags": [
       "notes"
-    ]
-  },
-  "note": {
-    "title": "Note",
-    "author": "Cyril Sharma",
-    "desc": {
-      "func": "text",
-      "text": "This is a blog post."
-    },
-    "date": "2025-12-15",
-    "tags": [
-      "random"
     ]
   },
   "notion": {
@@ -130,16 +123,19 @@
   "pareto": {
     "title": "The Pareto Frontier",
     "author": "Cyril Sharma",
-    "desc": "time allocation",
+    "desc": "Time allocation",
     "date": "2025-06-06T19:18:47-04:00",
     "tags": [
       "musings"
     ]
   },
   "prob1": {
-    "title": "prob1",
+    "title": "Probability",
     "author": "Cyril Sharma",
-    "desc": "probability notes",
+    "desc": {
+      "func": "text",
+      "text": "This is a blog post."
+    },
     "date": "2025-06-15T10:17:05-04:00",
     "tags": [
       "math",
@@ -156,9 +152,12 @@
     ]
   },
   "sselection": {
-    "title": "Sexual Selection, what's the point?",
+    "title": "Sexual Selection, What's The Point?",
     "author": "Cyril Sharma",
-    "desc": "Random notes",
+    "desc": {
+      "func": "text",
+      "text": "This is a blog post."
+    },
     "date": "2025-05-23T14:00:00",
     "tags": [
       "evolution",
@@ -168,7 +167,7 @@
   "stupidfast": {
     "title": "Do Stupid Fast",
     "author": "Cyril Sharma",
-    "desc": "do stupid fast!",
+    "desc": "Do stupid fast!",
     "date": "2025-06-13T19:51:36-04:00",
     "tags": [
       "musings",
@@ -176,9 +175,9 @@
     ]
   },
   "thinking1": {
-    "title": "random thoughts on work",
+    "title": "Random Thoughts On Work",
     "author": "Cyril Sharma",
-    "desc": "what should i be trying to do",
+    "desc": "What should I be trying to do?",
     "date": "2025-06-18T20:33:12-04:00",
     "tags": [
       "musings",
@@ -226,9 +225,12 @@
     ]
   },
   "what-i-want": {
-    "title": "More thoughts on work",
+    "title": "More Thoughts On Work",
     "author": "Cyril Sharma",
-    "desc": "i don't like writing descriptions",
+    "desc": {
+      "func": "text",
+      "text": "This is a blog post."
+    },
     "date": "2025-06-22T12:08:59-04:00",
     "tags": [
       "work",
