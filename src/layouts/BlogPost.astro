@@ -1,8 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
-import BaseHead from "$components/BaseHead.astro";
-import { Sidebar } from "$components/Sidebar.tsx";
-import { SITE_TITLE } from "$consts";
+import { type CollectionEntry } from "astro:content";
 import ArticleHeader from "$components/ArticleHeader.astro";
 import { ClientRouter } from "astro:transitions";
 
@@ -58,7 +55,6 @@ const { title, desc, date, updatedDate, tags } = Astro.props;
         margin: 0 auto;
       }
 
-      /* Responsive design for different screen sizes */
       @media (max-width: 1200px) {
         main {
           width: 90%;
@@ -69,7 +65,6 @@ const { title, desc, date, updatedDate, tags } = Astro.props;
       @media (max-width: 768px) {
         main {
           width: 95%;
-          padding: 0 1rem;
         }
       }
     </style>
