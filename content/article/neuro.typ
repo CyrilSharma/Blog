@@ -5,6 +5,7 @@
   title: "Neuroscience",
   desc: "How does memory work?",
   date: "2025-12-15",
+  updatedDate: "2025-12-22",
   tags: ("notes",),
 )
 #show: note_page

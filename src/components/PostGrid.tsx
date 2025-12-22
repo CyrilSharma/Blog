@@ -7,6 +7,7 @@ type Post = {
   title: string;
   date: string | Date;
   dateMs?: number;
+  modifiedDate?: string | Date;
   tags?: string[];
   desc?: string;
 };

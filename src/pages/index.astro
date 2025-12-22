@@ -5,17 +5,21 @@ import { getCollection } from "astro:content";
 import PostGrid from "$components/PostGrid.tsx";
 
 const posts = (await getCollection("blog"))
-  .map((post) => ({
-    id: post.id,
-    title: post.data.title,
-    date: post.data.date instanceof Date ? post.data.date.toISOString() : String(post.data.date),
-    dateMs:
-      post.data.date instanceof Date
-        ? post.data.date.valueOf()
-        : new Date(post.data.date as unknown as string).valueOf(),
-    tags: post.data.tags ?? [],
-    desc: typeof post.data.desc === "string" ? post.data.desc : "",
-  }))
+  .map((post) => {
+    const displayDate = post.data.updatedDate ?? post.data.date;
+    const dateMs =
+      displayDate instanceof Date
+        ? displayDate.valueOf()
+        : new Date(displayDate as unknown as string).valueOf();
+    return {
+      id: post.id,
+      title: post.data.title,
+      date: displayDate,
+      dateMs,
+      tags: post.data.tags ?? [],
+      desc: typeof post.data.desc === "string" ? post.data.desc : "",
+    };
+  })
   .sort((a, b) => b.dateMs - a.dateMs);
 ---
 
