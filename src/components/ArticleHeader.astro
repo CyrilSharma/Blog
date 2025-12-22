@@ -21,7 +21,7 @@ const { title, date, updatedDate, tags } = Astro.props;
     <div> {formatDate(date)} </div>
     {updatedDate && (
       <div class="last-updated-on">
-        Last updated on <small> {formatDate(updatedDate)} </small>
+        <small> Updated on {formatDate(updatedDate)} </small>
       </div>
     )}
   </div>
@@ -67,7 +67,6 @@ const { title, date, updatedDate, tags } = Astro.props;
   }
 
   .last-updated-on {
-    font-style: italic;
     margin-top: 0.3em;
   }
 

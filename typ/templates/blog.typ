@@ -11,6 +11,7 @@
   title: "Untitled",
   desc: [This is a blog post.],
   date: "2024-08-15",
+  updatedDate: "",
   tags: [],
   body,
 ) = {
@@ -47,6 +48,7 @@
       author: author,
       desc: desc,
       date: date,
+      updatedDate: updatedDate,
       tags: tags,
     )) <frontmatter>
   ]

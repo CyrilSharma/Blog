@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import { defineCollection, z } from "astro:content";
 import { file } from "astro/loaders";
 
@@ -13,7 +11,8 @@ const blog = defineCollection({
     desc: z.any().optional(),
     date: z.coerce.date(),
     // Transform string to Date object
-    updatedDate: z.coerce.date().optional(),
+    // updatedDate: z.coerce.date().optional(),
+    updatedDate: z.string().optional().transform((val) => val ? new Date(val) : undefined),
     tags: z.array(z.string()).default([]),
   }),
 });

@@ -4,6 +4,7 @@
     "author": "Cyril Sharma",
     "desc": "Some definitions",
     "date": "2025-05-26T21:05:39-04:00",
+    "updatedDate": "",
     "tags": [
       "agency",
       "reflection"
@@ -14,6 +15,7 @@
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-07-04T12:32:58-04:00",
+    "updatedDate": "",
     "tags": [
       "musings"
     ]
@@ -23,6 +25,7 @@
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-07-18T21:11:36-04:00",
+    "updatedDate": "",
     "tags": [
       "musings",
       "values",
@@ -34,6 +37,7 @@
     "author": "Cyril Sharma",
     "desc": "My vision for this blog",
     "date": "2025-05-31T10:32:34-04:00",
+    "updatedDate": "",
     "tags": [
       "meta"
     ]
@@ -46,6 +50,7 @@
       "text": "This is a blog post."
     },
     "date": "2025-06-10T21:41:05-04:00",
+    "updatedDate": "",
     "tags": [
       "cs",
       "notes"
@@ -56,6 +61,7 @@
     "author": "Cyril Sharma",
     "desc": "Trying to answer some basic evolutionary questions",
     "date": "2025-05-23T17:00:00",
+    "updatedDate": "",
     "tags": [
       "evolution",
       "notes"
@@ -66,6 +72,7 @@
     "author": "Cyril Sharma",
     "desc": "Conversations",
     "date": "2025-06-12T22:05:26-04:00",
+    "updatedDate": "",
     "tags": [
       "musings"
     ]
@@ -75,6 +82,7 @@
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-08-09T13:04:53-04:00",
+    "updatedDate": "",
     "tags": [
       "musings"
     ]
@@ -87,6 +95,7 @@
       "text": "This is a blog post."
     },
     "date": "2025-05-20",
+    "updatedDate": "",
     "tags": [
       "books",
       "notes"
@@ -97,6 +106,7 @@
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-07-12T13:04:49-04:00",
+    "updatedDate": "",
     "tags": [
       "notes",
       "bio"
@@ -107,6 +117,7 @@
     "author": "Cyril Sharma",
     "desc": "How does memory work?",
     "date": "2025-12-15",
+    "updatedDate": "2025-12-22",
     "tags": [
       "notes"
     ]
@@ -116,6 +127,7 @@
     "author": "Cyril Sharma",
     "desc": "My Notion Sites",
     "date": "2025-05-19",
+    "updatedDate": "",
     "tags": [
       "random"
     ]
@@ -125,6 +137,7 @@
     "author": "Cyril Sharma",
     "desc": "Time allocation",
     "date": "2025-06-06T19:18:47-04:00",
+    "updatedDate": "",
     "tags": [
       "musings"
     ]
@@ -137,6 +150,7 @@
       "text": "This is a blog post."
     },
     "date": "2025-06-15T10:17:05-04:00",
+    "updatedDate": "",
     "tags": [
       "math",
       "notes"
@@ -147,6 +161,7 @@
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-12-20T11:26:04-05:00",
+    "updatedDate": "",
     "tags": [
       "musings"
     ]
@@ -159,6 +174,7 @@
       "text": "This is a blog post."
     },
     "date": "2025-05-23T14:00:00",
+    "updatedDate": "",
     "tags": [
       "evolution",
       "notes"
@@ -169,6 +185,7 @@
     "author": "Cyril Sharma",
     "desc": "Do stupid fast!",
     "date": "2025-06-13T19:51:36-04:00",
+    "updatedDate": "",
     "tags": [
       "musings",
       "cs"
@@ -179,6 +196,7 @@
     "author": "Cyril Sharma",
     "desc": "What should I be trying to do?",
     "date": "2025-06-18T20:33:12-04:00",
+    "updatedDate": "",
     "tags": [
       "musings",
       "purpose"
@@ -189,6 +207,7 @@
     "author": "Cyril Sharma",
     "desc": "Tools I use",
     "date": "2025-05-31T09:30:06-04:00",
+    "updatedDate": "",
     "tags": [
       "random",
       "cs"
@@ -199,6 +218,7 @@
     "author": "Cyril Sharma",
     "desc": "Drawing a Tree",
     "date": "2025-05-19",
+    "updatedDate": "",
     "tags": [
       "random"
     ]
@@ -208,6 +228,7 @@
     "author": "Cyril Sharma",
     "desc": "",
     "date": "2025-09-27T15:08:31-04:00",
+    "updatedDate": "",
     "tags": [
       "thoughts",
       "books"
@@ -218,6 +239,7 @@
     "author": "Cyril Sharma",
     "desc": "Typst is like Latex but redesigned to be a usable programming language.",
     "date": "2025-05-18",
+    "updatedDate": "",
     "tags": [
       "typst",
       "tutorial",
@@ -232,6 +254,7 @@
       "text": "This is a blog post."
     },
     "date": "2025-06-22T12:08:59-04:00",
+    "updatedDate": "",
     "tags": [
       "work",
       "musings",
