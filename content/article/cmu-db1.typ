@@ -1,7 +1,6 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
-  title: "cmu-db1",
-  desc: "notes",
+  title: "CMU Databases",
   date: "2025-06-10T21:41:05-04:00",
   tags: ("cs", "notes"),
 )

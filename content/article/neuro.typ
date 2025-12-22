@@ -2,8 +2,8 @@
 #import "/typ/templates/notes.typ": *
 #import "@preview/mitex:0.2.6": *
 #show: main.with(
-  title: "neuro 1",
-  desc: "how does memory work??",
+  title: "Neuroscience",
+  desc: "How does memory work?",
   date: "2025-12-15",
   tags: ("notes",),
 )

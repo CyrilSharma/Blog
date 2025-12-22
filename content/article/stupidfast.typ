@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
   title: "Do Stupid Fast",
-  desc: "do stupid fast!",
+  desc: "Do stupid fast!",
   date: "2025-06-13T19:51:36-04:00",
   tags: ("musings", "cs"),
 )

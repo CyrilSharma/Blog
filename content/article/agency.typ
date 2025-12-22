@@ -1,7 +1,7 @@
 #import "/typ/templates/blog.typ": main
 #show: main.with(
-  title: "some definitions",
-  desc: "some definitions",
+  title: "Agency",
+  desc: "Some definitions",
   date: "2025-05-26T21:05:39-04:00",
   tags: ("agency", "reflection"),
 )

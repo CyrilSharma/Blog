@@ -1,7 +1,6 @@
 #import "/typ/templates/blog.typ": *
 #show: main.with(
-  title: "Sexual Selection, what's the point?",
-  desc: "Random notes",
+  title: "Sexual Selection, What's The Point?",
   date: "2025-05-23T14:00:00",
   tags: ("evolution", "notes"),
 )
