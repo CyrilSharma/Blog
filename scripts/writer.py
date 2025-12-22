@@ -30,7 +30,7 @@ def prompt_nonempty(prompt_text: str) -> str:
 def create_new_typst_file():
     # Ask for filename
     while True:
-        title = prompt_nonempty("[cyan]Enter title[/cyan]")
+        title = prompt_nonempty("[cyan]Enter title[/cyan]").title()
         filename = title.lower().replace(" ", "-")
         if os.path.exists(filename):
             console.print(f"[red]Error:[/red] '{title}' already exists. Please choose a different title.")
