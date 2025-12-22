@@ -6,7 +6,7 @@
 
 #let note_block(
   body, class: "Block", fill: rgb("#FFFFFF"), stroke: rgb("#000000"),
-  name: "", header: true
+  name: "", number: true
 ) = {
   let block_counter = counter(class)
 
@@ -19,17 +19,17 @@
 
     let serial_label = label(class + " " + serial_num)
     block()[
-      #if header [
-        #block(above: 8pt, below: 4pt)[
-          #if name != "" [
-            #columns(2)[
-              #align(left)[*#name*]
-              #colbreak()
+      #block(above: 8pt, below: 4pt)[
+        #if name != "" [
+          #columns(2)[
+            #align(left)[*#name*]
+            #colbreak()
+            #if number [
               #align(right)[*#class #serial_num #serial_label #block_counter.step()*]
             ]
-          ] else [
-            *#class #serial_num #serial_label #block_counter.step()*
           ]
+        ] else if number [
+          *#class #serial_num #serial_label #block_counter.step()*
         ]
       ]
 
