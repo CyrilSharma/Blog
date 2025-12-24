@@ -10,7 +10,8 @@ interface Props {
   tags?: string[];
 }
 
-const { title, date, updatedDate, tags } = Astro.props;
+let { title, date, updatedDate, tags } = Astro.props;
+tags.sort();
 ---
 
 <div class="article-header">

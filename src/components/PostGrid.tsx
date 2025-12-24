@@ -81,7 +81,7 @@ export default function PostGrid({ posts, basePath }: Props) {
               <div className="pg-date">{formatDate(post.date)}</div>
               {post.tags && post.tags.length > 0 && (
                 <div className="pg-pill-row">
-                  {post.tags.map((t) => (
+                  {post.tags.sort() && post.tags.map((t) => (
                     <Tag key={t} tag={t} size="sm" selectable={false} />
                   ))}
                 </div>
