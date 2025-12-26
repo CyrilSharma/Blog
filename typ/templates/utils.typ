@@ -12,6 +12,14 @@
 #let span-frame = div-frame.with(tag: "span")
 #let p-frame = div-frame.with(tag: "p")
 
+#let hseperator() = [
+  #context if shiroa-sys-target() == "html" {
+    html.hr()
+  } else {
+    line(length: 100%)
+  }
+]
+
 #let graphic(content) = [
   #context if shiroa-sys-target() == "html" {
     html.frame(content)

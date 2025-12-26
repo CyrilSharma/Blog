@@ -1,6 +1,5 @@
 ---
 import { formatDate } from "../utils";
-import Tag from "./Tag";
 import { BASE_PATH } from "$consts";
 
 interface Props {
@@ -17,7 +16,7 @@ tags.sort();
 <div class="article-header">
   <h1>
     <a href={`${BASE_PATH}/`} class="home-link">{title}</a>
-  </h1>
+  </h1> 
   <div class="date">
     <div> {formatDate(date)} </div>
     {updatedDate && (
@@ -26,27 +25,19 @@ tags.sort();
       </div>
     )}
   </div>
-  {tags && tags.length > 0 && (
-    <div class="tags">
-      {tags.map(tag => {
-        return <Tag client:load tag={tag} />
-      })}
-    </div>
-    
-  )}
-  <hr />
+  
 </div>
 
 <style>
   .article-header {
     margin-bottom: 1em;
-    padding: 1em 0;
+    padding: 1em 0 0 0;
     text-align: center;
     line-height: 1;
   }
 
   h1 {
-    margin: 0 0 0.5em 0;
+    margin: 0 0 0em 0;
     text-align: center;
     letter-spacing: normal;
   }
@@ -72,7 +63,7 @@ tags.sort();
   }
 
   .tags {
-    margin: 1em 0;
+    margin: 0em 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em;
