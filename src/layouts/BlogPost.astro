@@ -1,7 +1,6 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import ArticleHeader from "$components/ArticleHeader.astro";
-import { ClientRouter } from "astro:transitions";
 
 type Props = CollectionEntry<"blog">["data"];
 const { title, desc, date, updatedDate, tags } = Astro.props;
@@ -69,7 +68,6 @@ const { title, desc, date, updatedDate, tags } = Astro.props;
       }
     </style>
   </head>
-  <ClientRouter />
   <body>
     <main>
       <article>

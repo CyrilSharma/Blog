@@ -21,7 +21,7 @@ Another way to think about it is #link(<Values>, "Values") are your axioms, and 
 
 I find this distinction important because the two concepts can be easily mixed up, and seperating them allows answering a few questions. 
 
-== Is it ever possible for two rational people to "agree to disagree"?
+== Can two rational people "agree to disagree"?
 The thinking here is that two rationalists should not be able to hold opposing viewpoints on the same issue given the same evidence. However, that's not true. The two rationalists could simply have different #link(<Values>, "Values"), and therefore the "rational" choice for both of them need not be the same. The key point is rationality is not by itself a value system. It can't be used to prove your value axioms are true.
 
 == Is "being positive" irrational?
