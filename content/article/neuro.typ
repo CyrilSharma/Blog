@@ -57,6 +57,11 @@ Initially, you have a bunch of nodes that are weakly connected to each other, bu
 
 This makes me think the brain is similar to some kind of #link("https://en.wikipedia.org/wiki/Hierarchical_navigable_small_world")[HNSW] scheme, or like an MOE model with a bunch of gates that lead you down to an enormous number of experts, each with potentially a lot of shared parameters.
 
+= Todo
++ The brain has so much memory capacity (estimated 2.5PB) what on Earth is it using it all for? Furthermore, Is the number of synapse states (which is where the estimate comes from) close to the memory capacity, or are synapses weights far more constrained?
++ Write up some stuff insights from Memory Augmented Transformers: super-short term memory (sensory buffer), short-term memory (neuron loops), long-term memory (synapses)...
+
 = Sources
 + #link("https://arxiv.org/pdf/2506.01659")[Engram Memory Encoding]
 + #link("https://en.wikipedia.org/wiki/Hodgkin%E2%80%93Huxley_model")[Hodgkin-Huxley Model]
++ #link("https://arxiv.org/pdf/2508.10824")[Memory-Augmented Transformers]
