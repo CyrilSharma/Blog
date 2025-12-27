@@ -47,7 +47,7 @@ You can also define variables with the following syntax.
 Math mode is activated by putting things in between ```typst $$``` If there's a leading and trailing space, then it will be put in a seperate block. Otherwise, it will be shown inline.
 
 #block(inset: 1em)[
-  Block Mode ```typst $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$``` $ integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1 $
+  Block Mode ```typst $ integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1 $``` $ integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1 $
   Inline Mode - $integral_(1)^(infinity) 1/r^2 dif r =  -1/r bar.v_(1)^(infinity) = 1$
 ]
 
