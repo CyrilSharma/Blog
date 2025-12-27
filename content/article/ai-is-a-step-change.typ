@@ -13,11 +13,11 @@ The following claim (1) comes up a lot.
 
 I don't buy it. To see why, let's look at the differences between computers and AI.
 
-There were many people who thought computers would eliminate a lot of jobs. The reasoning was that a much smaller team could do the work of a much larger team, and hence reduce operating costs. However, instead of hiring less people, companies started hiring _more_ people, why? Well from the companies perspective, the marginal value of adding a single person went _up_, armed with a computer, a single person could add much more value then they could before.
+There were many people who thought computers would eliminate a lot of jobs. The reasoning was that a much smaller team could do the work of a much larger team, and hence reduce operating costs. However, instead of hiring less people, companies started hiring _more_ people, why? Well from the companies' perspective, the marginal value of adding a single person went _up_, armed with a computer, a single person could add much more value than they could before.
 
 What about with AI? Well, now, for a lot of jobs, companies will have to choose between spending more money on AI agents which perform tasks, or humans which perform the same set of tasks. If AI is much better and cheaper, then why would you ever hire a human?
 
-The key difference is that computers are a _collaborative_ technology, they allow a person to do much more then they could without one. On the other hand, AI is a _competitive_ technology, it's trying to offer the same skill-set as a person.
+The key difference is that computers are a _collaborative_ technology, they allow a person to do much more than they could without one. On the other hand, AI is a _competitive_ technology, it's trying to offer the same skill-set as a person.
 
 As an analogy, imagine your company gives people haircuts. Previously, better haircut technology didn't affect the number of employees you had, it just increased the quality of the service. The technology was _collaborative_. Now, imagine there's a robot which can deal out high-quality haircuts for a fraction of the cost of a person, a _competitive_ technology. Assuming you keep your customers, your company will make more money buying robots then it would paying for employees.
 
@@ -27,4 +27,4 @@ It's worth noting that we are still far away from this point. Even if AGI works 
 
 This "shifting" of intellectual labor could have interesting effects. For one thing the demand for software engineers to design software for other developers might fizzle out (AI could do this for much cheaper). Those engineers could all move to "traditional" engineering disciplines, where it's much harder for AI to be as useful. So there will be a movement of software engineers to other industries.
 
-Furthermore, you might expect there to be a movement of engineers to other _locations_. Imagine country A has lots of people with high skill in doing forms of intellectual labor, but there's little demand for their talents because A has AGI (and highly advanced robotics). Then intellectual labor might shift to countries that don't have these technologies yet. It's like how software engineers come to the U.S because the demand is all here. When AGI comes, the demand might evaporate in the U.S and the engineers will instead immigrate to other countries.
+Furthermore, you might expect there to be a movement of engineers to other _locations_. Imagine country A has lots of people with high skill in doing forms of intellectual labor, but there's little demand for their talents because A has AGI (and highly advanced robotics). Then intellectual labor might shift to countries that don't have these technologies yet. It's like how software engineers come to the U.S. because the demand is all here. When AGI comes, the demand might evaporate in the U.S. and the engineers will instead immigrate to other countries.

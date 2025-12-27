@@ -28,7 +28,7 @@ There are a few types of people I've met.
 
 A lot of people are a mix. I think (1), (2), (3, 4, 5), and (4, 5, 6) are the most common types of people I've met.
 
-Recently I've found out a lot of highly intelligent people are not even interested in category 7. Apparently, at top schools aspects 3 and 4 are dominant motivations for a lot of people (e.g. everybody wants to do Quant). Perhaps its because getting into such schools requires optimizing really aggressively for the metrics schools care about (performance in competition X), so everyone there is biased towards maximizing category 4. Still, I was under the impression that this was a minority of students, not an overwhelming majority.
+Recently I've found out a lot of highly intelligent people are not even interested in category 7. Apparently, at top schools aspects 3 and 4 are dominant motivations for a lot of people (e.g. everybody wants to do Quant). Perhaps it's because getting into such schools requires optimizing really aggressively for the metrics schools care about (performance in competition X), so everyone there is biased towards maximizing category 4. Still, I was under the impression that this was a minority of students, not an overwhelming majority.
 
 I don't get how category 7 doesn't interest people. Surely if you were presented the choice between two potential workplaces this should be a big factor. If it really means nothing, I guess how do you define your purpose in life? Like, is the purpose of life to just maximize your personal happiness?
 

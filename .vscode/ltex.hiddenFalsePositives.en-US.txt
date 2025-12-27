@@ -1,0 +1,3 @@
+{"rule":"CONSECUTIVE_SPACES","sentence":"^\\QRationality  2025-12-20T11:26:04-05:00 musings\nRationalism\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QI think the blood-taint that Veridus mentioned is probably why.\\E$"}
+{"rule":"MORFOLOGIK_RULE_EN_US","sentence":"^\\QUnlike Callidus and Eidhn who confessed very revealing secrets to Vis, she never did, and it's not because she's innocent.\\E$"}

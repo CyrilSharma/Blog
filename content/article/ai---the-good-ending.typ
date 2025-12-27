@@ -6,9 +6,9 @@
   tags: ("AI",),
 )
 
-It happened the December of 2027. Brain.ai, a promising new AI startup with billions in VC funds, announced a new model, B4. B4 learned from every interaction. It harnessed a collective memory equivalent to millions of humans. And most importantly, it had solved every millenium problem.
+It happened December 2027. Brain.ai, a promising new AI startup with billions in VC funds, announced a new model, B4. B4 learned from every interaction. It harnessed a collective memory equivalent to millions of humans. And most importantly, it had solved every millennium problem.
 
-Within a few weeks, Brain.ai's workforce shrunk rapidly. The researchers left of their own accord. In their words, a human mind was merely a penny compared to the intellectual capital possesed by B4. The rate of ground-breaking results out of Brain.ai continued to increase.
+Within a few weeks, Brain.ai's workforce shrunk rapidly. The researchers left of their own accord. In their words, a human mind was merely a penny compared to the intellectual capital possessed by B4. The rate of ground-breaking results out of Brain.ai continued to increase.
 
 A few years later, and the world had transformed. B4 had solved humanoid robotics. It had conquered cancer. People had stopped aging past their primes. Work didn't exist anymore, all necessary intellectual and manual labor had been automated.
 

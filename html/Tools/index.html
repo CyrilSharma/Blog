@@ -522,13 +522,13 @@
         subtree: true,
       });
     </script>
-    <p>This is a list of tools I use that aren’t universal (e.g. Github) but that I think are really cool.</p>
+    <p>This is a list of tools I use that aren’t universal (e.g. GitHub) but that I think are really cool.</p>
     <ul>
       <li>
-        <p>alacritty (Terminal)</p>
+        <p>Alacrity (Terminal)</p>
         <ul>
           <li>The main feature I care about is OSC52 support. This is a protocol which makes remote copy and paste possible with zero setup.</li>
-          <li>It also has True Color support, which lets me have nice color highlighting and neovim support.</li>
+          <li>It also has True Color support, which lets me have nice color highlighting and Neovim support.</li>
           <li>It’s also pretty fast as it uses OpenGL.</li>
           <li>
             <p>While most modern terminals provide this, all others feel a bit unsatisfying</p>
@@ -541,13 +541,13 @@
         </ul>
       </li>
       <li>
-        <p>zellij (Terminal Multiplexer)</p>
+        <p>Zellij (Terminal Multiplexer)</p>
         <ul>
           <li>
-            <p>So, zellij is basically tmux</p>
+            <p>So, Zellij is basically tmux</p>
             <ul>
-              <li>The main usecase for me is collecting many terminals into windows. This grouping prevents terminals from getting lost amidst many applications, and makes switching between different projects easier.</li>
-              <li>The second nice thing is the sessions are persistent, which means if I have a zellij session on a remote machine, those terminals will still be up and running when I get back. Code Editors don’t make great session managers, especially if I’m just trying to get into some tiny VM and mess around.</li>
+              <li>The main use case for me is collecting many terminals into windows. This grouping prevents terminals from getting lost amidst many applications, and makes switching between different projects easier.</li>
+              <li>The second nice thing is the sessions are persistent, which means if I have a Zellij session on a remote machine, those terminals will still be up and running when I get back. Code Editors don’t make great session managers, especially if I’m just trying to get into some tiny VM and mess around.</li>
             </ul>
           </li>
           <li>
@@ -562,15 +562,15 @@
         </ul>
       </li>
       <li>
-        <p>alfred (Search Tool)</p>
+        <p>Alfred (Search Tool)</p>
         <ul>
-          <li>It’s faster then spotlight, let’s you google things, let’s you add your own commands, and a bunch of other stuff I haven’t tried using too much.</li>
+          <li>It’s faster than spotlight, lets you google things, lets you add your own commands, and a bunch of other stuff I haven’t tried using too much.</li>
         </ul>
       </li>
       <li>
         <p>fzf</p>
         <ul>
-          <li>This let’s you fuzzy search over files. There are a bunch of arguments you can use, which allow custom previews and such, but the main usecase for me is the shell integrations. By typing ctrl-R I can fuzzy search over my command history! By typing ctrl-T I can search for whatever filename I need.</li>
+          <li>This lets you fuzzy search over files. There are a bunch of arguments you can use, which allow custom previews and such, but the main use case for me is the shell integrations. By typing ctrl-R I can fuzzy search over my command history! By typing ctrl-T I can search for whatever filename I need.</li>
         </ul>
       </li>
       <li>
@@ -586,15 +586,15 @@
         </ul>
       </li>
       <li>
-        <p>neovim with Astronvim configuration (Code &amp; File Editor)</p>
+        <p>Neovim with Astronvim configuration (Code &amp; File Editor)</p>
         <ul>
-          <li>The default astronvim configuration is honestly really good. I would strongly advise against trying to configure it, or you might spend way too long on things of way too little value. I honestly prefer it over vscode for coding (nice list syntax things like dif or dic to delete functions or classes entirely, runs out of a terminal so good for viewing and editing files no matter where they are, etc.). The Lisp integrations are quite good.</li>
-          <li>Sidenote 1, I would NOT reccomend using Vim as your code editor because of the amount of setup needed to get a fraction of VSCode’s functionality. Lisp’s improve your development speed quite significantly!</li>
-          <li>Sidenote 2, if you are learning vim, I recccomend remapping your Caps-Lock to Ctrl when pressed with another key and escape when pressed by itself. This is actually roughly the layout of the keyboard that vim was designed with. For me, this made the difference between vim feeling clunky and vim feeling much better then normal editing. If you’re on MacOs you can do this with Karabiner-Elements. I’ve found the escape and ctrl being so close-by also makes me use those keys way, way more.</li>
+          <li>The default Astronvim configuration is honestly great. I would strongly advise against trying to configure it, or you might spend way too long on things of way too little value. I honestly prefer it over VSCode for coding (nice list syntax things like dif or dic to delete functions or classes entirely, runs out of a terminal so good for viewing and editing files no matter where they are, etc.). The Lisp integrations are quite good.</li>
+          <li>Sidenote 1, I would NOT recommend using Vim as your code editor because of the amount of setup needed to get a fraction of VSCode’s functionality. Lisp’s improve your development speed quite significantly!</li>
+          <li>Sidenote 2, if you are learning vim, I recommend remapping your Caps-Lock to Ctrl when pressed with another key and escape when pressed by itself. This is actually roughly the layout of the keyboard that vim was designed with. For me, this made the difference between vim feeling clunky and vim feeling much better than normal editing. If you’re on macOS you can do this with Karabiner-Elements. I’ve found the escape and ctrl being so close-by also makes me use those keys way, way more.</li>
         </ul>
       </li>
       <li>
-        <p>rectangle</p>
+        <p>Rectangle</p>
         <ul>
           <li>Provides intuitive keybinds for snapping windows into reasonable places. Top-left corner, right side of the screen, up to the top monitor, etc. You can also use</li>
         </ul>
@@ -606,24 +606,24 @@
         </ul>
       </li>
       <li>
-        <p>cursor</p>
+        <p>Cursor</p>
         <ul>
-          <li>A lot of times I prefer the lisp suggestions over what copilot says, and for that reason I have it disabled. However, Cursor’s in-house tab completion model is really good. It suggests multi-line changes, is relatively fast, and it’s code-base aware. If I know what I’m trying to write, then Cursor Tabs strictly improve the speed with which I can write it.</li>
-          <li>The fully agentic mode often completely borks things, so I don’t use it too much. Lately I’ve been having it explain new codebases, e.g. how can I build X, how does X configuration influence Y variable. Accuracy is mediocre. A lot of these usecases could probably be addresses faster by simply reading the relevant configuration files, so I’m still figuring this one out.</li>
+          <li>A lot of times I prefer the lisp suggestions over what copilot says, and for that reason I have it disabled. However, Cursor’s in-house tab completion model is wonderful. It suggests multi-line changes, is relatively fast, and it’s code-base aware. If I know what I’m trying to write, then Cursor Tabs strictly improve the speed with which I can write it.</li>
+          <li>The fully agentic mode often completely borks things, so I don’t use it too much. Lately I’ve been having it explain new codebases, e.g. how can I build X, how does X configuration influence Y variable. Accuracy is mediocre. A lot of these use cases could probably be addresses faster by simply reading the relevant configuration files, so I’m still figuring this one out.</li>
         </ul>
       </li>
       <li>
-        <p>notion</p>
+        <p>Notion</p>
         <ul>
           <li>It’s just really nice for taking notes, organizing them, and sharing them. I’ve also been using it for so long that there’s a fair amount of friction towards switching.</li>
           <li>I think the database feature is also quite nice. I have a big database of thoughts I find cool which I can easily search by tags or other attributes</li>
         </ul>
       </li>
       <li>
-        <p>typst (formerly latex)</p>
+        <p>Typst (formerly latex)</p>
         <ul>
           <li>You need latex for any document that needs to be precisely formatted, usually resumes, papers, math stuff, etc.</li>
-          <li>Typst provides this same functionality, but it’s syntax is SO MUCH MORE SANE. Adding custom features feels like coding in a normal language (and a nice one too). Compile errors are readable. The verbosity is way lower. Also, it has an html export, which makes things like this blog possible…</li>
+          <li>Typst provides this same functionality, but its syntax is SO MUCH SANER. Adding custom features feels like coding in a normal language (and a nice one too). Compile errors are readable. The verbosity is way lower. Also, it has an HTML export, which makes things like this blog possible…</li>
         </ul>
       </li>
     </ul>

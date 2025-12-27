@@ -17,9 +17,9 @@
   + Comparability: Any two decisions can be scored.
 ] <Values>
 
-Another way to think about it is #link(<Values>, "Values") are your axioms, and #link(<Rationalism>, "Rationalism") is constraint propogation.
+Another way to think about it is #link(<Values>, "Values") are your axioms, and #link(<Rationalism>, "Rationalism") is constraint propagation.
 
-I find this distinction important because the two concepts can be easily mixed up, and seperating them allows answering a few questions. 
+I find this distinction important because the two concepts can be easily mixed up, and separating them allows answering a few questions. 
 
 == Can two rational people "agree to disagree"?
 The thinking here is that two rationalists should not be able to hold opposing viewpoints on the same issue given the same evidence. However, that's not true. The two rationalists could simply have different #link(<Values>, "Values"), and therefore the "rational" choice for both of them need not be the same. The key point is rationality is not by itself a value system. It can't be used to prove your value axioms are true.
@@ -29,9 +29,9 @@ I've always found this advice kind of troubling because it seems to imply you sh
 + I tell myself that instead of slim odds of doing great research, I have massive odds! 
 + I tell myself, isn't it great that I'm in a position where I can spend my time investigating the things that interest me most? Maybe I won't change the world, but I'll push the field forward while pursuing my passion.
 
-Approach 1 manipulated the truth. Approach 2 updated our #link(<Values>, "Values"). Both approaches led to to a better assessment of how things are, but Approach 2 didn't require lying to ourselves. 
+Approach 1 manipulated the truth. Approach 2 updated our #link(<Values>, "Values"). Both approaches led to a better assessment of how things are, but Approach 2 didn't require lying to ourselves. 
 
-So "being positive" doesn't require being irrational. That's great, because Approach 1 is not stable. If the truth scares you enough that you need to lie to yourself to proceed, then you should seriously consider whether its worth it to proceed. In the example, imagine the researcher was really only interested in producing ground-breaking work with high odds. If that really wasn't possible to the best of anyone's knowledge, he's probably better off quiting. Maybe he'd get lucky and publish a breakthrough if he persisted, but most likely he wouldn't and would spend his career feeling dissapointed.
+So "being positive" doesn't require being irrational. That's great, because Approach 1 is not stable. If the truth scares you enough that you need to lie to yourself to proceed, then you should seriously consider whether it's worth it to proceed. In the example, imagine the researcher was really only interested in producing ground-breaking work with high odds. If that really wasn't possible to the best of anyone's knowledge, he's probably better off quitting. Maybe he'd get lucky and publish a breakthrough if he persisted, but most likely he wouldn't and would spend his career feeling disappointed.
 
 == Can a Rational person be an optimist?
 This seems almost like a contradiction at first glance. The truth doesn't care what makes you happy. The truth just _is_. So then, is it really possible to be rational and consistently feel happy, or does this require some kind of self-deception?
