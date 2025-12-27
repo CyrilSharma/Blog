@@ -80,7 +80,7 @@ b {
   font-weight: 700;
 }
 .home-link {
-  font-family: "Merriweather", serif;
+  font-family: var(--vp-font-family-base), serif;
   font-weight: 700;
 }
 a {
