@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../styles/post-grid.css";
 import Tag from "./Tag";
 
@@ -35,6 +35,27 @@ export default function PostGrid({ posts, basePath }: Props) {
     }
     return ["All", ...Array.from(set).sort()];
   }, [posts]);
+
+  // Keep selected tag in sync with ?tag= query param for shareable filtering.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const initial = params.get("tag");
+    if (initial && tags.includes(initial)) {
+      setTag(initial);
+    }
+  }, [tags]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    if (tag === "All") {
+      url.searchParams.delete("tag");
+    } else {
+      url.searchParams.set("tag", tag);
+    }
+    window.history.replaceState({}, "", url.toString());
+  }, [tag]);
 
   const filtered = useMemo(() => {
     const q = normalize(query.trim());
@@ -79,13 +100,26 @@ export default function PostGrid({ posts, basePath }: Props) {
             <a href={`${basePath}/${post.id}/`}>
               <h2 className="pg-title">{post.title}</h2>
               <div className="pg-date">{formatDate(post.date)}</div>
-              {post.tags && post.tags.length > 0 && (
-                <div className="pg-pill-row">
-                  {post.tags.sort() && post.tags.map((t) => (
-                    <Tag key={t} tag={t} size="sm" selectable={false} />
-                  ))}
-                </div>
-              )}
+          {post.tags && post.tags.length > 0 && (
+            <div className="pg-pill-row">
+              {post.tags
+                .slice()
+                .sort()
+                .map((t) => (
+                  <Tag
+                    key={t}
+                    tag={t}
+                    size="sm"
+                    selectable
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      setTag(t);
+                    }}
+                  />
+                ))}
+            </div>
+          )}
               {post.desc && <p className="pg-desc">{String(post.desc)}</p>}
             </a>
           </article>
