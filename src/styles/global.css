@@ -121,6 +121,10 @@ a:hover {
   margin: 0;
 }
 
+.prose p {
+  margin-top: 0.5rem;
+}
+
 .prose div > p:first-child {
   margin-top: 0;
 }
