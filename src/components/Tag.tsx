@@ -1,13 +1,14 @@
 import { getTagColor, getTextColor } from "../tagColors";
 import "../styles/tags.css";
 import { useMemo } from "react";
+import type React from "react";
 
 type TagProps = {
   tag: string;
   size?: "sm" | "md";
   selectable?: boolean;
   active?: boolean;
-  onClick?: () => void;
+  onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
 };
 
 const Tag = ({ tag, size = "md", selectable = true, active = false, onClick }: TagProps) => {
@@ -30,7 +31,7 @@ const Tag = ({ tag, size = "md", selectable = true, active = false, onClick }: T
     <span
       className="tag"
       style={styles}
-      onClick={() => selectable && onClick?.()}
+      onClick={(event) => selectable && onClick?.(event)}
     >
       {tag}
     </span>
