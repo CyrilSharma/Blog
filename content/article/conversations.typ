@@ -11,7 +11,7 @@ Hi! I was thinking more about #link("https://awestover.github.io/thoughts/talkin
 Some personal observations about strong conversations
 + Often require working through insecurities, which can be taxing.
 + Have narrower range then *fun* conversations, since they are tied to pragmatism.
-+ Often not what people are interested in discussing. Many people regard the future with uncertainity (myself included) and kind of prefer to steer way from what their exact plan is. I'd say with friends, the vast majority of my conversations are *fun* rather then *strong*.
++ Often not what people are interested in discussing. Many people regard the future with uncertainty (myself included) and kind of prefer to steer way from what their exact plan is. I'd say with friends, the vast majority of my conversations are *fun* rather than *strong*.
 + Can require strong convictions, as you are often in a situation where you need to give or receive advice.
 
 For these reasons, I find *strong* conversations to be relatively taxing. That's not to say I don't want them, it's kind of like eating your vegetables, a little unpleasant but good for you.

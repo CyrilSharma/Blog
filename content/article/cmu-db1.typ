@@ -5,7 +5,7 @@
   tags: ("cs", "notes"),
 )
 
-*OLTP*: Online Transaction Processing, transactions are usually row-based, i.e we dump a new person into our database, we modify a person's fields etec.
+*OLTP*: Online Transaction Processing, transactions are usually row-based, i.e. we dump a new person into our database, we modify a person's fields etc.
 
 *OLAP*: Online Analytical Processing, transactions usually operate on an entire column of data, e.g. compute the mean and std of all client latencies.
 
@@ -24,6 +24,6 @@ Now that data is managed by an external service with a limited API, data is ofte
 
 *Shared-Disk*: Each node of the Database has to interface with some common API to access data resources.
 
-Shared-Nothing has potentially higher performance because you can control precisely what data is transferred. However, it's compute layer cannnot scale indepdendently from its data layer, and scaling is also just way harder because you have to shuffle a ton of data around.
+Shared-Nothing has potentially higher performance because you can control precisely what data is transferred. However, it's compute layer cannot scale independently from its data layer, and scaling is also just way harder because you have to shuffle a ton of data around.
 
 Historically, Shared-Disk was pretty terrible, but these days there exist infinitely scalable and high performance providers of such services. There are also a lot of things you can do, like caching, or writing your own libraries to bypass the page table, so on and so forth.

@@ -13,7 +13,7 @@
 
 #set quote(block: true)
 
-Typst is like Latex but redesigned to be a usable programming language. It has many other improvements, such as incremental compilation, which lets me see this PDF update in real time. I can even click on lines in the PDF and jump to the exact point in the code which generated them (I'm using the tinymist vscode extension).
+Typst is like Latex but redesigned to be a usable programming language. It has many other improvements, such as incremental compilation, which lets me see this PDF update in real time. I can even click on lines in the PDF and jump to the exact point in the code which generated them (I'm using the Tinymist VSCode extension).
 
 == Features
 Subheader made with ```typst == Features```
@@ -112,9 +112,9 @@ We can also change the alignment of text using ```typst align```.
 ]
 
 
-We can do footnotes #footnote[These don't work natively but I patched them!]. Websites are kind of one massive page, so they'll all be at the very bottom. That's probably fine though.
+We can do footnotes #footnote[These work natively in Typst 14.0!]. Websites are kind of one massive page, so they'll all be at the very bottom. That's probably fine though.
 
-We can also do fancy graphics and callouts, but sadly all such things require exporting to svg, and typst doesn't support selectable text for this. I think this will be useful for plotting graphs and tables though.
+We can also do fancy graphics and callouts, but sadly all such things require exporting to SVG, and Typst doesn't support selectable text for this. I think this will be useful for plotting graphs and tables though.
 #align(center)[
   #graphic(
     box(
@@ -127,11 +127,11 @@ We can also do fancy graphics and callouts, but sadly all such things require ex
   )
 ]
 
-There's also a bunch of meta-programming in the language (like show rules, argument spreading, sinks, etc.) which I had to deal with to get the html export to work. It mainly boiled down to wrapping the typst functions in custom html functions, and then emitting appropriate css.
+There's also a bunch of meta-programming in the language (like show rules, argument spreading, sinks, etc.) which I had to deal with to get the HTML export to work. It mainly boiled down to wrapping the Typst functions in custom HTML functions, and then emitting appropriate CSS.
 
-Over time, I might be able to get rid of all this styling though. The library is maintained quite actively. Thanks to #link("https://github.com/typst/typst/blob/2c515a86383d9e338597ba2f2cfa6501dcb74865/tests/suite/text/deco.typ")[PR] which came out like a day or two ago, I can do #strike[Struck], #highlight[Highlighted], #underline[Underlined], #overline[Overlined].
+Over time, I might be able to get rid of all this styling though. The library is maintained quite actively. Thanks to #link("https://github.com/typst/typst/blob/2c515a86383d9e338597ba2f2cfa6501dcb74865/tests/suite/text/deco.typ")[PR] which came out like a day or two ago, I can do #strike[Struck], #highlight[Highlighted], #underline[Underlined], and #overline[Overlined].
 
-Nevermind this isn't in any release candidate yet. Ok, well I can still do quotes!
+I can do quotes!
 #quote[Typst is pretty cool guys]
 
 I can also do terms.

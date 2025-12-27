@@ -14,21 +14,21 @@ There are a few major things humans have evolved to be dependent on.
 - Sleep
 
 
-I have a strong aversion to depending on anything that isn't in this list. I don't want to depend on coffee to feel awake, on alcohol to be social, on Youtube to fall asleep, on Spotify to keep me "entertained" during my walk to class.
+I have a strong aversion to depending on anything that isn't in this list. I don't want to depend on coffee to feel awake, on alcohol to be social, on YouTube to fall asleep, on Spotify to keep me "entertained" during my walk to class.
 
 There are a few reasons why.
 
 === I want to feel as free as possible.
-Needing to take pills, shots, or espresso just to do some things marginally better (if it even has a benifet) seems like a major restriction on my freedom. It doesn't really matter to me if the dependency is cheap or easily acquired, I just don't want more constraints on my life then necessary.
+Needing to take pills, shots, or espresso just to do some things marginally better (if it even has a benefit) seems like a major restriction on my freedom. It doesn't really matter to me if the dependency is cheap or easily acquired, I just don't want more constraints on my life then necessary.
 
 === Most unnatural dependencies are bad for you.
-For something humans have needed for millions of years, I would believe it is ultimately healthy just from an evolutionary standpoint. For everything else, I lean towards believing it's unhealthy, unless I'm  presented with significant evidence otherwise.
+For something humans have needed for millions of years, I would believe it is ultimately healthy just from an evolutionary standpoint. For everything else, I lean towards believing it's unhealthy, unless I'm presented with significant evidence otherwise.
 
 For alcohol, there's already plenty of evidence that it significantly increases your risk of cancer. 
 
 For coffee, I admit it is more ambiguous. However, everyone I know who has drank coffee ended up escalating the amount they drank, messing up their sleep schedule, and eventually "needing" coffee on a regular basis. To me this seems like a regression from the state they would be in without coffee.
 
-A common counter-argument I hear is, "yes, I know these things are bad for me in excess, that's why I consume them in moderation". I believe that it is possible to get minimal side-effects if you consume things in moderation. For example, if you had one sip of alcohol in your entire life, it would probably barely make a dent in your health. However, threading this line of "moderate but not excessive" consumption seems a lot harder (and with not much upside) compared to just not consuming it at all. Doing something one percent of the time is harder then doing it zero.
+A common counter-argument I hear is, "yes, I know these things are bad for me in excess, that's why I consume them in moderation". I believe that it is possible to get minimal side effects if you consume things in moderation. For example, if you had one sip of alcohol in your entire life, it would probably barely make a dent in your health. However, threading this line of "moderate but not excessive" consumption seems a lot harder (and with not much upside) compared to just not consuming it at all. Doing something one percent of the time is harder than doing it zero.
 
 To be clear, this argument isn't saying everything "unnatural" is bad for you. Some notable exceptions include modern medicine, and may one day include anti-aging drugs. My point is just that I find it hard to believe some random substance is good for me (especially if it wasn't designed for that purpose), and I would require a lot of proof, which is still true for say medicine. 
 

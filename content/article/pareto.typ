@@ -41,18 +41,18 @@ potential to reallocate time to more fulfilling activities.
 
 It's important to note that I'm not saying you should never spend time on activities that
 aren't "productive". However, what is wrong is being _compelled_ to do
-things, e.g. if you are addicted to late-night benges, or you use it as a means
+things, e.g. if you are addicted to late-night binges, or you use it as a means
 of procrastination. Moving "closer to the curve" is about allocating your time
 more deliberately to the things that will improve your life.
 
 Over time, I think I've gradually been moving closer and closer to the curve.
 + I use a fair amount of my free time for personal development, learning, self-reflection, etc.
-+ I've scaled down obvious time-wasting, like impulsive benging of Youtube, shows, etc.
-+ I put more effort into trying to learn things efficiently. E.g. if I have significant interest in a topic (like Evolutionary Biology), it probably makes sense to learn about it in a structured way (textbook, class, etc.), rather then consuming a collection of books / articles / etc. over a broad time scale which repeat each other and only give the topic a shallow treatment. This is the main reason I've switched to almost entirely consuming long-form content, like books!
++ I've scaled down obvious time-wasting, like impulsive binging of YouTube, shows, etc.
++ I put more effort into trying to learn things efficiently. E.g. if I have significant interest in a topic (like Evolutionary Biology), it probably makes sense to learn about it in a structured way (textbook, class, etc.), rather than consuming a collection of books / articles / etc. over a broad timescale which repeat each other and only give the topic a shallow treatment. This is the main reason I've switched to almost entirely consuming long-form content, like books!
 
 Still, I think there's quite a lot of room to grow. One way is by focusing more
-on creating rather then pure learning. If I spent more time drying to
-deepen my knowledge rather then broaden it, I believe I could create a lot more
+on creating rather than pure learning. If I spent more time drying to
+deepen my knowledge rather than broaden it, I believe I could create a lot more
 value.
 
 #align(center)[
@@ -69,7 +69,7 @@ value.
 ]
 
 
-As a sidenote, I'm sort of convinved the following graph is true.
+As a sidenote, I'm sort of convinced the following graph is true.
 
 #let indices = range(5);
 #align(center)[
@@ -86,7 +86,7 @@ As a sidenote, I'm sort of convinved the following graph is true.
 
 If you spend 16 hours a day grinding this highly specialized thing, then when
 the conversation switches to anything else you're kind of screwed. On the other
-hand, I can imagine there's lots of ways to get around this. You can have a lot
+hand, I can imagine there are lots of ways to get around this. You can have a lot
 of "musings" conversations, where you just bring up some idea and discuss it for
 a while. This is good if you have a light interest in a lot of areas. Still, I
 think finding good musings is hard. At least personally, it feels the more
