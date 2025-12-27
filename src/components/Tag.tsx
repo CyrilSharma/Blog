@@ -21,8 +21,8 @@ const Tag = ({ tag, size = "md", selectable = true, active = false, onClick }: T
       border: active ? "3px solid rgb(0, 0, 0)" : "3px solid transparent",
       color: textColor,
       fontWeight: active ? "bold" : "normal",
-      fontSize: size === "sm" ? "0.8rem" : "0.95rem",
-      padding: size === "sm" ? "0.15rem 0.45rem" : "0.2rem 0.65rem",
+      fontSize: size === "sm" ? "1.1rem" : "0.95rem",
+      padding: size === "sm" ? "0rem 0.35rem" : "0.2rem 0.65rem",
     }),
     [color, textColor, active, size]
   );

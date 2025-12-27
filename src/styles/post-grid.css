@@ -23,19 +23,19 @@
 .pg-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 5px;
 }
 
 .pg-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
+  gap: 20px;
 }
 
 .pg-card {
   border: 1px solid var(--raw-bg-color, #e6e8ed);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 15px;
   background: white;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
   transition: transform 120ms ease, box-shadow 120ms ease;
@@ -54,28 +54,28 @@
 }
 
 .pg-title {
-  margin: 0 0 0.3rem 0;
-  font-size: 1.1rem;
+  margin: 0 0 0 0;
+  font-size: 1.5rem;
 }
 
 .pg-date {
   color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 0.4rem;
+  font-size: 1.2rem;
+  margin-bottom: 0px;
 }
 
 .pg-pill-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 5px;
 }
 
 .pg-desc {
-  margin: 0.25rem 0 0 0;
+  margin: 0 0 0 0;
   color: #444;
-  font-size: 0.95rem;
-  line-height: 1.4;
+  font-size: 1.2rem;
+  line-height: 1.0;
 }
 
 @media (max-width: 640px) {
