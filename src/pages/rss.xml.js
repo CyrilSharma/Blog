@@ -4,12 +4,20 @@ import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import { SITE_TITLE, SITE_DESCRIPTION, BASE_PATH } from "$consts";
 
+const stripUnwanted = (html) =>
+  html
+    // Remove style and script blocks so previews don't start with CSS/JS.
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+    .trim();
+
 const readPostHtml = (slug) => {
   const filePath = path.join("html", slug, "index.html");
   try {
     const html = fs.readFileSync(filePath, "utf8");
-    const body = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    return body ? body[1] : html;
+    const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    const body = bodyMatch ? bodyMatch[1] : html;
+    return stripUnwanted(body);
   } catch (err) {
     console.warn(`[rss] Unable to read HTML for ${slug}:`, err);
     return "";
