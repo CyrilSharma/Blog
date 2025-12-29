@@ -32,3 +32,5 @@ I think drinking alcohol probably feels great! That's all the more reason to _ne
 
 === Sidenote: You'll miss out on the social lubricant
 Sure, I will. But I can and do still have wonderful social interactions while being fully in control of my actions (socially unlubricated). If you really feel like you want more out of your interactions, there are plenty of other solutions. Try to be a better listener, ask interesting questions, and take social initiative! Nobody is stopping you from hanging out, and you can still have amazing drinks (alcohol is not really known for _elevating_ the taste). I really think you can get most of the value without sacrificing your health.
+
+#hseperator()
