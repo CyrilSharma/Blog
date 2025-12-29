@@ -9,7 +9,7 @@
 According to the book, about 95% of Native Americans died due disease. This is kind of an insane number, so here is my attempt to rationalize it.
 
 *Claim:* The disease's high death rate would've prevented it from spreading.
-+ *Counterpoint:*: For a disease to spread, it needs to spread faster than it dies. If it can spread before it kills the host, then it can continue to proliferate. Hence, it could be deadly and continue to spread. 
++ *Counterpoint:* For a disease to spread, it needs to spread faster than it dies. If it can spread before it kills the host, then it can continue to proliferate. Hence, it could be deadly and continue to spread. 
 
 *Claim:* There is an evolutionary incentive to not kill the host, since then the host can continue to spread the virus for longer (and potentially get infected later). Hence, the diseases should not have been so deadly.
 + *Counterpoint:* Sure, and the diseases probably had evolved to be less deadly... for Europeans. It seems likely they weren't at an evolutionary equilibrium for the Native Americans.
