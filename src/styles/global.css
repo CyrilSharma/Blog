@@ -94,13 +94,13 @@ a:hover {
 }
 
 .prose ol {
-  padding-left: 4pt;
+  padding-left: 5px;
   list-style-position: outside;
   display: inline-block;
 }
 
 .prose ul {
-  padding-left: 4pt;
+  padding-left: 5px;
   list-style-position: outside;
   display: inline-block;
 }
