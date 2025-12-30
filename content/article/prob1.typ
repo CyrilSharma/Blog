@@ -5,18 +5,23 @@
   tags: ("math", "notes"),
 )
 
+#show: note_page 
+
 = Inequalities
-== Markov's Inequality - $P(X > t) <= E(X)/t$
+#definition(name: "Markov's Inequality")[$ P(X > t) <= E(X)/t $]
+#proof[
 $ t P(X > t) &<= E(X | X > t) P(X > t) \
              &<= P(X > t) E(X | X > t) + P(X <= t) E(X | X <= t) = E(X) \
-   P(X > t) &<= E(X)/t $
+   P(X > t) &<= E(X)/t $]
 
-== Chevyshev's Inequality - $P(X - E(X) >= epsilon) <= V(x)/epsilon^2$
+#definition(name: "Chevyshev's Inequality")[$ P(X - E(X) >= epsilon) <= V(x)/epsilon^2 $]
+#proof[
 $ P(X - E(X) >= epsilon) &= P((X - E(X))^2 >= epsilon^2) \
                          &<= E((X - E(X))^2)/epsilon^2 \
-                         &= V(X)/epsilon^2 $
+                         &= V(X)/epsilon^2 $]
 
-== Jensen's Inequality - $g(E(X)) <= E(g(X))$
+#definition(name: "Jensen's Inequality")[$ g(E(X)) <= E(g(X)) $]
+#proof[
 Given $g$ is convex we have
 #[
   #set math.equation(numbering: "(1)")
@@ -29,13 +34,16 @@ $ g(E(X)) &= g(integral_X x p(x) dif x) \
           &= E(g(X)) $
 The textbook provides a cleaner proof where you just lower-bound g(x) by the tangent line at $E(x)$.
 $ E(g(x)) >= E(L(x)) = E(a + b x) = a + b E(x) = L(E(x)) = g(E(x)) $
+]
 
-== Cauchy-Schwartz Inequality - $E(X Y)^2 <= E(X^2)E(Y^2)$
+#definition(name: "Cauchy-Schwartz Inequality")[$ E(X Y)^2 <= E(X^2)E(Y^2) $]
+#proof[
 We start by investigating $E((X t + Y)^2)$ which is clearly non-negative.
 $ &= E(X^2)t^2 + 2E(X Y)t + E(Y^2) $
 For this quadratic equation to be non-negative, the discriminant must be $<= 0$.
 $ 4E(X Y)^2  - 4E(X^2)E(Y^2)  <= 0 \
   E(X Y)^2 <= E(X^2)E(Y^2) $
+]
 
 This is interesting because it's hard to think of a direct way to derive this. You have to get the insight to transform it into a quadratic via a dummy parameter to see this.
 
