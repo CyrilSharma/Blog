@@ -1,4 +1,4 @@
-#import "/typ/templates/utils.typ": block, ctext, columns, colbreak
+#import "/typ/templates/utils.typ": block, ctext, columns, colbreak, graphic
 
 #let classes = ("Definition", "Lemma", "Theorem", "Corollary")
 #let h1_marker = counter("h1")
@@ -72,7 +72,7 @@
       h2_marker.get().last(),
       figure_counter.get().last() + 1
     ).map(str).join(".")
-
+  
     block(width: 100%, inset:8pt, align(center)[#figure])
     let serial_label = label("Figure" + " " + serial_num)
     align(center, 
