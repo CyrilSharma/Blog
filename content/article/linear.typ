@@ -40,7 +40,7 @@ Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Sc
 
 Intriguingly, you can actually do similar stuff for continuous transformations (like multiplying a function by x).  Diagonalization corresponds to untangling the systems' dynamics, it's pretty cool!
 
-== QR Decomposition
+== QR Decomposition <Example>
 Take an input a matrix $A in bb(R)^(n times m), n >= m$. Normalize the first column. Now remove the component of the second column along the first column and normalize. Repeat this process until you've orthogonalized every column of $A$. This is the $Q$ matrix. By construction, the $i$th column of $A$ can be written as a weighted sum of columns up to $i$ in $Q$, and hence we get $A = Q R$.
 
 This decomposition is handy for solving linear equations where the $n != m$ and so the inverse is not defined. Consider the case of $n > m$. $n > m$ can be handled similarly.
@@ -52,6 +52,26 @@ The blocked representation works because only $n$ linearly independent vectors a
 
 This can also be used for computing determinants, since $Q$ can be chosen to have determinant $1$, hence $ det(A) = det(Q)det(R) = det(R) = product R_(i i) $
 Where the last step follows from $R$ being triangular.
+
+== SVD
+This is a short proof sketch of the SVD. Using #link(<symmetric>)[what we know] about symmetric matrices we can conclude all the eigenvalues of $A^top A$ are real and all eigenvectors with different eigenvalues are orthogonal. Furthermore, using the Gram-Schmidt process, we can find an orthogonal basis that spans every eigenspace (i.e. the space of vectors which correspond to $A - lambda I  = 0$). Hence, we can construct an orthonormal basis for $A^T A$ using its eigenvectors meaning $A^T A$ is diagonalizable.
+$
+  A^top A = V D V^top
+$
+
+$D$ is a diagonal matrix with all positive entries. This is because
+$
+  ||A x|| >= 0 arrow x^top (A^top A)x = lambda x^top x >= 0 arrow lambda >= 0
+$
+
+Now let $A in bb(R)^(n times m)$ and suppose $A^top A$ has rank $r$. Then, only the first $r$ columns of $D$ have non-zero entries, and only the first $r$ rows of $V^top$ matter. Hence, we can write $V in bb(R)^(m times r), D in bb(R)^(r times r), $. Now let $Sigma = sqrt(D)$ and let $U =  A V Sigma^(-1) in bb(R)^(n times r)$. By construction, $A = U Sigma V^top$.
+
+Finally, observe $U$ is orthonormal. We use the fact that $V^top A^top A V = D$
+$
+  U^T U = Sigma^(-1) V^top A^top A V Sigma = Sigma^(-1) D Sigma^(-1) = Sigma^(-1) Sigma^2 Sigma^(-1) = I
+$
+
+This decomposition for $A$ is known as the reduced SVD. 
 
 = Algorithms
 == Richardson Iteration
@@ -90,11 +110,13 @@ $
 
 So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
 
-== Symmetric Matrices
-All eigenvalues of a symmetric matrix are real.
+== Symmetric Matrices <symmetric>
+All eigenvalues of a symmetric real matrix are real.
 
 $
-||A u||^2 = "dot"(A u, A u) = u A^top A u = u^top A^2 u = u^top lambda^2 u = lambda^2||u||^2 arrow lambda in bb(R )
+  "dot"(A u, u) = u^dagger A^dagger u = u^dagger A u = lambda u^dagger u \
+  "dot"(A u, u) = (lambda u)^dagger u = lambda^dagger u^dagger u \
+  lambda^dagger = lambda
 $
 
 For a symmetric matrix, all eigenvectors with different eigenvalues are orthogonal.
@@ -116,8 +138,8 @@ M^\intercal M = (U\Sigma V^\intercal)^\intercal (U\Sigma V^\intercal) = (V \Sigm
 M(M^\intercal M)^k = (U\Sigma V^\intercal)(V \Sigma^{2k} V^\intercal) = U\Sigma^{2k+1}V^\intercal
 `)
 
-The main observation here is that $M^top M$ has a rather simple form in terms of its SVD (equivalent to its Eigen decomposition!) which makes its powers well-behaved.
+The main observation here is that $M^top M$ has a rather simple form in terms of its SVD which makes its powers well-behaved.
 
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
-Anyway, this gives you a lot of power. Muon uses this insight to cheaply diagonalize the matrix update: $A' = U I V$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD can always be constructed with positive singular values.
+Anyway, this gives you a lot of power. Muon uses this insight to cheaply "orthogonalize" a matrix e.g. converting $A = U Sigma V^T$ to $U I V^T$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD has positive singular values.
