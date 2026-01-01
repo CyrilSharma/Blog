@@ -120,7 +120,7 @@ export default function PostGrid({ posts, basePath }: Props) {
                 ))}
             </div>
           )}
-              {post.desc && <p className="pg-desc">{String(post.desc)}</p>}
+            {/* {post.desc && <p className="pg-desc">{String(post.desc)}</p>} */}
             </a>
           </article>
         ))}
