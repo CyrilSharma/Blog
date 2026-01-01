@@ -24,7 +24,7 @@ $
   )
 $
 
-Using taylor expansions…
+Using Taylor expansions…
 
 $
  f(A) = f(P^(-1)Q P) = P^(-1)f(Q)P
@@ -32,16 +32,16 @@ $
 
 This leads to the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
 
-The block decomposition is so simple that we can analytically compute $f(A)$ by using taylor expansions for each block. Pretty awesome.
+The block decomposition is so simple that we can analytically compute $f(A)$ by using Taylor expansions for each block. Pretty awesome.
 
 One big problem with it, is that it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. In particular, $P$ is very ill-conditioned.
 
 Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition] which instead of insisting that $Q$ is practically diagonal, allows it to be merely upper-triangular. It also has the nice property that $P$ is now unitary. However, now we’ve lost the sparse structure of $Q$.
 
-Intriguingly, you can actually do similarish stuff for continuous transformations (like multiplying a function by x).  Diagonalization corresponds to untangling the systems dynamics, its pretty cool!
+Intriguingly, you can actually do similar stuff for continuous transformations (like multiplying a function by x).  Diagonalization corresponds to untangling the systems' dynamics, it's pretty cool!
 
 == QR Decomposition
-Take an input a matrix $A in bb(R)^(n times m), n >= m$. Normalize the first column. Now remove the component of the second column along the first column and normalize. Repeat this process until you've orthogonalized every column of $A$. This is the $Q$ matrix. By construction, the $i$th column of $A$ can be written as a weighted sum of columns upto $i$ in $Q$, and hence we get $A = Q R$.
+Take an input a matrix $A in bb(R)^(n times m), n >= m$. Normalize the first column. Now remove the component of the second column along the first column and normalize. Repeat this process until you've orthogonalized every column of $A$. This is the $Q$ matrix. By construction, the $i$th column of $A$ can be written as a weighted sum of columns up to $i$ in $Q$, and hence we get $A = Q R$.
 
 This decomposition is handy for solving linear equations where the $n != m$ and so the inverse is not defined. Consider the case of $n > m$. $n > m$ can be handled similarly.
 $
@@ -52,6 +52,30 @@ The blocked representation works because only $n$ linearly independent vectors a
 
 This can also be used for computing determinants, since $Q$ can be chosen to have determinant $1$, hence $ det(A) = det(Q)det(R) = det(R) = product R_(i i) $
 Where the last step follows from $R$ being triangular.
+
+= Algorithms
+== Richardson Iteration
+Suppose we want to solve $A x = b$. Computing inverses is expensive, and not easily done in parallel. Instead, we can run the following equation until we reach a fixed point.
+$
+  x_(k + 1) = x_k + w(b - A x_k)
+$
+
+Subtracting the true answer $x$ from both sides, and writing $e_k = x_k - x$.
+$
+  e_(k + 1) = e_k + w(b - A(x + e_k)) = e_k + w((b - A x) - e_k) = e_k + w A e_k = (I - w A)e_k  
+$
+
+So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i|$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence.
+
+== Preconditioning
+Again we want to solve $A x = b$. Instead of doing it directly let's first rewrite it as $A P^(-1) (P x) = b$. Now let's do this in two pieces.
+$
+  A P^(-1) y = b \
+  P x = y
+$
+
+Why might this be a good idea? Well, methods like the Richardson Iteration require A's condition number to be near $1$ for fast convergence. This means the largest and smallest eigenvalues are very close and so $w$ can be chosen to make the error rapidly decay. However, $A$ might not have this property, but $A P^(-1)$ and $P$ might, given a good choice of $P$.
+
 
 = Properties
 
@@ -92,8 +116,8 @@ M^\intercal M = (U\Sigma V^\intercal)^\intercal (U\Sigma V^\intercal) = (V \Sigm
 M(M^\intercal M)^k = (U\Sigma V^\intercal)(V \Sigma^{2k} V^\intercal) = U\Sigma^{2k+1}V^\intercal
 `)
 
-The main observation here is that $M^top M$ has a rather simple form in terms of its SVD (equivalent to its eigen decomposition!) which makes its powers well-behaved.
+The main observation here is that $M^top M$ has a rather simple form in terms of its SVD (equivalent to its Eigen decomposition!) which makes its powers well-behaved.
 
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
-Anyways, this gives you a lot of power. Muon uses this insight to cheaply diagonalize the matrix update: $A' = U I V$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD can always be constructed with positive singular values.
+Anyway, this gives you a lot of power. Muon uses this insight to cheaply diagonalize the matrix update: $A' = U I V$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD can always be constructed with positive singular values.
