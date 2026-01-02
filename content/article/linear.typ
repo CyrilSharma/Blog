@@ -27,10 +27,17 @@ $
 Using Taylor expansions…
 
 $
- f(A) = f(P^(-1)Q P) = P^(-1)f(Q)P
+ f(A) = "poly"(A) = P^(-1)"poly"(Q) P = P^(-1)f(Q)P
 $
 
-This leads to the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
+This leads to a lot of interesting results. One result is the Spectral Mapping Theorem, which states that the eigenvalues of $f(A)$ are $f(lambda_i)$. To see the Spectral Mapping theorem, observe that for a triangular matrix
+$
+  det(A - lambda I) = 0
+$
+
+If $lambda$ is chosen to be equal to any of the diagonal elements (as this makes that column linearly dependent).
+
+This immediately implies the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
 
 The block decomposition is so simple that we can analytically compute $f(A)$ by using Taylor expansions for each block. Pretty awesome.
 
