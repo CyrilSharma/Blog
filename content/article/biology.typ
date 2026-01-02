@@ -156,7 +156,7 @@ Amino acids are just amines plus carboxylic acids. $alpha$-Amino acids are a sub
     single(angle: 1)
     single(angle: -1)
     branch({
-      double(angle: -2)
+      double(absolute: -90deg)
       fragment("O")
     })
     single(angle: 1)
