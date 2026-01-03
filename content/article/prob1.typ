@@ -10,8 +10,10 @@
 = Inequalities
 #definition(name: "Markov's Inequality")[$ P(X > t) <= E(X)/t $]
 #proof[
-$ t P(X > t) &<= E(X | X > t) P(X > t) \
-             &<= P(X > t) E(X | X > t) + P(X <= t) E(X | X <= t) = E(X) \
+  $ t P(X > t) &<= &&E(X | X > t) P(X > t) \
+             &<= &&P(X > t) E(X | X > t) + \
+             &    &&P(X <= t) E(X | X <= t) \
+             &= &&E(X) \
    P(X > t) &<= E(X)/t $]
 
 #definition(name: "Chevyshev's Inequality")[$ P(X - E(X) >= epsilon) <= V(x)/epsilon^2 $]
@@ -33,7 +35,7 @@ $ g(E(X)) &= g(integral_X x p(x) dif x) \
           &<=^"(1)" p(x_0) g(x_0) dif x + dots + p(x_n) g(x_n) dif x \
           &= E(g(X)) $
 The textbook provides a cleaner proof where you just lower-bound g(x) by the tangent line at $E(x)$.
-$ E(g(x)) >= E(L(x)) = E(a + b x) = a + b E(x) = L(E(x)) = g(E(x)) $
+$ E(g(x)) >= E(L(x)) = E(a + b x) = a + b E(x)\ = L(E(x)) = g(E(x)) $
 ]
 
 #definition(name: "Cauchy-Schwartz Inequality")[$ E(X Y)^2 <= E(X^2)E(Y^2) $]
@@ -67,7 +69,7 @@ This is more of a proof sketch. We'll use the fact that if the MGF's converge, t
 
 $ phi("sample mean") &= phi(t/sqrt(n))^n \
                      &= (1 + t^2/(2 n) + t^3/(3! n^(3/2)) + dots)^n \
-                     &= (1 + (t^2/2 + ("stuff which tends to zero"))/n)^n \
+                     &= (1 + (t^2/2 + ...)/n)^n \
                      &= e^(t^2/2) $
 
 The core observation is that the $sqrt(n)$ term kills all terms after the second in the Taylor expansion. Still, I don't find this proof very satisfying.

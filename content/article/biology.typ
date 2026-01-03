@@ -134,10 +134,51 @@ These are some common condensation reactions. They're called this because they r
 ]
 
 #definition(name: "Lipids")[
-  Chemical structures rich in C-C and C-H bonds. Because they primarily have C-H bonds, they can't Hydrogen bond and are hydrophobic. They're used a lot for energy storage (one reason being they don't attract water molecules, allowing them to attain higher energy densities) and insulation (because water conducts heat a lot better than fat does). Notable examples are fats, some vitamins, cholesterol, and cell membranes.
-
-  Saturated lipids have no carbon-carbon double bonds, and unsaturated lipids have at least one such bond. These terms are important because double bonds are much more rigid than single bonds.
+  Chemical structures rich in C-C and C-H bonds. Because they primarily have C-H bonds, they can't Hydrogen bond and are hydrophobic. They're used a lot for energy storage (one reason being they don't attract water molecules, allowing them to attain higher energy densities) and insulation (because they repel water which is good at transferring heat). Notable examples are fats, some vitamins, cholesterol, and cell membranes.
 ]
+
+An important terminology with lipids is saturated and unsaturated. Saturated lipids have no carbon-carbon double bonds, and unsaturated lipids have at least one such bond. Double-bonds are very strong and rigid, and greatly affect the geometry of the lipid.
+
+#align(center, table(
+  columns: 2,
+  graphic(
+    skeletize({
+      single()
+      single()
+      branch({
+        single(absolute: -100deg)
+        fragment("H")
+      })
+      double(angle: 0.25)
+      branch({
+        single(absolute: -70deg)
+        fragment("H")
+      })
+      single(angle: 0.50)
+      single(angle: 0.50)
+    })
+  ),
+  graphic(
+    skeletize({
+      single()
+      single()
+      branch({
+        single(absolute: 90deg)
+        fragment("H")
+      })
+      double(angle: -0.25)
+      branch({
+        single(absolute: -90deg)
+        fragment("H")
+      })
+      single()
+      single()
+    })
+  )
+))
+
+When the Hydrogens are on the same side, this is called a cis-lipid, and when they're on opposite sides it's called a trans-lipid. The close-by hydrogen atoms of the cis-lipid cause a kink to form in the lipid, which makes it a lot harder for Van der Waal forces to keep strands of such lipids together. For this reason, unsaturated lipids are typically not solids at room temperature whereas saturated lipids are.
+
 
 #definition(name: "Phospholipids")[
   These guys have one of the phosphate groups at their head, with a non-polar lipid tail. Put them in water, and you will quickly end up with Bilayer, where the heads form the exterior and the hydrophobic tail forms the interior.
@@ -146,6 +187,11 @@ These are some common condensation reactions. They're called this because they r
 #definition(name: "Fatty Acids")[
   These molecules consist of a long hydro-phobic tail (C-C and C-H bonds) with a hydrophilic head. These include things like Trans-Fats and Cis-Fats.
 ]
+
+=== What is Cholesterol?
+Cholesterol is a lipid which essentially makes cell membranes more rigid by inserting itself into cell membranes and pulling hard on neighboring lipids. Without Cholesterol, your cell membranes would be too loose and let too much stuff in.
+
+LDL proteins transfer Cholesterol from your liver to tissue through your veins, and HDL proteins do the reverse. If you produce too much Cholesterol then LDL proteins will end up causing cholesterol build up on your veins, reducing blood flow and setting the stage for a lot of problems.
 
 == Amino Acids, Peptides and Proteins
 Amino acids are just amines plus carboxylic acids. $alpha$-Amino acids are a subclass of amino acids where the amines and carboxylic acid are attached to the same Carbon atom.
