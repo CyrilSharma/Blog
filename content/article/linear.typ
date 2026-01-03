@@ -71,7 +71,7 @@ $
   ||A x|| >= 0 arrow x^top (A^top A)x = lambda x^top x >= 0 arrow lambda >= 0
 $
 
-Now let $A in bb(R)^(n times m)$ and suppose $A^top A$ has rank $r$. Then, only the first $r$ columns of $D$ have non-zero entries, and only the first $r$ rows of $V^top$ matter. Hence, we can write $V in bb(R)^(m times r), D in bb(R)^(r times r), $. Now let $Sigma = sqrt(D)$ and let $U =  A V Sigma^(-1) in bb(R)^(n times r)$. By construction, $A = U Sigma V^top$.
+Now let $A in bb(R)^(n times m)$ and suppose $A^top A$ has rank $r$. Then, only the first $r$ columns of $D$ have non-zero entries, and only the first $r$ rows of $V^top$ matter. Hence, we can write $V in bb(R)^(m times r), D in bb(R)^(r times r)$. Now let $Sigma = sqrt(D)$ and let $U =  A V Sigma^(-1) in bb(R)^(n times r)$. By construction, $A = U Sigma V^top$.
 
 Finally, observe $U$ is orthonormal. We use the fact that $V^top A^top A V = D$
 $
