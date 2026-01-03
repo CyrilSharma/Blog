@@ -183,10 +183,6 @@ th {
   border-bottom: 2px solid var(--raw-bg-color, #e5e9f0);
 }
 
-tr {
-  border-bottom: 1px solid var(--raw-bg-color, #e5e9f0);
-}
-
 tr:nth-child(even) {
   background: rgba(101, 117, 133, 0.06);
 }
