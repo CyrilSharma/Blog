@@ -118,8 +118,8 @@ ol {
 .prose ol:not([style*="list-style"]) > li::before {
   content: counters(item, ".") ". ";
   position: absolute;
-  left: -1.6em;
-  width: 1.2em;
+  left: -2.4em;
+  width: 2.2em;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
