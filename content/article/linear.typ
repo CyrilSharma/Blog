@@ -52,7 +52,7 @@ Take an input a matrix $A in bb(R)^(n times m), n >= m$. Normalize the first col
 
 This decomposition is handy for solving linear equations where the $n != m$ and so the inverse is not defined. Consider the case of $n > m$. $n > m$ can be handled similarly.
 $
-  A x = b  arrow Q R x = b arrow mat(Q_1, Q_2)mat(R_1; 0) x = b arrow x = R_1^(-1)Q_1^top b
+  A x = b arrow Q R x = b \ mat(Q_1, Q_2)mat(R_1; 0) x = b \ x = R_1^(-1)Q_1^top b
 $
 
 The blocked representation works because only $n$ linearly independent vectors are needed to span the column space of $A$. $R^(-1)$ can be computed very efficiently via back-substitution. 
@@ -89,7 +89,8 @@ $
 
 Subtracting the true answer $x$ from both sides, and writing $e_k = x_k - x$.
 $
-  e_(k + 1) = e_k + w(b - A(x + e_k)) = e_k + w((b - A x) - e_k) = e_k + w A e_k = (I - w A)e_k  
+  e_(k + 1) = e_k + w(b - A(x + e_k)) = \
+  e_k + w((b - A x) - e_k) = e_k + w A e_k = (I - w A)e_k  
 $
 
 So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i|$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence.
@@ -108,7 +109,9 @@ Why might this be a good idea? Well, methods like the Richardson Iteration requi
 
 == Trace
 $
-sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
+sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = \
+sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = \
+sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
 $
 
 $
@@ -140,7 +143,7 @@ The above facts directly imply the claim.
 Define $M^(2k + 1)  = M (M^top M)^K$. Then,
 
 #mitex(`
-M^\intercal M = (U\Sigma V^\intercal)^\intercal (U\Sigma V^\intercal) = (V \Sigma^\intercal U^\intercal) (U\Sigma V^\intercal) = V \Sigma^2 V^\intercal \\
+M^\intercal M = \\(U\Sigma V^\intercal)^\intercal (U\Sigma V^\intercal) = (V \Sigma^\intercal U^\intercal) (U\Sigma V^\intercal) = V \Sigma^2 V^\intercal \\
 (M^\intercal M)^k = V \Sigma^{2k} V^\intercal \\
 M(M^\intercal M)^k = (U\Sigma V^\intercal)(V \Sigma^{2k} V^\intercal) = U\Sigma^{2k+1}V^\intercal
 `)
