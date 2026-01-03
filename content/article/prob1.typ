@@ -94,8 +94,9 @@ Clearly, going all in on every bet will almost certainly result in ruin, even if
 
 Let's assume we'll bet a fixed fraction of our income, $f$. Let's assume capital is infinitely divisible and then you start with $X_0$. The amount you will end with after $n$ rounds is $X_n = X_0(1 + f)^S (1 - f)^F$. 
 
-Let's choose to maximize the growth rate of capital per round $g(f) = log((X_n /X_0)^(1/n))$.
-$ g(f)   &= S/n log(1 + f) + F/n log(1 - f) \
+Let's choose to maximize the growth rate of capital per round $g(f)$.
+$ g(f) &= log((X_n /X_0)^(1/n)) \
+  g(f)   &= S/n log(1 + f) + F/n log(1 - f) \
   E(g(f)) &= p log(1 + f) + q log(1 - f) $
 
 Maximizing,

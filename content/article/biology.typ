@@ -212,7 +212,7 @@ Amino acids are just amines plus carboxylic acids. $alpha$-Amino acids are a sub
 
 They can also appear with a H#sub[3]N#super[+] term.
 
-Peptides are small chains of amino acids (like 1-50), and proteins are huge chains of #text(sym.alpha)-amino acids (hundreds to thousands). What gives proteins and (to a lesser extent) peptides their structure? Many different factors. It's common to group these into four groups. 
+Peptides are small chains of amino acids (like 1-50), and proteins are huge chains of $alpha$-amino acids (hundreds to thousands). What gives proteins and (to a lesser extent) peptides their structure? Many different factors. It's common to group these into four groups. 
 + Primary: The amino acid chain itself. This is formed via condensation reactions between the carboxyl and amine groups of successive amino acids.
 + Secondary: Non-Covalent bonds between just the chain (not the attached R-groups) which allows things like coils to form.
 + Tertiary: The full 3D structure of a single amino acid chain, formed using forces between the R-groups attached to the amino acids.
