@@ -18,31 +18,31 @@
     ).map(str).join(".")
 
     let serial_label = label(class + " " + serial_num)
-    block()[
-      #block(above: 8pt, below: 4pt)[
-        #if name != "" [
-          #columns(2)[
-            #align(left)[*#name*]
-            #colbreak()
-            #if number [
-              #align(right)[*#class #serial_num #serial_label #block_counter.step()*]
-            ]
+    block(
+      above: 8pt,
+      radius: (top: 4pt),
+      inset: (left: 8pt, right: 8pt, top: 4pt, bottom: 4pt),
+      fill: fill.saturate(60%).darken(20%).rotate(10deg),
+      if name != "" [
+        #columns(2)[
+          #align(left)[*#name*]
+          #colbreak()
+          #if number [
+            #align(right)[*#class #serial_num #serial_label #block_counter.step()*]
           ]
-        ] else if number [
-          *#class #serial_num #serial_label #block_counter.step()*
         ]
+      ] else if number [
+        *#class #serial_num #serial_label #block_counter.step()*
       ]
-
-      #block(
-        above: 4pt,
-        fill:fill,
-        width: 100%,
-        inset:8pt,
-        radius: 4pt,
-        stroke:stroke,
-        body
-      )
-    ]
+    )
+    block(
+      above: 0pt,
+      fill:fill,
+      width: 100%,
+      inset: (left: 8pt, right: 8pt, top: 2pt, bottom: 4pt),
+      radius: (bottom: 4pt),
+      body
+    )
   }
 }
 
