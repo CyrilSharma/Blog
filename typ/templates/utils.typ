@@ -49,6 +49,40 @@
   }
 }
 
+#let css-add(key, value) = {
+  return key + ": " + value + ";";
+}
+
+#let css-radius(v) = {
+  let style = ()
+  if type(v) in (relative, length) {
+    style.push(css-add("border-radius", css-len(v)));
+  } else if type(v) == dictionary {
+    let top = v.at("top", default: none);
+    let right = v.at("right", default: none);
+    let bottom = v.at("bottom", default: none);
+    let left = v.at("left", default: none);
+    // style.push(repr(top))
+    if top != none {
+      style.push(css-add("border-top-left-radius", css-len(top)));
+      style.push(css-add("border-top-right-radius", css-len(top)));
+    }
+    if right != none {
+      style.push(css-add("border-top-right-radius", css-len(right)));
+      style.push(css-add("border-bottom-right-radius", css-len(right)));
+    }
+    if bottom != none {
+      style.push(css-add("border-bottom-left-radius", css-len(bottom)));
+      style.push(css-add("border-bottom-right-radius", css-len(bottom)));
+    }
+    if left != none {
+      style.push(css-add("border-top-left-radius", css-len(left)));
+      style.push(css-add("border-bottom-left-radius", css-len(left)));
+    }
+  }
+  style
+}
+
 #let mblock(..attrs, content) = [
   #context if shiroa-sys-target() == "html" {
     let style = ()
@@ -65,7 +99,8 @@
       style.push("background: " + attrs.at("fill").to-hex() + ";")
     }
     if attrs.at("radius", default: none) != none {
-      style.push("border-radius:" + css-len(attrs.at("radius")) + ";");
+      style += css-radius(attrs.at("radius"))
+      // style.push("border-radius:" + css-len(attrs.at("radius")) + ";");
     }
     if attrs.at("stroke", default: none) != none {
       style.push("border-color: " + attrs.at("stroke").to-hex() + ";")
