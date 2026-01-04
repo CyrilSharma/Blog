@@ -145,6 +145,9 @@ ol {
   margin-top: 0.5rem;
 }
 
+.prose div > p:last-child {
+  margin-bottom: 0;
+}
 .prose div > p:first-child {
   margin-top: 0;
 }

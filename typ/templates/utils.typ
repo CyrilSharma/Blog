@@ -89,10 +89,24 @@
     if attrs.at("inset", default: none) != none {
       let inset = attrs.at("inset")
       if type(inset) == length {
-        style.push("padding-left: " + repr(inset) + ";")
-        style.push("padding-right: " + repr(inset) + ";") 
-        style.push("padding-top: " + repr(inset) + ";")
-        style.push("padding-bottom: " + repr(inset) + ";") 
+        style.push(css-add("padding", repr(inset)));
+      } else if type(inset) == dictionary {
+        let top = inset.at("top", default: none);
+        let right = inset.at("right", default: none);
+        let bottom = inset.at("bottom", default: none);
+        let left = inset.at("left", default: none); 
+        if left != none {
+          style.push(css-add("padding-left", repr(left)));
+        }
+        if right != none {
+          style.push(css-add("padding-right", repr(right)) )
+        }
+        if top != none {
+          style.push(css-add("padding-top", repr(top)))
+        }
+        if bottom != none {
+          style.push(css-add("padding-bottom", repr(bottom))) 
+        }
       }
     }
     if attrs.at("fill", default: none) != none {
