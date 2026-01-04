@@ -85,14 +85,12 @@ Prolonged spiking activity is interesting, because it implies a single input can
 ]
 
 The system obeys the following differential equations.
-#align(center)[
-  #mitex(`
-    {\displaystyle I=C_{m}{\frac {{\mathrm {d} }V_{m}}{{\mathrm {d} }t}}+{\bar {g}}_{\text{K}}n^{4}(V_{m}-V_{K})+{\bar {g}}_{\text{Na}}m^{3}h(V_{m}-V_{Na})+{\bar {g}}_{l}(V_{m}-V_{l}),} \\
-    {\displaystyle {\frac {dn}{dt}}=\alpha _{n}(V_{m})(1-n)-\beta _{n}(V_{m})n} \\
-    {\displaystyle {\frac {dm}{dt}}=\alpha _{m}(V_{m})(1-m)-\beta _{m}(V_{m})m} \\
-    {\displaystyle {\frac {dh}{dt}}=\alpha _{h}(V_{m})(1-h)-\beta _{h}(V_{m})h}
-  `)
-]
+$
+  I = C_m (dif V_m)/(dif t) + macron(g)_"K" n^4 (V_m - V_K) + macron(g)_"Na" m^3 h(V_m - V_(N a)) + macron(g)_l (V_m - V_l), \
+  (d n)/(d t) = alpha_n (V_m)(1 - n) - beta_n (V_m) n \
+  (d m)/(d t) = alpha_m (V_m)(1 - m) - beta_m (V_m) m \
+  (d h)/(d t) = alpha_h (V_m)(1 - h) - beta_h (V_m) h
+$
 
 
 In order for a spike to occur, there has to be a large voltage drop across the voltage-gated channel. After the current spike, the capacitor gets over saturated and starts to discharge, effectively ending the spike. However, the resistors are also time-varying. Let's just look at $n$. When $n$ is large, the voltage drop is also large, so right after a spike $n$ is high and $V_m$ is high. Hence, $n$ is decreasing rapidly. Once the capacitor starts discharging, $n$ starts to increase again and eventually the voltage drop again will reach critical levels. This is an example of how repeated spiking can occur with a single neuron. Note that this isn't guaranteed to happen, the system could just decay to a steady state instead of overshooting, it all depends on how much current is being pumped in.

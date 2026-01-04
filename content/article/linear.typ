@@ -131,22 +131,22 @@ $
 
 For a symmetric matrix, all eigenvectors with different eigenvalues are orthogonal.
 
-#mitex(`
-  \text{dot}(Au, v) = \lambda_1 \text{dot}(u, v)\\
-  \text{dot}(Av, u) = \lambda_2 \text{dot}(u, v)\\
-  \text{dot}(Av, u) = \text{dot}(Au, v)
-`)
+$
+  "dot"(A u, v) = lambda_1 "dot"(u, v) \
+  "dot"(A v, u) = lambda_2 "dot"(u, v) \
+  "dot"(A v, u) = "dot"(A u, v)
+$
 
 The above facts directly imply the claim.
 
 == Odd Polynomials & The SVD
 Define $M^(2k + 1)  = M (M^top M)^K$. Then,
 
-#mitex(`
-M^\intercal M = \\(U\Sigma V^\intercal)^\intercal (U\Sigma V^\intercal) = (V \Sigma^\intercal U^\intercal) (U\Sigma V^\intercal) = V \Sigma^2 V^\intercal \\
-(M^\intercal M)^k = V \Sigma^{2k} V^\intercal \\
-M(M^\intercal M)^k = (U\Sigma V^\intercal)(V \Sigma^{2k} V^\intercal) = U\Sigma^{2k+1}V^\intercal
-`)
+$
+  M^top M = \(U Sigma V^top)^top (U Sigma V^top) = (V Sigma^top U^top)(U Sigma V^top) = V Sigma^2 V^top \
+  (M^top M)^k = V Sigma^(2 k) V^top \
+  M(M^top M)^k = (U Sigma V^top)(V Sigma^(2 k) V^top) = U Sigma^(2 k + 1) V^top
+$
 
 The main observation here is that $M^top M$ has a rather simple form in terms of its SVD which makes its powers well-behaved.
 
