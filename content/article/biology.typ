@@ -387,7 +387,7 @@ Hexoses (six Carbons) are used in cellulose and glycogen (think energy storage, 
   ),
 )
 
-Pentoses show up in DNA. The chemical on the right is called Ribose. Change one of the OH's to H, and it's called Deoxyribose which you should recognize from the full name of DNA!
+Pentoses show up in DNA. Both molecules above are forms of Ribose. Change one of the OH's to H, and it's called 2-Deoxyribose which you should recognize from the full name of DNA!
 
 One cool thing about Carbohydrates is they can bond from any of their OHs. This means there are quite a lot more ways to link together carbohydrates then there are for Amino Acids or Lipids. Furthermore, even for a fixed linkage site, there are multiple ways to join the two OHs, further increasing diversity.
 
@@ -400,3 +400,56 @@ Antigens are little things that stick outside a cell that are responsible for te
 Antigens often are Carbohydrates! In particular, for blood what differentiates the O, A and B blood groups is just a matter of one or two carbohydrates present on the antigen.
 
 This has lead to a pretty cool piece of biotech: modify the antigens of a given type of blood to make it look like the O blood group, which would theoretically allow blood donated from someone to be given to anyone else.
+
+== Nucleic Acids
+The three ingredients of a nuclear acid are a sugar (Ribose or 2-Deoxyribose), a Phosphate, and a nuclear base.
+#align(center, image("../img/nucleic-acids.png", width: 100%))
+
+Nucleic acids are used for more than just DNA. ATP and GTP are made with almost the same recipe as a Nucleic acid.
+
+Here's some common terminology.
+*Nucleoside*: Ribose + Nucleic Base
+*Nucleotide*: *Nucleoside* + Phosphate
+
+The most stable form for DNA's attached Phosphate is this.
+#align(center, graphic(skeletize({
+  fragment("R_1")
+  single()
+  fragment("O")
+  single()
+  fragment("P")
+  branch({
+    double(angle: 2)
+    fragment("O")
+  })
+  branch({
+    single(angle: -2)
+    fragment("O^-")
+  })
+  single()
+  fragment("O")
+  single()
+  fragment("R_2")
+})))
+
+That O#super[-] makes DNA quite acidic, hence the name Nucleic Acid.
+
+=== DNA Structure
+The Phosphate and Sugars link to form a backbone. Once again, the backbone uses bonds formed via condensation reactions! Now, two such backbones are wound together to form a double-helix (one oriented opposite to the other), and the nucleic bases pair off in the center via Hydrogen bonding to form the interior of DNA. 
+
+*Fun Facts*
++ Interestingly, the GC bond consists of 3 Hydrogen bonds, while the AT bond consists of just 2. This makes the GC bond a bit more structurally stable.
++ A fascinating property of DNA is if you heat it, it will come apart, but once the heat is removed it will naturally reform. This is another example of self-healing in Biology!
+
+=== DNA vs. RNA
+#table(
+  columns: 2,
+  [*DNA*],
+  [*RNA*],
+  [Uses 2-Deoxyribose (needs more stability)],
+  [Uses Ribose],
+  [AGCT],
+  [AGCU],
+  [Usually double-stranded (durable, information storage)],
+  [Found in a million different forms (active, protein building)]
+)
