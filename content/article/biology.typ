@@ -317,13 +317,13 @@ So generally, rich in C-H is likely to be a lipid, rich in C-OH is likely to be 
   graphic(
     skeletize({
       fragment("O")
-      cycle(6, {
+      cycle(6, absolute: (180deg + 30deg), {
         for i in range(6) {
           single()
           branch({
             single()
-            if i == 3 {
-              single(angle: 1)
+            if i == 0 {
+              single(angle: 2)
             }
             fragment("OH")
           })
@@ -342,7 +342,7 @@ So generally, rich in C-H is likely to be a lipid, rich in C-OH is likely to be 
       }
     })
   )
-)
+) <Ribose>
 
 Hexoses (six Carbons) are used in cellulose and glycogen (think energy storage, sugars).
 
@@ -352,12 +352,14 @@ Hexoses (six Carbons) are used in cellulose and glycogen (think energy storage, 
   graphic(
     skeletize({
       fragment("O")
-      cycle(5, {
+      cycle(5, absolute: (180deg + 36deg), {
         for i in range(5) {
           single()
+          fragment("C^" + str(5 - (i + 1)))
           branch({
             single()
-            if i == 3 {
+            if i == 0 {
+              fragment("C^5")
               single(angle: 2)
             }
             fragment("OH")
@@ -435,7 +437,7 @@ The most stable form for DNA's attached Phosphate is this.
 That O#super[-] makes DNA quite acidic, hence the name Nucleic Acid.
 
 === DNA Structure
-The Phosphate and Sugars link to form a backbone. Once again, the backbone uses bonds formed via condensation reactions! Now, two such backbones are wound together to form a double-helix (one oriented opposite to the other), and the nucleic bases pair off in the center via Hydrogen bonding to form the interior of DNA. 
+The Phosphate and Sugars link to form a backbone, via #link(<Ribose>)[the fifth and third carbons]. The orientation of the backbone is thus described as 5' to 3' or 3' to 5' Once again, the backbone uses condensation reactions! Now, two such backbones are wound together to form a double-helix (one oriented opposite to the other), and the nucleic bases pair off in the center via Hydrogen bonding to form the interior of DNA. 
 
 *Fun Facts*
 + Interestingly, the GC bond consists of 3 Hydrogen bonds, while the AT bond consists of just 2. This makes the GC bond a bit more structurally stable.
@@ -454,4 +456,81 @@ The Phosphate and Sugars link to form a backbone. Once again, the backbone uses 
   [Found in a million different forms (active, protein building)]
 )
 
+= Gene Expression
+== DNA Replication
++ Unravel DNA (it's wrapped around Histone proteins to form Chromatin, which are in turn wrapped into several more complex structures until you arrive at a Chromosome).
++ Use Helicase to find an origin of replication and start unzipping the DNA. Places that will cleave easily have lots of As and Ts (only two instead of three hydrogen bonds).
++ Use Single Strand Binding Proteins (SSBPs) to sit on the backbone of each strand and prevent the cleaved DNA from reforming.
++ Use RNA Polymerase to create a primer strand of RNA for DNA Polymerase to latch onto.
++ Using the primer, let DNA Polymerase start building the leading strand. DNA Polymerase always lays things down 5' to 3'. Therefore, the strand attached to the leading strand will go from 3' to 5'.
++ Later, use RNAse to cut out the RNA primer, and use Ligase to fill in the gap.
++ Occasionally do the same procedure on the lagging strand (you make short chunks at a time, called Okazaki strands).
++ Lastly, throughout this process use Topoisomerase to cut the DNA and relieve the built-up tension. 
+
+There's a slight problem with primers. Primers are a temporary piece of RNA that is used to get DNA polymerase rolling, but is later removed. This gap can be filled by using polymerase with the section _before_ the gap as a primer. However, at the ends of chromosomes this no longer works, and polymerase cannot repair the gap. There are two ways to combat this.
++ Store irrelevant genetic material at the end (Telomeres) so that losing it is no big deal. This only works so many times, and eventually cells will begin to get rid of useful genetic material.
++ For Germ and Stem cells (who need perfect copies of the genome), there's an enzyme called Telomerase which will repair the ends of the DNA strand.
+
+You might wonder why every cell doesn't use Telomerase. It's because losing your telomeres puts a cap on how many times a cell can replicate, and hence a cap on how many mutations you can accumulate. For this reason, Cancer almost always finds a way to synthesize Telomerase.
+
+== Replication Accuracy
+DNA replication in Eukaryotes is remarkably accurate. DNA Polymerase actually can check if the previous base pair is wrong, and if so remove it!
+
+This increase in accuracy comes with a cost in speed. DNA in Eukaryotes is transcribed about 30-50 base pairs per second, whereas Bacteria can do about 1000 base pairs per second. Eukaryotes retain the accuracy of this process while speeding it up by starting in many places at once.
+
+Furthermore, Eukaryotes have very sophisticated mechanisms to repair broken DNA e.g. from radiation, chemicals, etc. These are called the *Guardians of the Genome*. In all cases it involves some enzyme to cleave out mistakes, plus DNA polymerase and ligase to clean things up afterward.
++ Glycosylase can remove bad bases at arbitrary points in DNA.
++ Radiation can cause Thymine to bond with itself on the same strand. Exonuclease fixes this by cutting out a large portion of the strand (12 BPs) as that is about how far the structural damage extends.
+
+== Transcription
+Very similar to Replication. The major differences are as follows.
++ Use Ribose instead of 2-Deoxyribose (ATP vs. dATP, CTP vs. dCTP, etc.)
++ Only transcribe the portions of DNA relevant to making proteins.
++ Only transcribe one strand at a time.
++ Use Uracil instead of Thymine.
++ RNA Polymerase does not need a primer, and performs some of the functions of Helicase.
++ Higher error rate.
+
+Transcription is shortly followed by a few other processes. 
+
+#definition(name: [5' Capping])[
+  Soon after the RNA is synthesized, a certain molecule is attached to its 5' end. This essentially marks the RNA as mRNA, so enzymes (such as Exonuclease) will know to handle it differently.
+]
+
+#definition(name: [3' Polyadenylation])[
+  On the other side of the RNA, a bunch of Adenine molecules are added. Why?
+  - Safeguards the cell from Exonuclease (makes it target the As instead of coding RNA).
+  - Acts as an in-built timer for when the mRNA should expire.
+  - Marks the mRNA as something that should leave the Nucleus.
+]
+
+#definition(name: "Splicing")[
+  Now, a bunch of genetic material is removed from the mRNA. The pieces that are removed are called introns, and the pieces that are removed are called exons.
+  - This greatly increases the diversity of proteins a sequence of DNA can encode for.
+]
+
+== Transcription Control
+Because a protein's utility can depend on a lot of factors, its essential that a cell has fine-grained control over when each protein is transcribed. This is accomplished through several mechanisms, often called *Transcription Factors*.
++ Promoters. These are regions of DNA (located near a transcription site) attracts certain proteins which in turn attract RNA polymerase to the transcription site.
++ Enhancers. These are similar to Promoters, but they can be located far away from the transcription site, and they have different strategies for enhancing transcription.
++ Chromatin Remodeling. Histone has a bunch of positive charge which allows it to hold onto DNA. You need to unravel DNA in order to transcribe it, hence one way of increasing transcription rates is to neutralize some of the Histone's charge. There are other compounds which can be used to make Chromatin more stable, which has the opposite effect.
+
+== Translation
+#definition(name: "Codon")[
+  A sequence of three letters of RNA. Each sequence encodes one Amino acid. There are also codons to encode where translation should start and where it should stop.
+]
+
+#definition(name: "tRNA")[
+  Pre-existing molecular adaptors which carry Amino acids. One end attaches to an Amino acid, the other end has what is called an Anti-Codon which allows it to attach to the relevant piece of RNA.
+]
+
+#definition(name: "Ribosomes")[
+  Made up of rRNA, these complexes translate RNA to Proteins.
+]
+
+The process looks like this. Part of the Ribosome finds a start codon and latches on. Then the tRNA that corresponds to the start codon latches onto this. Finally, the top half of the Ribosome latches onto _this_. Then, tRNA molecules keep floating around and bumping into the Ribosome. Only the tRNA with the appropriate anti-codon is able to bind to the RNA and donate its amino acid to the new protein. This continues on until you reach an end codon. At this point either a protein release factor is bound or a suppressor tRNA, in either case stopping the process.
+
 = Cells
+Jot down some stuff on endocytosis, exocytosis, different concentrations across membranes, cytoskeleton, microtubules.
+
+*TODO*: Do the remaining assignments.
