@@ -24,6 +24,8 @@
   set terms(separator:"\n")
   show terms: it => {
     block(
+      above: 16pt,
+      below: 16pt,
       fill: rgb("#eceffe"),
       inset: 4pt,
       stroke: 4pt + rgb(147, 186, 255),
