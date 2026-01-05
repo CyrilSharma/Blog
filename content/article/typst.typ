@@ -135,6 +135,7 @@ I can do quotes!
 #quote[Typst is pretty cool guys]
 
 I can also do terms.
+
 / Agency: The ability to choose your path independently of the environment you're placed in.
 / Book: A fun thing people should use more.
 

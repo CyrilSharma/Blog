@@ -21,6 +21,17 @@
     title: title,
   )
 
+  set terms(separator:"\n")
+  show terms: it => {
+    block(
+      fill: rgb("#eceffe"),
+      inset: 4pt,
+      stroke: 4pt + rgb(147, 186, 255),
+      radius: 4pt,
+      it
+    )
+  }
+
   if not sys-is-html-target {
     // Mimic a Title.
     align(center, text(18pt, weight: "bold", title))

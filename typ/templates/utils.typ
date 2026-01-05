@@ -116,9 +116,11 @@
       style += css-radius(attrs.at("radius"))
       // style.push("border-radius:" + css-len(attrs.at("radius")) + ";");
     }
-    if attrs.at("stroke", default: none) != none {
-      style.push("border-color: " + attrs.at("stroke").to-hex() + ";")
-      style.push("border-width: 2pt; border-style: solid;")
+    let stroke = attrs.at("stroke", default: none)
+    if stroke != none {
+      style.push(css-add("border-color", stroke.paint.to-hex()))
+      style.push(css-add("border-width", repr(stroke.thickness)));
+      style.push(css-add("border-style", "solid"));
     }
     let above = attrs.at("above", default: none)
     let below = attrs.at("below", default: none)
