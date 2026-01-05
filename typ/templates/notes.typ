@@ -19,7 +19,7 @@
 
     let serial_label = label(class + " " + serial_num)
     block(
-      above: 8pt,
+      above: 16pt,
       radius: (top: 4pt),
       inset: (left: 8pt, right: 8pt, top: 4pt, bottom: 4pt),
       fill: fill.saturate(60%).darken(20%).rotate(10deg),
@@ -37,6 +37,7 @@
     )
     block(
       above: 0pt,
+      below: 16pt,
       fill:fill,
       width: 100%,
       inset: (left: 8pt, right: 8pt, top: 2pt, bottom: 4pt),
