@@ -283,9 +283,7 @@ hr {
 }
 
 dl {
-  border: 4px solid rgb(84, 84, 84);
-  border-radius: 4px;
-  margin-top: 8px;
+  margin-top: 0;
   margin-bottom: 0;
 }
 dt {
