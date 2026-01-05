@@ -336,8 +336,7 @@ figcaption {
   display: grid;
   place-items: center;
   overflow-x: auto;
-  padding: 0.5em 0;
-  margin: 0 0;
+  padding: 0em 0;
 }
 .title h1 {
   text-align: center;
@@ -360,6 +359,7 @@ html.frame {
 
 .block-equation svg,
 .block-equation svg * {
+  margin-top: 0;
   opacity: 1 !important;
   fill: var(--math-color) !important;
   color: var(--math-color) !important;
