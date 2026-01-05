@@ -10,10 +10,10 @@
 = Inequalities
 #definition(name: "Markov's Inequality")[$ P(X > t) <= E(X)/t $]
 #proof[
-  $ t P(X > t) &<= &&E(X | X > t) P(X > t) \
-             &<= &&P(X > t) E(X | X > t) + \
-             &    &&P(X <= t) E(X | X <= t) \
-             &= &&E(X) \
+  $ t P(X > t) &<= E(X | X > t) P(X > t) \
+             &<= E(X | X > t)P(X > t) + \
+             &quad  E(X | X <= t)P(X <= t)  \
+             &= E(X) \
    P(X > t) &<= E(X)/t $]
 
 #definition(name: "Chevyshev's Inequality")[$ P(X - E(X) >= epsilon) <= V(x)/epsilon^2 $]
