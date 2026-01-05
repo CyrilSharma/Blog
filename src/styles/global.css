@@ -145,6 +145,8 @@ ol {
   margin-top: 0.5rem;
   hyphens: auto;
   text-align: justify;
+  letter-spacing: 0.01em;
+  line-height: 2rem;
 }
 
 .prose div > p:last-child {
@@ -385,6 +387,7 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,
   font-size: inherit;
   line-height: inherit;
   display: inline;
+  letter-spacing: 0.01em;
 }
 
 .prose h1 a:hover, .prose h2 a:hover, .prose h3 a:hover, .prose h4 a:hover, .prose h5 a:hover, .prose h6 a:hover {
