@@ -12,7 +12,11 @@
 = Decompositions
 
 == Jordon Normal Form
-Not every matrix is diagonalizable, but every matrix can still be written as $P^(-1)Q P$. The Jordan Normal form chooses $Q$ to be block diagonal, where “blocks” correspond to repeated eigenvalues, and the only off-diagonal entries have value $1$, are right above the diagonal and have an equal left and bottom child.
+#theorem[
+  Every square matrix can be written as $P^(-1)Q P$ where $Q$ is block-diagonal.
+]
+
+The "blocks" in the block diagonal correspond to repeated eigenvalues, and the only off-diagonal entries have value $1$, are right above the diagonal and have an equal left and bottom child.
 $
   Q =mat(
     lambda_1, 1, 0, 0, 0, 0;
@@ -91,25 +95,30 @@ Where the last step follows from $R$ being triangular.
 
 = Algorithms
 == Richardson Iteration
-Suppose we want to solve $A x = b$. Computing inverses is expensive, and not easily done in parallel. Instead, we can run the following equation until we reach a fixed point.
-$
-  x_(k + 1) = x_k + w(b - A x_k)
-$
+#theorem[
+  Suppose we want to solve $A x = b$. Computing inverses is expensive, and not easily done in parallel. Under certain conditions, we can instead run the following equation until we reach a fixed point.
+  $
+    x_(k + 1) = x_k + w(b - A x_k)
+  $
+]
+#proof[
+  Subtracting the true answer $x$ from both sides, and writing $e_k = x_k - x$.
+  $
+    e_(k + 1) = e_k + w(b - A(x + e_k)) = \
+    e_k + w((b - A x) - e_k) = e_k + w A e_k = (I - w A)e_k  
+  $
 
-Subtracting the true answer $x$ from both sides, and writing $e_k = x_k - x$.
-$
-  e_(k + 1) = e_k + w(b - A(x + e_k)) = \
-  e_k + w((b - A x) - e_k) = e_k + w A e_k = (I - w A)e_k  
-$
-
-So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i|$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence.
+  So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i|$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence.
+]
 
 == Preconditioning
-Again we want to solve $A x = b$. Instead of doing it directly let's first rewrite it as $A P^(-1) (P x) = b$. Now let's do this in two pieces.
-$
-  A P^(-1) y = b \
-  P x = y
-$
+#definition[
+  Again we want to solve $A x = b$. Instead of doing it directly let's first rewrite it as $A P^(-1) (P x) = b$. Now let's do this in two pieces.
+  $
+    A P^(-1) y = b \
+    P x = y
+  $
+]
 
 Why might this be a good idea? Well, methods like the Richardson Iteration require A's condition number to be near $1$ for fast convergence. This means the largest and smallest eigenvalues are very close and so $w$ can be chosen to make the error rapidly decay. However, $A$ might not have this property, but $A P^(-1)$ and $P$ might, given a good choice of $P$.
 
@@ -183,7 +192,7 @@ $]
     )
   $
 
-  Because $A$ is symmetric its principal submatrix $B$ is also symmetric. Thus, there is at least one more eigenvector and it's orthogonal to $u_1$ by construction. This lets us construct $A_(n - 2)$ and we can iterate this process until we arrive at the following statement.
+  Because $A_(n - 1)$ is symmetric its principal submatrix $B$ is also symmetric. Observe that any eigenvector $b$ for $B$ can produce an eigenvector for $A_(n - 1)$, $vec(0, b)$. We can use the first column of $A_(n - 1)$ and $vec(0, b)$ to orthogonalize $A_(n - 1)$, and we can keep doing this until we arrive at $A_1$ which is completely diagonal.
   $
     Q_1 .... Q_n A_n Q_n^top ... Q_1 ^top = Q A_n Q^top = D
   $
@@ -192,13 +201,22 @@ $]
 ]
 
 == Odd Polynomials & The SVD
-Define $M^(2k + 1)  = M (M^top M)^K$. Then,
+#definition[$
+  M^(2k + 1)  = M (M^top M)^k
+$]
 
-$
+#theorem[
+  Given the SVD of $M$ is $U Sigma V$...
+  $
+    M^(2k + 1) = U Sigma^(2k + 1) V
+  $
+]
+
+#proof[$
   M^top M = \(U Sigma V^top)^top (U Sigma V^top) = (V Sigma^top U^top)(U Sigma V^top) = V Sigma^2 V^top \
   (M^top M)^k = V Sigma^(2 k) V^top \
   M(M^top M)^k = (U Sigma V^top)(V Sigma^(2 k) V^top) = U Sigma^(2 k + 1) V^top
-$
+$]
 
 The main observation here is that $M^top M$ has a rather simple form in terms of its SVD which makes its powers well-behaved.
 
