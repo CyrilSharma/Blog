@@ -531,6 +531,14 @@ Because a protein's utility can depend on a lot of factors, its essential that a
 The process looks like this. Part of the Ribosome finds a start codon and latches on. Then the tRNA that corresponds to the start codon latches onto this. Finally, the top half of the Ribosome latches onto _this_. Then, tRNA molecules keep floating around and bumping into the Ribosome. Only the tRNA with the appropriate anti-codon is able to bind to the RNA and donate its amino acid to the new protein. This continues on until you reach an end codon. At this point either a protein release factor is bound or a suppressor tRNA, in either case stopping the process.
 
 = Cells
-Jot down some stuff on endocytosis, exocytosis, different concentrations across membranes, cytoskeleton, microtubules.
+/ Endocytosis: Taking something into the cell, via wrapping it in a portion of cell membrane.
+/ Exocytosis: Pushing something out of a cell, opposite process of Endocytosis.
+/ Cytoskeleton: A complex network of proteins that fills the cell and gives it its resistance to deformation. 
+/ Microtubules: The hollow protein tubes that make up the Cytoskeleton.
 
-*TODO*: Do the remaining assignments.
+*TODO*: Mitosis + Meiosis
+
+== Genetics
+*TODO*: Mendel's laws, Sex Linked Inheritance, Linkage, Traits skipping generations
+// Probably change to linkage or something...
+#graphic(image("../img/Example.excalidraw.svg"))

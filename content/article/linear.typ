@@ -47,9 +47,13 @@ Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Sc
 
 Intriguingly, you can actually do similar stuff for continuous transformations (like multiplying a function by x).  Diagonalization corresponds to untangling the systems' dynamics, it's pretty cool!
 
-== QR Decomposition <Example>
-Take an input a matrix $A in bb(R)^(n times m), n >= m$. Normalize the first column. Now remove the component of the second column along the first column and normalize. Repeat this process until you've orthogonalized every column of $A$. This is the $Q$ matrix. By construction, the $i$th column of $A$ can be written as a weighted sum of columns up to $i$ in $Q$, and hence we get $A = Q R$.
-
+== QR Decomposition
+#theorem[
+  Any matrix $A$ can be written as $Q R$, where $Q$ is orthonormal.
+]
+#proof[
+  Take an input a matrix $A in bb(R)^(n times m), n >= m$. Normalize the first column. Now remove the component of the second column along the first column and normalize. Repeat this process until you've orthogonalized every column of $A$. This is the $Q$ matrix. By construction, the $i$th column of $A$ can be written as a weighted sum of columns up to $i$ in $Q$, and hence we get $A = Q R$.
+]
 This decomposition is handy for solving linear equations where the $n != m$ and so the inverse is not defined. Consider the case of $n > m$. $n > m$ can be handled similarly.
 $
   A x = b arrow Q R x = b \ mat(Q_1, Q_2)mat(R_1; 0) x = b \ x = R_1^(-1)Q_1^top b
@@ -61,24 +65,29 @@ This can also be used for computing determinants, since $Q$ can be chosen to hav
 Where the last step follows from $R$ being triangular.
 
 == SVD
-This is a short proof sketch of the SVD. Using #link(<symmetric>)[what we know] about symmetric matrices we can conclude all the eigenvalues of $A^top A$ are real and all eigenvectors with different eigenvalues are orthogonal. Furthermore, using the Gram-Schmidt process, we can find an orthogonal basis that spans every eigenspace (i.e. the space of vectors which correspond to $A - lambda I  = 0$). Hence, we can construct an orthonormal basis for $A^T A$ using its eigenvectors meaning $A^T A$ is diagonalizable.
-$
-  A^top A = V D V^top
-$
+#theorem[
+  Any matrix $A in bb(R)^(n times m)$ with rank $r$ can be written as $A = U Sigma V^top$ where $U in bb(R)^(n times r), V in bb(R)^(m times r), Sigma in bb(R)^(r times r)$, $U$, $V$ are orthonormal, and $Sigma$ is diagonal and non-negative.
+]
+#proof[
+  Since #link(<diagonalizable>)[symmetric matrices are diagonalizable], we can write
+  $
+    A^top A = V D V^top
+  $
 
-$D$ is a diagonal matrix with all positive entries. This is because
-$
-  ||A x|| >= 0 arrow x^top (A^top A)x = lambda x^top x >= 0 arrow lambda >= 0
-$
+  Where $V$ is an orthonormal matrix and $D$ is a diagonal matrix. $D$ has all positive entries. This is because
+  $
+    ||A x|| >= 0 arrow x^top (A^top A)x = lambda x^top x >= 0 arrow lambda >= 0
+  $
 
-Now let $A in bb(R)^(n times m)$ and suppose $A^top A$ has rank $r$. Then, only the first $r$ columns of $D$ have non-zero entries, and only the first $r$ rows of $V^top$ matter. Hence, we can write $V in bb(R)^(m times r), D in bb(R)^(r times r)$. Now let $Sigma = sqrt(D)$ and let $U =  A V Sigma^(-1) in bb(R)^(n times r)$. By construction, $A = U Sigma V^top$.
+  Now let $A in bb(R)^(n times m)$ and suppose $A^top A$ has rank $r$. Then, only the first $r$ columns of $D$ have non-zero entries, and only the first $r$ rows of $V^top$ matter. Hence, we can write $V in bb(R)^(m times r), D in bb(R)^(r times r)$. Now let $Sigma = sqrt(D)$ and let $U =  A V Sigma^(-1) in bb(R)^(n times r)$. By construction, $A = U Sigma V^top$.
 
-Finally, observe $U$ is orthonormal. We use the fact that $V^top A^top A V = D$
-$
-  U^T U = Sigma^(-1) V^top A^top A V Sigma = Sigma^(-1) D Sigma^(-1) = Sigma^(-1) Sigma^2 Sigma^(-1) = I
-$
+  Finally, observe $U$ is orthonormal. We use the fact that $V^top A^top A V = D$
+  $
+    U^T U = Sigma^(-1) V^top A^top A V Sigma = Sigma^(-1) D Sigma^(-1) = Sigma^(-1) Sigma^2 Sigma^(-1) = I
+  $
 
-This decomposition for $A$ is known as the reduced SVD. 
+  This decomposition for $A$ is known as the reduced SVD. 
+]
 
 = Algorithms
 == Richardson Iteration
@@ -108,36 +117,79 @@ Why might this be a good idea? Well, methods like the Richardson Iteration requi
 = Properties
 
 == Trace
-$
+#theorem[The trace is invariant to cyclic permutations.]
+#proof[$
 sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = \
 sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = \
 sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
-$
+$]
 
+Furthermore, 
 $
 T(P^(-1) D P) = T(D) = sum_i lambda_i
 $
 
 So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
 
-== Symmetric Matrices <symmetric>
-All eigenvalues of a symmetric real matrix are real.
+== Orthonormal Matrices
+#theorem[The product of orthonormal matrices is also orthonormal.]
+#proof[$
+  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
+  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
+  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
+$]
 
-$
+== Symmetric Matrices
+#theorem[All eigenvalues of a symmetric real matrix are real.]
+#proof[$
   "dot"(A u, u) = u^dagger A^dagger u = u^dagger A u = lambda u^dagger u \
   "dot"(A u, u) = (lambda u)^dagger u = lambda^dagger u^dagger u \
   lambda^dagger = lambda
-$
+$]
 
-For a symmetric matrix, all eigenvectors with different eigenvalues are orthogonal.
-
-$
+#theorem[For a symmetric matrix, all eigenvectors with different eigenvalues are orthogonal.]
+#proof[$
   "dot"(A u, v) = lambda_1 "dot"(u, v) \
   "dot"(A v, u) = lambda_2 "dot"(u, v) \
-  "dot"(A v, u) = "dot"(A u, v)
-$
+  "dot"(A v, u) = "dot"(A u, v) \
+  lambda_1 "dot"(u, v) = lambda_2 "dot"(u, v) \
+  "dot"(u, v) = 0 
+$]
 
-The above facts directly imply the claim.
+#theorem[Symmetric Matrices are diagonalizable.] <diagonalizable>
+#proof[
+  We know all the eigenvalues of the symmetric matrix $A_n$ are real. Hence, $A_n$ has some real eigenvector corresponding to some real eigenvalue, call this $u_1$. Extend $u_1$ to an orthonormal basis $u_1, ..., u_n$ for $bb(R)^n$. Let $U_n$ be the orthonormal matrix whose columns are $u_1, ... u_n$. Now, define $A_(n - 1)$ as
+  $
+    A_(n - 1) = U_n A_n U_n^top
+  $
+
+  Observe $A_(n - 1)$ is symmetric.
+  $
+    A_(n - 1)^top = U_n A_n^top U_n^top = A_(n - 1) 
+  $
+
+  Hence, $A_(n - 1)$ is symmetric. Furthermore, 
+  $
+    A_(n - 1)vec(1, 0, ..., 0) = U_n A_n U_n^top vec(1, 0, ..., 0) = \
+    U_n A_n u_1 = U_n lambda_1 u_1 = \
+    vec(lambda_1, 0, ..., 0)
+  $
+
+  Combining the two properties, $A_(n - 1)$ looks like this.
+  $
+    mat(
+      lambda_1, 0;
+      0, B;
+    )
+  $
+
+  Because $A$ is symmetric its principal submatrix $B$ is also symmetric. Thus, there is at least one more eigenvector and it's orthogonal to $u_1$ by construction. This lets us construct $A_(n - 2)$ and we can iterate this process until we arrive at the following statement.
+  $
+    Q_1 .... Q_n A_n Q_n^top ... Q_1 ^top = Q A_n Q^top = D
+  $
+
+  Where $D$ is a diagonal matrix consisting of the eigenvalues of $A_n$ and $Q$ is the product of the orthonormal matrices. Since the product of orthonormal matrices is also orthonormal, $Q^top = Q^(-1)$ and thus $A_n$ is diagonalizable.
+]
 
 == Odd Polynomials & The SVD
 Define $M^(2k + 1)  = M (M^top M)^K$. Then,
