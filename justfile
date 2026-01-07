@@ -4,4 +4,4 @@ write:
 
 make:
   ls content/article/* | entr make meta &
-  make watch
+  make watch &
