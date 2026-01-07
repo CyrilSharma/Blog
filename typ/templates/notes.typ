@@ -40,7 +40,7 @@
       below: 16pt,
       fill:fill,
       width: 100%,
-      inset: (left: 8pt, right: 8pt, top: 2pt, bottom: 4pt),
+      inset: (left: 8pt, right: 8pt, top: 4pt, bottom: 4pt),
       radius: (bottom: 4pt),
       body
     )
