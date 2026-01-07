@@ -61,6 +61,7 @@ def main(argv) -> int:
   parser.add_argument("--out", required=True, help="Output JSON path")
   parser.add_argument("--root", default=".", help="Typst project root")
   parser.add_argument("--features", default="html", help="Features flag for typst query")
+  parser.add_argument("--html-dir", default="html", help="Directory containing generated HTML (one subdir per slug)")
   parser.add_argument("files", nargs="+", help="Typst source files")
   args = parser.parse_args(argv)
 
@@ -73,6 +74,29 @@ def main(argv) -> int:
     path = Path(src)
     slug = path.stem
     meta[slug] = query_frontmatter(path, root, args.features)
+
+  # Add any manual/generated HTML folders not covered by Typst sources.
+  html_dir = Path(args.html_dir)
+  if html_dir.exists():
+    for html_subdir in html_dir.iterdir():
+      if not html_subdir.is_dir():
+        continue
+      index_path = html_subdir / "index.html"
+      if not index_path.exists():
+        continue
+      slug = html_subdir.name
+      if slug in meta:
+        continue
+      # Default metadata when no frontmatter is available.
+      mtime = index_path.stat().st_mtime
+      meta[slug] = {
+        "title": slug.replace("-", " ").replace("_", " ").title(),
+        "author": "",
+        "desc": "",
+        "date": __import__("datetime").datetime.fromtimestamp(mtime).isoformat(),
+        "updatedDate": "",
+        "tags": [],
+      }
 
   with out_path.open("w", encoding="utf-8") as f:
     json.dump(meta, f, indent=2, ensure_ascii=False)
