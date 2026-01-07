@@ -223,3 +223,15 @@ The main observation here is that $M^top M$ has a rather simple form in terms of
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
 Anyway, this gives you a lot of power. Muon uses this insight to cheaply "orthogonalize" a matrix e.g. converting $A = U Sigma V^T$ to $U I V^T$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD has positive singular values.
+
+== Definite and Indefinite
+#definition[
+  A matrix $A$ is positive-definite if
+  $
+    x^top A x > 0, forall x
+  $
+
+  You can similarly definite negative definite and the semi variants which allow $x^top A x = 0$. If it doesn't fit into any of these categories, it's called indefinite.
+]
+
+The best way to think about these matrices is in terms of the $x^top A x$ object. This object is literally a quadratic equation in high dimensions. For a definite matrix, all choices of $x$ decrease $x^top A x$, or all directions increase $x^top A x$. Hence, you have a nice bowl shaped quadratic and this makes optimization easy. On the other hand, if some directions move you up and some move you down, you end up with a saddle. This can mess up gradient-descent based optimization methods.
