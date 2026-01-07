@@ -542,4 +542,3 @@ The process looks like this. Part of the Ribosome finds a start codon and latche
 *TODO*: Mendel's laws, Sex Linked Inheritance, Linkage, Traits skipping generations
 // Probably change to linkage or something...
 #graphic(image("../img/Example.excalidraw.svg"))
-hello
