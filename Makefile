@@ -22,8 +22,6 @@ typst: $(TYP_HTML)
 meta: $(META_JSON)
 
 watch:
-	@echo "Watching Typst sources and regenerating HTML/meta..."
-	@find $(TYP_SRC_DIR) $(TYP_OUT_DIR) -type f \( -name '*.typ' -o -name 'index.html' \) | entr -d sh -c 'python3 $(META_SCRIPT) --out $(META_JSON) --root . --features html --html-dir $(TYP_OUT_DIR) $(TYP_SRC_ESC)' &
 	@for src in $(TYP_SRC); do \
 	  slug=$$(basename $$src .typ); \
 	  out="$(TYP_OUT_DIR)/$$slug/index.html"; \

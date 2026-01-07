@@ -3,8 +3,5 @@ write:
   ./.venv/bin/python ./scripts/writer.py
 
 make:
-  ls content/article/* | entr make
-
-watch:
-  export TYPST_ROOT='/Users/csharma/CS/Blog'
+  ls content/article/* | entr make meta &
   make watch
