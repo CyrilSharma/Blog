@@ -10,4 +10,4 @@ How much would the expected human lifespan go up if you completely cured Cancer?
 
 I mention this because I had a spurt of optimism the other day. I saw a study that could accurately diagnose you with a variety of diseases just from #link("https://www.nature.com/articles/s41591-025-04133-4.pdf")[analyzing your sleep]. I saw the potential for #link("https://www.lesswrong.com/posts/DfrSZaf3JC8vJdbZL/how-to-make-superbabies")[gene-editing babies] to minimize the next generation's risk of Cancer. I had hoped that if we just became really good at preventative medicine, keeping the egg that is our body from getting scrambled, we could make a sizeable step towards conquering death.
 
-This isn't anything to scoff at, but it's not nearly enough. To defeat death, we'll need to learn how to unscramble eggs. We need to solve longevity.
+This isn't anything to scoff at, but it's not nearly enough. To defeat death, we'll need to learn how to unscramble eggs. We need to solve aging itself.
