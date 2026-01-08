@@ -474,13 +474,15 @@ There's a slight problem with primers. Primers are a temporary piece of RNA that
 You might wonder why every cell doesn't use Telomerase. It's because losing your telomeres puts a cap on how many times a cell can replicate, and hence a cap on how many mutations you can accumulate. For this reason, Cancer almost always finds a way to synthesize Telomerase.
 
 == Replication Accuracy
-DNA replication in Eukaryotes is remarkably accurate. DNA Polymerase actually can check if the previous base pair is wrong, and if so remove it!
+DNA replication in Eukaryotes is remarkably accurate. DNA Polymerase actually can check if the previous base pair is wrong, and if so remove it, thanks to Exonuclease!
 
 This increase in accuracy comes with a cost in speed. DNA in Eukaryotes is transcribed about 30-50 base pairs per second, whereas Bacteria can do about 1000 base pairs per second. Eukaryotes retain the accuracy of this process while speeding it up by starting in many places at once.
 
 Furthermore, Eukaryotes have very sophisticated mechanisms to repair broken DNA e.g. from radiation, chemicals, etc. These are called the *Guardians of the Genome*. In all cases it involves some enzyme to cleave out mistakes, plus DNA polymerase and ligase to clean things up afterward.
-+ Glycosylase can remove bad bases at arbitrary points in DNA.
-+ Radiation can cause Thymine to bond with itself on the same strand. Exonuclease fixes this by cutting out a large portion of the strand (12 BPs) as that is about how far the structural damage extends.
++ Glycosylase can remove bad bases at arbitrary points in DNA. This is part of Nucleotide Excision Repair (NER).
++ Radiation can cause Thymine to bond with itself on the same strand. Endonuclease (note that this is different from Exonuclease, which only acts on the ends) fixes this by making two cuts around a small portion of the strand (\~12 BPs) containing the bonded thymines, cutting it out and letting other enzymes patch things.
+
+Without these repair mechanisms, you quickly begin to accumulate mutations. For example, people who have Xeroderma Pigmentosum cannot perform NER. This gives them a 1000x chance of getting skin cancer with sunlight exposure.
 
 == Transcription
 Very similar to Replication. The major differences are as follows.
