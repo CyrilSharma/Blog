@@ -480,7 +480,7 @@ This increase in accuracy comes with a cost in speed. DNA in Eukaryotes is trans
 
 Furthermore, Eukaryotes have very sophisticated mechanisms to repair broken DNA e.g. from radiation, chemicals, etc. These are called the *Guardians of the Genome*. In all cases it involves some enzyme to cleave out mistakes, plus DNA polymerase and ligase to clean things up afterward.
 + Glycosylase can remove bad bases at arbitrary points in DNA. This is part of Nucleotide Excision Repair (NER).
-+ Radiation can cause Thymine to bond with itself on the same strand. Endonuclease (note that this is different from Exonuclease, which only acts on the ends) fixes this by making two cuts around a small portion of the strand (\~12 BPs) containing the bonded thymines, cutting it out and letting other enzymes patch things.
++ Radiation can cause Thymine to bond with itself on the same strand. Endonuclease (note that this is different from Exonuclease, which only acts on the ends) fixes this by making two cuts around a small portion of the strand (\~12 BPs) containing the bonded thymines, cutting it out and letting other enzymes patch things. Endonuclease's cleaving ability is incredibly useful. It is also used to cut open Bacterial's DNA to allow foreign eukaryotic DNA to be inserted.
 
 Without these repair mechanisms, you quickly begin to accumulate mutations. For example, people who have Xeroderma Pigmentosum cannot perform NER. This gives them a 1000x chance of getting skin cancer with sunlight exposure.
 
@@ -537,10 +537,63 @@ The process looks like this. Part of the Ribosome finds a start codon and latche
 / Exocytosis: Pushing something out of a cell, opposite process of Endocytosis.
 / Cytoskeleton: A complex network of proteins that fills the cell and gives it its resistance to deformation. 
 / Microtubules: The hollow protein tubes that make up the Cytoskeleton.
+/ Mitosis: Asexual Cellular Reproduction
+/ Meiosis: Sexual Cellular Reproduction
 
-*TODO*: Mitosis + Meiosis
+#align(center, image("../img/mitosis_and_meosis.png"))
+The main difference between Meiosis 1 and Meiosis 2 is that phase 1 has homologous chromosomes (the same gene from different parents) pair up followed by potential genetic exchange (crossovers), while phase 2 has the sister chromosomes (two previously identical chromosomes) pair up.
+
+It should be noted that which homologue ends up in which cell is random. Hence, it would be extremely unlikely for all the father's homologues to separate in one cell and all the mother's homologues to separate in the other.
+
+Here's how Meiosis ties into actual reproduction. Initially, some sperm cell fertilizes some egg cell. This forms the Zygote, which then undergoes Mitosis many times to form the body. Later in life, many cells in the gonads undergo Meiosis, forming a huge variety of germ cells. Hence, Meiosis sets the genetic stage for the next generation, the current generations genotype is determined purely by what egg and sperm cell meet.
 
 == Genetics
-*TODO*: Mendel's laws, Sex Linked Inheritance, Linkage, Traits skipping generations
-// Probably change to linkage or something...
-#graphic(image("../img/Example.excalidraw.svg"))
+
+#definition(name: [Mendel's Laws])[
+  + Dominance: For every gene you have two alleles. The dominant variant will mask the effect of the recessive variant.
+  + Segregation: For every gene, you receive exactly one allele from each parent.
+  + Independence: The inheritance of one allele is independent of the inheritance of another allele. I.e. just because I got my father's allele for gene 1 does mean I will get it for gene 2.
+]
+
+The discovery of these laws was done by cross-breeding pea plants and drawing Punnett squares. 
+
+Mendel's 2nd law stems from Meiosis splitting homologues into different cells. Mendel's 3rd law stems from this homologue separation being random for each chromosome. However, if you have multiple alleles within a chromosome, then those alleles are _not_ independent and are likely to be inherited together. This is called genetic linkage. There's a little more complexity here, as there is also genetic crossover between homologous chromosomes, which means a particular allele might end up opposite its parent chromatid. The further apart two alleles are on a chromosome, the greater the chance of crossover between them. Hence, linkage is strongest when two genes are close-by on a chromosome. Interestingly, genetic crossover does not respect gene boundaries. This seems like it should result in genes frequently breaking but in fact the crossover regions are not equally likely across the chromosome and there are tons of non-coding DNA. Hence, it's often the case that only entire alleles are exchanged.
+
+You can determine the relative order and degree of linkage of three genes using what's known as a #link("https://bio.libretexts.org/Bookshelves/Genetics/Online_Open_Genetics_(Nickle_and_Barrette-Ng)/07%3A_Linkage_and_Mapping/7.07%3A__Mapping_With_Three-Point_Crosses")[three-point cross]. Essentially, you just measure the proportion of some population that has crossovers between each pair of genes and this gives you a distance you can use to order the genes.
+
+To detect cross-over events, you need the cross-over events to be distinguishable from non-crossover events. Hence, you typically do a cross-breed like this.
+$
+  (A B C)/(a b c) times.o (a b c)/(a b c)
+$
+
+You expect the organism to either be dominant in all traits or recessive in all traits, hence if its dominant in some and recessive in others, you immediately know which crossover event happened.
+
+#align(center, image("../img/XLinked.jpg"))
+
+Mendelian inheritance can cause some interesting patterns. For one, traits often skip a generation. This is because the original generation might have only one copy of a recessive gene, hence none of their direct descents can have the recessive trait. Furthermore, traits can be sex-linked (e.g. primarily males or females are affected), if the alleles in question happen to live on the X-chromosome like in the above example.
+
+== Genetic Engineering
+
+=== Molecular Cloning 
++ Use a specific type of Endonuclease to cut a Bacteria's DNA.
++ Use the same kind of Endonuclease to cut up the DNA of an organism of interest. The collection of DNA fragments is called a DNA library.
++ Put a DNA library into the medium. Bacterial DNA will adopt the fragments.
++ Put DNA Ligase in the medium to repair the DNA.
++ Apply selection pressure, such that only the Bacteria which have the DNA fragment you're interested in survive.
+
+=== PCR
+#align(center, image("../img/PCR.jpg"))
+This is an amplification based approach. The idea is by dumping in the appropriate primers, you can get DNA polymerase to replicate the DNA strand of interest twice, while everything else only gets replicated once. After several iterations of this, the stuff left in solution is primarily made up of the DNA sequence you're actually interested in.
+
+=== CRISPR
+CRISPR is an RNA guided endonuclease. It has some target piece of RNA in it that allows it to make specific cuts in DNA. To use this for gene-editing, start by using CRISPR to cut out the portion of DNA you want to replace and then add in your replacement DNA and some Ligase.
+
+Bacteria evolved CRISPR as a sort of adaptive immune system for Bacteriophages. Essentially, whenever a phage was encountered, a short sequence of its DNA (which often look like clustered regularly interspaced short palindromic repeats) was put into the Bacteria's DNA. A CRISPR enzyme based on each repeat exists in the Bacteria and will kill the corresponding Bacteriophage should it enter the cell. What's kind of amazing about this system is that it's in the DNA, so the descendants of these Bacteria will also be immune to the Phage.
+
+There are two main CRISPR treatments as the moment.\
+/ In vitro: Take the target cells outside the patient, modify them, then put them back. To ensure the modified cells end up being a significant portion, you need to somehow kill of your cells, like with Chemotherapy for example.
+/ In-vivo: Modify the DNA of cells in the patient. This is pretty hard to do at the moment but would theoretically not require killing many cells, unlike in vitro.
+
+=== Sequencing
+
+*TODO*: Sanger Sequencing, Next Generation Sequencing, Single Nucleotide Polymorphism, Restriction Fragment Length Polymorphism, Gel Electrophoresis, Single Sequence Repeat
