@@ -90,7 +90,7 @@ Where the last step follows from $R$ being triangular.
     U^T U = Sigma^(-1) V^top A^top A V Sigma = Sigma^(-1) D Sigma^(-1) = Sigma^(-1) Sigma^2 Sigma^(-1) = I
   $
 
-  This decomposition for $A$ is known as the reduced SVD. 
+  This decomposition for $A$ is known as the reduced SVD. The entries of $Sigma$ are known as the singular values, and the columns of $U$ and $V$ are known as the singular vectors.
 ]
 
 = Algorithms
@@ -263,6 +263,33 @@ Anyway, this gives you a lot of power. Muon uses this insight to cheaply "orthog
   "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
   "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
 $]
+
+== Metrics
+#definition[
+  The operator norm of a matrix is the largest amount it can scale any vector.
+  $
+    ||A|| = sup{ ||A v|| : ||v|| <= 1}
+  $
+]
+
+The specific value of the operator norm depends on how you measure "large". For example, you could measure how much the L2-Norm scales. You can even use different input and output norms. For example,
+$
+  sup{ ||A v||_(l_2) : ||v||_(l_1) <= 1}
+$
+
+For the common case of $l_2 arrow l_2$, observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
+
+#definition[
+  Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number measures how "sensitive" the output is given a change a small change in the input, more precisely it is the maximum ratio of relative error in $b$ to relative error in $x$.
+  $
+   max_(epsilon, b != 0) frac((||A^(-1) epsilon||) / (||A^(-1) b||), (||epsilon||) / (||b||), style: "horizontal") = 
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) = \
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(gamma != 0) ((||A gamma||) / (||gamma||)) =\
+   ||A^(-1)||||A||
+  $
+
+  Where the last step came from choosing $b = A gamma$.
+]
 
 == Definite and Indefinite
 #definition[
