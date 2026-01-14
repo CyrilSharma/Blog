@@ -108,7 +108,7 @@ Where the last step follows from $R$ being triangular.
     e_k + w((b - A x) - e_k) = e_k + w A e_k = (I - w A)e_k  
   $
 
-  So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i|$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence.
+  So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i| < 1$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence. This means $A$ should not be indefinite. It's also easy to see that if the $lambda$s are tightly concentrated, then $|1 - w lambda_i|$ can be made quite small, allowing fast convergence.
 ]
 
 As a sidenote, Richardson Iterations are equivalent to doing gradient descent on the following quadratic function.
@@ -133,9 +133,9 @@ The convergence condition above corresponds to ensuring the quadratic is bowl sh
   #{""}
 ]
 
-Why might this be a good idea? Well, methods like the Richardson Iteration require A's condition number to be near $1$ for fast convergence. This means the largest and smallest eigenvalues are very close and so $w$ can be chosen to make the error rapidly decay. However, $A$ might not have this property, but $A P^(-1)$ and $P$ might, given a good choice of $P$.
+Why might this be a good idea? Well, methods like the Richardson Iteration converge fast if the largest and smallest eigenvalues are close. $A$ might not have this property, but $A P^(-1)$ and $P$ might, given a good choice of $P$.
 
-For example, if you use a left-preconditioned system and set $P = A^top$, then $P A$ is positive semi-definite, and Richardson iterations or conjugate gradient descent will converge swiftly.
+For example, if you use a left-preconditioned system and set $P = A^top$, then even if $A$ wasn't positive semi-definite, $P A$ is positive semi-definite, and Richardson iterations or conjugate gradient descent will converge swiftly.
 
 
 = Properties
