@@ -111,6 +111,13 @@ Where the last step follows from $R$ being triangular.
   So, the error goes to zero regardless of our initialization if $||I - w A|| < 1$, i.e. $|1 - w lambda_i|$ for all eigenvalues of $A$. If $A$ has both positive and negative eigenvalues, then no matter the choice of $w$ this condition is violated and there won't be convergence.
 ]
 
+As a sidenote, Richardson Iterations are equivalent to doing gradient descent on the following quadratic function.
+$
+  1/2 x^top A x - b^top x + c 
+$
+
+The convergence condition above corresponds to ensuring the quadratic is bowl shaped instead of saddle shaped, which ensures the gradient consistently points towards or away from the flat part of the curve.
+
 == Preconditioning
 #definition[
   Again we want to solve $A x = b$. Instead of doing it directly let's first rewrite it as $A P^(-1) (P x) = b$. Now let's do this in two pieces.
@@ -118,9 +125,17 @@ Where the last step follows from $R$ being triangular.
     A P^(-1) y = b \
     P x = y
   $
+
+  This is known as the right-preconditioned system. You can also solve the left-preconditioned system.
+  $
+    P A x = P b
+  $
+  #{""}
 ]
 
 Why might this be a good idea? Well, methods like the Richardson Iteration require A's condition number to be near $1$ for fast convergence. This means the largest and smallest eigenvalues are very close and so $w$ can be chosen to make the error rapidly decay. However, $A$ might not have this property, but $A P^(-1)$ and $P$ might, given a good choice of $P$.
+
+For example, if you use a left-preconditioned system and set $P = A^top$, then $P A$ is positive semi-definite, and Richardson iterations or conjugate gradient descent will converge swiftly.
 
 
 = Properties
@@ -139,14 +154,6 @@ T(P^(-1) D P) = T(D) = sum_i lambda_i
 $
 
 So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
-
-== Orthonormal Matrices
-#theorem[The product of orthonormal matrices is also orthonormal.]
-#proof[$
-  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
-  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
-  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
-$]
 
 == Symmetric Matrices
 #theorem[All eigenvalues of a symmetric real matrix are real.]
@@ -223,6 +230,39 @@ The main observation here is that $M^top M$ has a rather simple form in terms of
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
 Anyway, this gives you a lot of power. Muon uses this insight to cheaply "orthogonalize" a matrix e.g. converting $A = U Sigma V^T$ to $U I V^T$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD has positive singular values.
+
+== Orthogonality
+#theorem[
+  A set of mutually orthogonal vectors is a set of linearly independent vectors.
+]
+
+#proof[
+  Define the basis to be $u_1, ..., u_n$. Then we have
+  $
+      "dot"(u_i, u_j) = 0 quad forall i != j,
+  $
+
+  Now suppose the basis was linearly dependent. Then, there must exist $a_1, ..., a_n$ such that 
+  $
+    a_1 u_1 + ... + a_n u_n = 0
+  $
+
+  Now we have
+  $
+    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = \
+    a_1 a_2 "dot"(u_1, u_2) + ... + a_1 a_n "dot"(u_1, u_n) = 0 \
+    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = "dot"(a_1 u_1, -a_1 u_1) = -a_1 "dot"(u_1, u_1) < 0
+  $
+
+  Hence, we've arrived at a contradiction, and our basis must be linearly independent.
+]
+
+#theorem[The product of orthonormal matrices is also orthonormal.]
+#proof[$
+  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
+  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
+  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
+$]
 
 == Definite and Indefinite
 #definition[
