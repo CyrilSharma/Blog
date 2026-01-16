@@ -109,7 +109,7 @@ Where the last step follows from $R$ being triangular.
 
   $
     A arrow mat(
-      ..., ,  , , ...;
+      1, ,  , , ...;
       , 1, , , ;
       , a, 1, , ;
       , b, , 1, ;
@@ -123,7 +123,7 @@ Where the last step follows from $R$ being triangular.
     )
   $
 
-  Where $a$ and $b$ are chosen to zero out the entries beneath the pivot ($f$). Call the matrix used at the $i$th step $L_i$. This can fail if the current diagonal entry is zero, but in that case we can just pivot: swap in a row with a non-zero entry. If there is no such row, the matrix is not invertible. This corresponds to multiplication by a permutation matrix, call the one we use at the $i$th iteration $P_i$. 
+  Where $a$ and $b$ are chosen to zero out the entries beneath the pivot ($f$). Call the matrix used at the $i$th step $L_i$. This can fail if the current diagonal entry is zero, but in that case we can just pivot: swap in a row with a non-zero entry. If there is no such row, then everything below the entry is already zero so you can keep going (note that in this case, the matrix is not invertible). This corresponds to multiplication by a permutation matrix, call the one we use at the $i$th iteration $P_i$. 
   
   At the end of Gaussian elimination, we'll end up with an upper-triangular matrix $U$, and the product of several row subtraction operations like above.
   $
@@ -223,6 +223,48 @@ For example, if you use a left-preconditioned system and set $P = A^top$, then e
 
 
 = Properties
+
+== Rank and Spaces
+#definition[
+  The dimension of the space spanned by the columns of a matrix is called the column-rank. The analogous quantity for the rows is the row-rank. There are analogous quantities for null spaces.
+]
+
+#lemma[Let $B = F A$. If $F$ is invertible, the columns of $A$ are linearly independent iff the columns of $B$ are linearly independent.]
+#proof[
+  Suppose $exists alpha_1, ..., alpha_n$ s.t.
+  $
+    alpha_1 a_1 + ... + alpha_n a_n = 0
+  $
+  Then left-multiplying by $F$ immediately reveals...
+  $
+    alpha_1 F a_1 + ... + alpha_n F a_n = 0 \
+    alpha_1 b_1 + ... + alpha_n b_n = 0 \ 
+  $
+  The reverse direction is shown by using $A = F^(-1) B$.
+]
+
+#lemma[Let $B = F A$. If $F$ is invertible, $"col-rank"(A) = "col-rank"(B)$]
+#proof[
+  Suppose $A$ has column-rank $r$, e.g it has $r$ linearly independent vectors. The previous lemma implies that $B$ has at least $r$ linearly independent vectors. Thus $"col-rank"(A) <= "col-rank"(B)$. The reverse is also true, since we can apply the same argument in reverse by saying $A = F^(-1) B$. This forces equality. 
+]
+
+#theorem[The row-rank is equal to the column-rank.]
+#proof[
+  Since all standard row operations (swapping, scaling, adding) can be represented as an invertible matrix applied on the left, we can row-reduce the matrix until it is in reduced #link("https://en.wikipedia.org/wiki/Row_echelon_form")[row-echelon] form.
+  $
+    mat(
+      1, a, 0, d, 0, 0;
+      0, 0, 1, 0, 0, 0;
+      0, 0, 0, 0, 1, 0;
+      0, 0, 0, 0, 0, 1;
+    )
+  $
+
+  From here, it is clear the row-rank is equal to the column-rank as only columns / rows with pivots (leading ones) affect the rank, and there are an equal number of those.
+]
+
+This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
+
 
 == Trace
 #theorem[The trace is invariant to cyclic permutations.]
