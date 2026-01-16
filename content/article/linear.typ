@@ -93,6 +93,90 @@ Where the last step follows from $R$ being triangular.
   This decomposition for $A$ is known as the reduced SVD. The entries of $Sigma$ are known as the singular values, and the columns of $U$ and $V$ are known as the singular vectors.
 ]
 
+== LU Decomposition
+#theorem[
+  Any matrix $A$ can be written as 
+  $
+    P A = L U
+  $
+
+  Where P is a permutation matrix, L is lower-triangular, and U is upper-triangular.
+]
+#proof[
+  Essentially, we get this result from Gaussian elimination. First observe that when we left-multiply a matrix $M$ by a matrix $R$, the entries of $R$ can be interpreted as "how much of each row" to include.
+
+  Now, in Gaussian elimination, we walk down the diagonal, and subtract off multiples of the current row until everything in the current column below our entry has been eliminated. This entire operation can be summarized like this.
+
+  $
+    A arrow mat(
+      ..., ,  , , ...;
+      , 1, , , ;
+      , a, 1, , ;
+      , b, , 1, ;
+      ..., , , , ...;
+    ) A =  mat(
+      ..., ,  , , ...;
+      0, f, g, h, ;
+      0, 0, i, j, ;
+      0, 0, k, l, ;
+      ..., , , , ...;
+    )
+  $
+
+  Where $a$ and $b$ are chosen to zero out the entries beneath the pivot ($f$). Call the matrix used at the $i$th step $L_i$. This can fail if the current diagonal entry is zero, but in that case we can just pivot: swap in a row with a non-zero entry. If there is no such row, the matrix is not invertible. This corresponds to multiplication by a permutation matrix, call the one we use at the $i$th iteration $P_i$. 
+  
+  At the end of Gaussian elimination, we'll end up with an upper-triangular matrix $U$, and the product of several row subtraction operations like above.
+  $
+    L_n P_n... L_1 P_1 A = L_n^* ... L_1^* P_n ... P_1 = L_n^* ... L_1^* P  = U
+  $
+
+  To see the re-arrangement step, we just do
+  $
+    L_(n - 1)^* = P_n L_(n - 1) P_n ^(-1) \
+    L_(n - 2)^* = P_n P_(n - 1) L_(n - 2) P_(n - 1)^(-1) P_(n)^(-1) \
+    ...
+  $
+  It's easily verified that the $L^*$ matrices only have their sub-diagonal entries re-arranged. As rough intuition for what happens, the left multiplications rearrange the rows, messing up the diagonals. The right multiplications rearrange columns which corrects the diagonal without touching the rest of the rows.
+  
+  Now, each of the $L$ terms can be inverted by negating the sub-diagonal entries (just try it). Hence, we can write 
+  $
+    P A = L_1^(-1)...L_n^(-1) U = L U
+  $
+
+  Finally, the product of lower-triangular matrices is lower-triangular which gives the final result.
+  
+]
+
+== Cholesky Decomposition
+#theorem[
+  Any symmetric positive definite matrix $A$ can be written as 
+  $
+    A = L L^T
+  $
+
+  Where L is lower-triangular.
+]
+#proof[
+  This uses the same idea of Gaussian elimination, except instead of zeroing out just the column we take advantage of the symmetry and also zero out the row.
+
+  Hence, we apply operations like 
+  $
+    L_1 A L_1^top = mat(1, 0; 0, A_1)
+  $
+
+  At the end we'll end up with 
+  $
+    L_n ... L_1 A L_1^top ... L_n^top = I
+  $
+
+  From here doing the same inverse trick as Gaussian elimination gives the desired result. Now, it's important to note that _we did not need pivoting during this process_. This is because the positive definite property guarantees that all diagonal entries are non-zero.
+  $
+    e_i^top A e_i = e_i A_i = A_(i i) > 0
+  $ 
+]
+
+The simpler decomposition and lack of pivoting makes this decomposition very useful when its applicable.
+
 = Algorithms
 == Richardson Iteration
 #theorem[
@@ -291,6 +375,32 @@ For the common case of $l_2 arrow l_2$, observe that $A$ can be written as $U Si
   Where the last step came from choosing $b = A gamma$.
 ]
 
+== Kronecker Product
+#definition[
+  The Kronecker product $A times.circle B$ is a block-matrix of the form
+  $
+    mat(A_11 B, ..., A_(1 n) B; ..., ..., ...; A_(n 1) B, ..., A_(n n) B; )
+  $
+]
+#definition[
+  $"vec"(X)$ is the vector obtained by stacking the columns of $X$.
+]
+#theorem[$
+  "vec"(A X B) = (B^top times.circle A) "vec"(X)
+$]
+#proof[
+  Observe that
+  $
+    A X B_i = sum_j B_(i j) A X_j
+  $
+  If you do this for every $i$, you get the appropriate Kronecker product.
+]
+This is a useful tool when you are solving for matrices, for example
+$
+  A X B + X = C arrow (B^top times.circle A + I)"vec"(X) = "vec"(C)
+$
+
+
 == Definite and Indefinite
 #definition[
   A matrix $A$ is positive-definite if
@@ -302,3 +412,12 @@ For the common case of $l_2 arrow l_2$, observe that $A$ can be written as $U Si
 ]
 
 The best way to think about these matrices is in terms of the $x^top A x$ object. This object is literally a quadratic equation in high dimensions. For a definite matrix, all choices of $x$ decrease $x^top A x$, or all directions increase $x^top A x$. Hence, you have a nice bowl shaped quadratic and this makes optimization easy. On the other hand, if some directions move you up and some move you down, you end up with a saddle. This can mess up gradient-descent based optimization methods.
+
+#theorem[
+  Positive definite matrices have positive diagonal entries.
+]
+#proof[
+  $
+    e_i^top A e_i = e_i A_i = A_(i i) > 0
+  $ 
+]
