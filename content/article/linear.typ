@@ -221,6 +221,62 @@ Why might this be a good idea? Well, methods like the Richardson Iteration conve
 
 For example, if you use a left-preconditioned system and set $P = A^top$, then even if $A$ wasn't positive semi-definite, $P A$ is positive semi-definite, and Richardson iterations or conjugate gradient descent will converge swiftly.
 
+== Householder Triangularization
+I won't cover this super thoroughly, but it's a cool idea so here's the gist. Apply a series of orthogonal matrices to $A$, such that you end up with a triangular matrix.
+$
+  Q_n ... Q_1 A = Q A = R
+$
+
+This is an alternative way to find a $Q R$ decomposition, which intriguingly is a bit slower but also numerically more stable.
+
+Anyway, each orthogonal matrix will zero out the bottom of a column.
+$
+  mat(
+    a, b, c;
+    d, e, f;
+    g, h, i 
+  ) arrow 
+  mat(
+    sqrt(a^2 + d^2 + g^2), ..., ;
+    0, ..., ;
+    0, ...,  
+  )
+$
+
+You do this by choosing $Q_i$ to be a reflection matrix, where it reflects $x$ along the line of symmetry between it and the target vector.
+
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, edge
+#align(center, graphic(
+  diagram(
+    // draw vectors from origin
+    edge((0,0), (3, -4), "->", label: $x = vec(a, d, g)$, label-pos: .6),
+    edge((0,0), (0.5*8, 0.5*-4), "--", label-pos: .6, ),
+    edge((0,0), (5, 0), "->", label: $vec(||x||, 0, 0)$, label-pos: .6, label-side: right, label-sep: 1em),
+  )
+))
+
+To do this, first take the difference between the current vector and the target vector, normalize it, and call it $v$. For a vector $x$, the component in the direction of $v$ is $(v v^*)x$. If you remove twice that component, you will have performed a reflection. Hence, you just choose $Q_i$ to be $I - 2 v v^*$.
+
+== Reduction to Hessenberg Form
+Hessenberg form is like triangularizing a matrix, except we only eliminate zeros beneath the off-diagonal. The final matrix will look like this.
+$
+  mat(
+    a, b, c, d;
+    e, f, g, h;
+    ,  i, j, k;
+    ,   , l, m;
+  )
+$
+
+We can transform a matrix $A$ into a Hessenberg matrix as follows
++ Using the same trick as Householder triangulariation, find an orthogonal transformation $Q$ that zeros everything below the off-diagonal.
++ Set $A = Q A Q^*$. You can verify the right multiplication will only change columns to right of the current column.
+
+Now you could just left multiply $Q$, but doing both allows you to find a Hessenberg matrix $A$ is similar too, which is a first step in many other algorithms.
+
+== Rayleigh Quotient Iteration
+
+
 
 = Properties
 
@@ -405,21 +461,74 @@ $
 
 For the common case of $l_2 arrow l_2$, observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
 
+
+== Projection
 #definition[
-  Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number measures how "sensitive" the output is given a change a small change in the input, more precisely it is the maximum ratio of relative error in $b$ to relative error in $x$.
+  A projector $P$ is a matrix which satisfies $P^2 = P$.
+]
+#lemma[
+  If $P$ is a projector, then $I - P$ is also a projector, which projects onto the null space of $P$.
+]
+#proof[$
+  (I - P)^2 v = (I^2 - 2 I P + P^2)v = (I - P)v \
+  P(I - P)v = (P - P^2)v = 0
+$]
+#theorem[
+  Let $S_1 = "range"(P)$ and $S_2 = "range"(I - P)$. Then the unique solution to 
   $
-   max_(epsilon, b != 0) frac((||A^(-1) epsilon||) / (||A^(-1) b||), (||epsilon||) / (||b||), style: "horizontal") = 
-   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) = \
-   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(gamma != 0) ((||A gamma||) / (||gamma||)) =\
-   ||A^(-1)||||A||
+    v_1 + v_2 = v quad v_1 in S_1, v_2 in S_2
   $
 
-  Where the last step came from choosing $b = A gamma$.
+  is $v_1 = P v, v_2 = (I - P) v$.
 ]
+#proof[
+  The choice of $v_1$ and $v_2$ above clearly produces a valid solution. However, perhaps there is some vector $v_3$, such that $v_1 - v_3 in S_1$, and $v_2 + v_3 in S_2$, which yields another solution? This requires $v_3 in S_1 inter S_2$. As $"range"(P) inter "null"(P) = 0$, the only vector which satisfies this is zero.
+]
+
+#definition[
+  A projector whose null space is orthogonal to its range is an orthogonal projector.
+]
+#theorem[
+  Orthogonal projectors must satisfy $P = P^*$.
+]
+#proof[
+  For the forward direction we have
+  $
+    "dot"(P v, (I - P)v) = v P^* (I - P) v = v (P - P^2) v = 0         
+  $
+
+  For the backwards, let $q_1, ..., q_n$ be a basis for $"range"(P)$ and let $q_(n + 1), ... q_m$ be a basis for $"null"(P)$. Since we are assuming $P$ is an orthogonal projector, these two sets of vectors are mutually independent and thus form a basis for $R^m$. Define the $i$th column of $Q$ to be $q_i$. We immediately have,
+  $
+    P Q = mat(q_1, ..., q_n, 0, ..., 0)
+  $
+
+  And thus, 
+  $
+    Q^* P Q = mat(
+      1, , , ;
+      , 1, , ;
+      , , 1, ;
+      , , , 0...
+    ) = Sigma
+  $
+
+  Hence, we've shown $P = Q Sigma Q^*$, and it's easy to see that $P = P^*$.
+]
+
+From the last proof, we also can say any orthogonal projector can be written as $P = hat(Q) hat(Q)^*$ where $hat(Q) = mat(u_1, ..., u_n)$. You can check that the reverse also holds. If I have some subspace defined the orthonormal basis encoded in $hat(Q)$, then $hat(Q) hat(Q)^*$ defines a projector onto that subspace. 
+
+You can also do this trick even when given a non-orthogonal basis $A$. Let $v$ be in the input vector and let $y$ be the projection. Since $y in "range"(A)$, let $y = A x$. Then
+$
+  a_i^*(v - y) = 0 quad forall i \
+  A^*(v - A x) = 0 arrow x = (A^* A)^(-1)A^* v \
+  y = A (A^* A)^(-1)A^* v
+$
+
+So we get the new projector, $A (A^* A)^(-1)A^*$. This is familiar to anyone who's seen linear regression. Essentially, the matrix of data values is $A$, $y$ are the target values, and $b arrow x$ is the optimal set of coefficients.
 
 == Kronecker Product
 #definition[
-  The Kronecker product $A times.circle B$ is a block-matrix of the form
+  The Kronecker product $A times.o B$ is a block-matrix of the form
   $
     mat(A_11 B, ..., A_(1 n) B; ..., ..., ...; A_(n 1) B, ..., A_(n n) B; )
   $
@@ -428,7 +537,7 @@ For the common case of $l_2 arrow l_2$, observe that $A$ can be written as $U Si
   $"vec"(X)$ is the vector obtained by stacking the columns of $X$.
 ]
 #theorem[$
-  "vec"(A X B) = (B^top times.circle A) "vec"(X)
+  "vec"(A X B) = (B^top times.o A) "vec"(X)
 $]
 #proof[
   Observe that
@@ -439,7 +548,7 @@ $]
 ]
 This is a useful tool when you are solving for matrices, for example
 $
-  A X B + X = C arrow (B^top times.circle A + I)"vec"(X) = "vec"(C)
+  A X B + X = C arrow (B^top times.o A + I)"vec"(X) = "vec"(C)
 $
 
 
@@ -462,4 +571,44 @@ The best way to think about these matrices is in terms of the $x^top A x$ object
   $
     e_i^top A e_i = e_i A_i = A_(i i) > 0
   $ 
+]
+
+== Companion Matrix
+A companion matrix is just a construction whose eigenvalue equation is exactly some polynomial. For the polynomial $c_1 + c_2 x + ... + c_n x^n + x^(n + 1)$. It can be constructed as follows.
+$
+  mat(
+    0, 0, 0, ..., 0, c_1;
+    1, 0, 0, ..., 0, c_2;
+    0, 1, 0, ..., 0, c_3;
+    0, 0, 1, ..., 0, c_4;
+    dots.v, dots.v, dots.v, dots.down, dots.v, dots.v;
+    0, 0, 0, ..., 1, c_n;
+  )
+$
+
+This is useful to know because it means every root finding problem can be formulated as an eigenvalue problem. Since there is no formula for polynomials of degree five and greater, it implies there is no finite sequence of operations which can diagonalize an arbitrary matrix.
+
+== Stability
+/ Forward-Stable: An algorithm that gives almost the right answer (within epsilon relative error) to almost the right problem (inputs within epsilon relative error).
+/ Backward-Stable: An algorithm which can be interpreted to give the exact right answer to a perturbed problem (within epsilon relative error of the original problem).
+
+Inner products are forward and backward stable. Outer products are not backwards stable, because you cannot usually interpret the output matrix as the outer product of two perturbed input vectors (the perturbation to the output matrix doesn't factor).
+
+If you have backwards stability, you can bound the error of the computation as follows.
++ Compute the maximum a local perturbation can affect the output (e.g. a $epsilon$ difference causes at most a $k epsilon$ change in the output). The size of this difference is known as the _condition_ of the problem.
++ Use step 1 to bound the error of the algorithm by bounding how different the output to the approximate problem is versus the original problem.
+
+This is known as backwards error analysis is much simpler than the naive approach, where you try to compute the aggregate errors of individual floating point operations in an algorithm.
+
+
+#definition[
+  The condition number of a matrix is how sensitive it is to small perturbations. Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number tells me the maximum ratio of relative error in $b$ to relative error in $x$.
+  $
+   max_(epsilon, b != 0) frac((||A^(-1) epsilon||) / (||A^(-1) b||), (||epsilon||) / (||b||), style: "horizontal") = 
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) = \
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(gamma != 0) ((||A gamma||) / (||gamma||)) =\
+   ||A^(-1)||||A||
+  $
+
+  Where the last step came from choosing $b = A gamma$.
 ]
