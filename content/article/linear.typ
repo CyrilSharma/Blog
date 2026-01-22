@@ -45,11 +45,26 @@ This immediately implies the Cayley-Hamilton theorem, which states that every ma
 
 The block decomposition is so simple that we can analytically compute $f(A)$ by using Taylor expansions for each block. Pretty awesome.
 
-One big problem with it, is that it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. In particular, $P$ is very ill-conditioned.
+One big problem is it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. In particular, $P$ is very ill-conditioned.
 
-Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition] which instead of insisting that $Q$ is practically diagonal, allows it to be merely upper-triangular. It also has the nice property that $P$ is now unitary. However, now we’ve lost the sparse structure of $Q$.
+Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition].
 
-Intriguingly, you can actually do similar stuff for continuous transformations (like multiplying a function by x).  Diagonalization corresponds to untangling the systems' dynamics, it's pretty cool!
+== Schur Decomposition
+#theorem[
+  Every square matrix can be written as $Q^(-1)T Q$ where $T$ is upper-triangular and $Q$ is orthonormal.
+]
+#proof[
+  This is almost the same argument used to show #link(<diagonalizable>)[Symmetric matrices are diagonalizable]. Let the matrix be $A in R^(n times n)$. Find an eigenvalue. Construct an orthogonal basis for the corresponding eigenbasis. Extend the basis to cover the full space, and create a corresponding change of basis matrix $Q$. Now we have,
+  $
+    Q^T A Q = mat(
+      lambda, ...;
+      0, A_2;
+    ) 
+  $
+
+  You can repeat the process recursively on $A_2$.
+]
+
 
 == QR Decomposition
 #theorem[
@@ -275,7 +290,25 @@ We can transform a matrix $A$ into a Hessenberg matrix as follows
 Now you could just left multiply $Q$, but doing both allows you to find a Hessenberg matrix $A$ is similar too, which is a first step in many other algorithms.
 
 == Rayleigh Quotient Iteration
+#definition[
+  The Rayleigh Quotient $r(x)$ is defined as $r(x) = (x^top A x)/(x^top x)$.
+]
+#lemma[
+  The eigenvalues of $(A - mu I)^(-1)$ are of the form $(lambda_j - mu)^(-1)$
+]
+#proof[$
+  (A - mu I)^(-1) v = lambda v \
+  v = (A - mu I) lambda v \
+  (lambda^(-1) + mu) v = A v \
+  (lambda^(-1) + mu) v = lambda_j v \
+  lambda = (lambda_j - mu)^(-1)
+$]
 
+#definition(name: "Power Iteration")[Power iteration is the process whereby we take $v$, compute $A v$, then $A^2 v$, etc. until some convergence criteria is met]
+
+It's easy to see that if we normalize at the end, the vector will converge to the eigenvector with the largest eigenvalue. Combining this with the above lemma gives a way to use power iteration to generate a particular eigenvector of a matrix, provided we have a good estimate of the corresponding eigenvalue. We can then compute the Rayleigh Quotient of this new eigenvector to get a better estimate of the corresponding eigenvalue, and repeat until convergence. 
+
+== QR Iteration
 
 
 = Properties
@@ -446,7 +479,7 @@ Anyway, this gives you a lot of power. Muon uses this insight to cheaply "orthog
   "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
 $]
 
-== Metrics
+== Norms
 #definition[
   The operator norm of a matrix is the largest amount it can scale any vector.
   $
@@ -459,8 +492,34 @@ $
   sup{ ||A v||_(l_2) : ||v||_(l_1) <= 1}
 $
 
-For the common case of $l_2 arrow l_2$, observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
+#theorem[$
+  ||A||_(l_2 arrow l_2) = max_i sigma_i
+$]
+#proof[
+  Observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
+]
 
+#definition[
+  The Frobenius norm of a matrix is the L2-norm of its singular value vector.
+  $
+    ||A||_F = sqrt(sum sigma_i^2)
+  $
+]
+
+This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms).
+This is algebraically powerful because you can express it in terms of traces.
+$
+  ||A||_F = sqrt("Tr"(A^top A))
+$ 
+
+
+#definition[
+  The Nuclear or Trace norm is the L1-norm of its singular value vector.
+  $
+    ||A||_* = sum sigma_i
+  $
+]
+Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Also, for orthonormal matrices you can use this norm to bound the rank.
 
 == Projection
 #definition[
@@ -612,3 +671,5 @@ This is known as backwards error analysis is much simpler than the naive approac
 
   Where the last step came from choosing $b = A gamma$.
 ]
+
+*TODO*: Discretizing differential equations...
