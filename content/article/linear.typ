@@ -28,26 +28,9 @@ $
   )
 $
 
-Using Taylor expansions…
-
-$
- f(A) = "poly"(A) = P^(-1)"poly"(Q) P = P^(-1)f(Q)P
-$
-
-This leads to a lot of interesting results. One result is the Spectral Mapping Theorem, which states that the eigenvalues of $f(A)$ are $f(lambda_i)$. To see the Spectral Mapping theorem, observe that for a triangular matrix
-$
-  det(A - lambda I) = 0
-$
-
-If $lambda$ is chosen to be equal to any of the diagonal elements (as this makes that column linearly dependent).
-
-This immediately implies the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
-
 The block decomposition is so simple that we can analytically compute $f(A)$ by using Taylor expansions for each block. Pretty awesome.
 
-One big problem is it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. In particular, $P$ is very ill-conditioned.
-
-Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition].
+One big problem is it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition].
 
 == Schur Decomposition
 #theorem[
@@ -354,7 +337,6 @@ It's easy to see that if we normalize at the end, the vector will converge to th
 
 This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
 
-
 == Trace
 #theorem[The trace is invariant to cyclic permutations.]
 #proof[$
@@ -369,6 +351,46 @@ T(P^(-1) D P) = T(D) = sum_i lambda_i
 $
 
 So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
+
+== Triangular Matrices
+#theorem[
+  The determinant of a triangular matrix is the product of its diagonal entries.
+]
+#proof[
+  The determinant is invariant to column addition (think about a parallelogram), hence you can just zero out all the entries not in the diagonals, and the claim becomes plainly true.
+]
+#theorem[
+  The Triangular matrix equation $T x = b$ can be solved in $n^2$ time.
+]
+#proof[
+  Use back-substitution.
+]
+
+== Similar Matrices
+#definition[
+  $A$ and $B$ are similar if $A = P^(-1)B P$ for some matrix $P$
+]
+
+Similar matrices have a lot of nice properties.
+$
+  det(A) = det(P^(-1))det(B)det(P) = det(B)
+$
+
+Using Taylor expansions…
+
+$
+ f(A) = "poly"(A) = "poly"(P^(-1)Q P) = P^(-1)"poly"(Q) P = P^(-1)f(B)P
+$
+
+Crucially, every square matric is similar to an upper-triangular matrix. You can see this with the Schur or Jordan Decompositions. By the two properties above, we have
+$
+  det(f(A) - lambda I) = det(f(T) - lambda I)
+$
+
+This leads to the Spectral Mapping Theorem, which states that the eigenvalues of $f(A)$ are $f(T_(i i))$. To see the Spectral Mapping theorem, observe that for a triangular matrix $T$ its determinant is equal to the product of its diagonal entries.
+
+This immediately implies the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
+
 
 == Symmetric Matrices
 #theorem[All eigenvalues of a symmetric real matrix are real.]
