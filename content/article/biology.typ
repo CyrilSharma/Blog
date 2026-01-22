@@ -599,3 +599,4 @@ There are two main CRISPR treatments as the moment.\
 *TODO*: Sanger Sequencing, Next Generation Sequencing, Single Nucleotide Polymorphism, Restriction Fragment Length Polymorphism, Gel Electrophoresis, Single Sequence Repeat, Positional Gene Cloning, Chromosome Walk, Retrovirus, Complementary DNA, Reverse Transcriptase, making a cDNA library, make flies sprout extra eyes
 
 == Cellular Trafficking 
+*TODO*: Targeting sequences, Post Translational Modification (PTMs), Lipidation, Phosphorolation, NLS + Importin, Signal Recognition Particle (SRP), Rough ER
