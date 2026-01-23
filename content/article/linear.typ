@@ -303,18 +303,41 @@ It's easy to see that if we normalize at the end, the vector will converge to th
     hat(U)hat(D)^m hat(U)^top V
   $
 
-  So we conclude that $A^m V$ has the same column space as $hat(U)$. Now, repeat this argument over and over, where $V$ is the first column, the first two columns, etc. Since it converges to the same column space every time, it must be that the $i$th column of $V$ converges to the eigenvector associated with the $i$th largest eigenvalue. In order for this argument to hold, $hat(Q)^top V$ must always be invertible, which is true given sufficient conditions on $Q$ (iff $Q$ has an LU decomposition).
+  We drop the $lambda_(n + 1)^k$ term because we assume it's smaller than all the eigenvalues chosen, hence its contribution drops off exponentially. 
+
+  We conclude that $A^m V$ has the same column space as $hat(U)$. Now, repeat this argument over and over, where $V$ is the first column, the first two columns, etc. Since it converges to the same column space every time, it must be that the $i$th column of $V$ converges to the eigenvector associated with the $i$th largest eigenvalue.
+  
+  In order for this argument to hold, $hat(Q)^top V$ must always be invertible. One way this can hold is if the first $n$ rows of $hat(Q)$ are linearly independent. This is equivalent to saying all the leading principle submatrices are non-singular, or that $Q$ has an LU decomposition. 
+
+  In general though, you don't need to worry about this, as $V$ projecting onto a space with rank less than $n$ only happens in adversarial cases. It's similar to the odds of random 2D points being colinear.
 ]
 
 This gives us a method to directly compute all the eigenvectors! However, we also know from regular power iteration that each of the vectors in $V$ is also converging to the eigenvector with the largest eigenvalue. Hence, this basis will be really ill-conditioned. The easy fix is to simply find an orthonormal basis for the current $V$ on every iteration, and use that instead.
 $
-  Q_k R_k = V_k\
-  V_(k + 1) = A Q_k
+  Q_0 = I\
+  V_k arrow.l A Q_(k - 1)\
+  V_k arrow.r Q_k R_k\
+  A_k = Q_k^top A Q_k approx D
 $
 
-That's essentially it! It's worth noting that the QR decomposition can be found in $n^2$ instead of $n^3$ time. The trick is to ensure $V_k$ is always Hessenberg, and then you can use Householder reflectors which only touch two rows / columns to zero out the sub-diagonal entries. 
+That's essentially it! It's worth noting that usually you don't bother having a separate $V_k$, and instead just do
+$
+  A_0 = A\
+  A_k arrow.r Q_k R_k\
+  A_(k + 1) arrow.l R_k Q_k
+$
 
-*TODO*: Consider going over some technical details like how to initialize $V_k$ to ensure the theorem above applies, and some speed-ups similar to Rayleigh iteration to make this converge faster. 
+This is equivalent to simultaneous iteration.
+$
+  A_k = (Q_(k - 1)...Q_0)^T A (Q_0...Q_(k -1)) = hat(Q_(k - 1))^T A hat(Q_(k - 1)) \
+  A_i = Q_i R_i \
+  hat(Q_(i - 1)) A_i = hat(Q_i) R_i \
+  A hat(Q_(i - 1)) = hat(Q_i) R_i
+$
+
+The last step essentially specifies the same update rule as simultaneous iteration. It's worth noting that the QR decomposition can be found in $n^2$ instead of $n^3$ time. The trick is to first reduce $A$ to Hessenberg form, and then you can use Householder reflectors which only touch two rows to zero out the sub-diagonal entries. The Hessenberg structure will remain throughout this process, via a similar argument used in reducing to Hessenberg form.
+
+Also, it's easy to see the diagonal entries of $A_k$ are Rayleigh quotients, and are converging rapidly towards the eigenvalues. You can use these estimates to further accelerate convergence of the QR algorithm (it's called the shifted QR algorithm) but I won't show that here.
 
 = Properties
 
