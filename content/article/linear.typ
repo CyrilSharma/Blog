@@ -292,7 +292,29 @@ $]
 It's easy to see that if we normalize at the end, the vector will converge to the eigenvector with the largest eigenvalue. Combining this with the above lemma gives a way to use power iteration to generate a particular eigenvector of a matrix, provided we have a good estimate of the corresponding eigenvalue. We can then compute the Rayleigh Quotient of this new eigenvector to get a better estimate of the corresponding eigenvalue, and repeat until convergence. 
 
 == QR Iteration
+#theorem[
+  Under certain conditions $A^m V$ (where $V$ is $n$ linearly independent vectors) converges to the $n$ eigenvectors associated with the largest eigenvalues.
+]
+#proof[
+  The idea is essentially power iteration but for many vectors. Define $V$ to be a $m times n$ matrix with $n$ linearly independent columns. Let $A$ be a symmetric real matrix with eigen-decomposition $U D U^top$. Let $hat(U)$ be the matrix whose first $n$ columns of $U$ and $hat(D)$ be the top left $n times n$ subset of $D$. Finally, let $epsilon$ be an $m times n$ matrix representing some error term. Then...
+  $
+    A^m V = U D^m U^top V = hat(U) hat(D)^m hat(U)^top V + lambda_(n + 1)^k epsilon = \
+    (hat(U) hat(D)^m + lambda_(n + 1)^k epsilon (hat(U)^top V)^(-1)) hat(U)^top V approx \
+    hat(U)hat(D)^m hat(U)^top V
+  $
 
+  So we conclude that $A^m V$ has the same column space as $hat(U)$. Now, repeat this argument over and over, where $V$ is the first column, the first two columns, etc. Since it converges to the same column space every time, it must be that the $i$th column of $V$ converges to the eigenvector associated with the $i$th largest eigenvalue. In order for this argument to hold, $hat(Q)^top V$ must always be invertible, which is true given sufficient conditions on $Q$ (iff $Q$ has an LU decomposition).
+]
+
+This gives us a method to directly compute all the eigenvectors! However, we also know from regular power iteration that each of the vectors in $V$ is also converging to the eigenvector with the largest eigenvalue. Hence, this basis will be really ill-conditioned. The easy fix is to simply find an orthonormal basis for the current $V$ on every iteration, and use that instead.
+$
+  Q_k R_k = V_k\
+  V_(k + 1) = A Q_k
+$
+
+That's essentially it! It's worth noting that the QR decomposition can be found in $n^2$ instead of $n^3$ time. The trick is to ensure $V_k$ is always Hessenberg, and then you can use Householder reflectors which only touch two rows / columns to zero out the sub-diagonal entries. 
+
+*TODO*: Consider going over some technical details like how to initialize $V_k$ to ensure the theorem above applies, and some speed-ups similar to Rayleigh iteration to make this converge faster. 
 
 = Properties
 
