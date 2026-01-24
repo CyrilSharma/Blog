@@ -267,7 +267,7 @@ $
 $
 
 We can transform a matrix $A$ into a Hessenberg matrix as follows
-+ Using the same trick as Householder triangulariation, find an orthogonal transformation $Q$ that zeros everything below the off-diagonal.
++ Using the same trick as Householder triangularization, find an orthogonal transformation $Q$ that zeros everything below the off-diagonal.
 + Set $A = Q A Q^*$. You can verify the right multiplication will only change columns to right of the current column.
 
 Now you could just left multiply $Q$, but doing both allows you to find a Hessenberg matrix $A$ is similar too, which is a first step in many other algorithms.
@@ -338,6 +338,70 @@ $
 The last step essentially specifies the same update rule as simultaneous iteration. It's worth noting that the QR decomposition can be found in $n^2$ instead of $n^3$ time. The trick is to first reduce $A$ to Hessenberg form, and then you can use Householder reflectors which only touch two rows to zero out the sub-diagonal entries. The Hessenberg structure will remain throughout this process, via a similar argument used in reducing to Hessenberg form.
 
 Also, it's easy to see the diagonal entries of $A_k$ are Rayleigh quotients, and are converging rapidly towards the eigenvalues. You can use these estimates to further accelerate convergence of the QR algorithm (it's called the shifted QR algorithm) but I won't show that here.
+
+== Arnoldi Iteration
+This is a similar process to Gram-Schmidt orthogonalization, but it's used to compute a similar Hessenberg matrix. The main benefit over using Householder reflectors is that you can stop the process part way through (with Householder reflectors, you need to know every single reflector before you can conclude what the entries of $Q$ and $H$ are). This is very desirable for high-dimensional problems, where a partial reduction suffices.
+
+Let $A, Q, H in RR^(m times m)$, with $H$ Hessenberg and Q orthonormal. Then,
+$
+  A Q = Q H
+$
+
+If we restrict ourselves to the first $n$ columns of $Q$: $Q_n$...
+$
+  A Q_n = Q_(n + 1)tilde(H_n)
+$
+Where $tilde(H_n)$ is an $(n + 1) times n$ sized Hessenberg matrix. We need the first $n + 1$ columns on the RHS because the Hessenberg matrix has sub-diagonal entries. This gives us a recurrence for the $n$th column.
+$
+  A q_n = h_(1 n)q_1 + ... + h_(n + 1, n) q_(n + 1)
+$
+
+Algorithmically, think of this as plugging some term $q_n$ in on the left and extracting a new vector $q_(n + 1)$. You can compute $h_(i j)$ for the first $n$ terms using projections, and for the last $h$ term it's just the magnitude of the remaining vector. For the first term $q_1 = frac(b, ||b||, style: "horizontal")$, vector you can choose any arbitrary $b$.
+
+This is a bit different from Gram-Schmidt orthogonalization. Gram-Schmidt took each column of $A$, and subtracted out components. The Arnoldi iteration makes no attempt to use the columns of $A$. Instead, it repeatedly invokes $A$ on the previous iterate to compute the next iterate. It's easy to see the Arnoldi iteration computes a basis for the Krylov subspace (just stare at the recurrence).
+$
+  chevron.l b, A b, A^2 b, ..., A^(n - 1) b chevron.r
+$
+
+This Hessenberg matrix also has an interesting interpretation. 
+$
+  A Q_n = Q_(n + 1)tilde(H_n)
+  Q_n^* A Q_n = Q_n^* Q_(n + 1)tilde(H_n)
+  Q_n^* A Q_n = H_n
+$
+
+Where $H_n$ is the same as $tilde(H_n)$ with the bottom row chopped off. $H_n$ can be viewed as a projection matrix. Imagine I have some vector in the basis of $Q_n$, applying $H_n$ is equivalent to applying $A$ and then projecting back onto the Krylov subspace.
+
+This Krylov basis ($Kappa_n$) is interesting. Imagine writing a vector $x$ in this basis.
+$
+  x = c_0 b + c_1 A b + ... + c_(n - 1) A^(n - 1) b = q(A) b
+$
+
+This gives Arnoldi iterations a connection to polynomials of matrices. You can prove that the characteristic polynomial of $H_n$, $h$ minimizes
+$
+  ||h(A) b||
+$
+
+As a quick ad-lib of what happens,
+$
+  min ||h(A) b|| = min ||A^n b - Q_n y|| \
+  h(A) b perp "column"(Q_n) \
+  Q_n^* h(A) b = 0 arrow Q_n^* Q h(H) Q^* b = 0 \
+  arrow h(H_n) = 0
+$
+
+The last step you get by analyzing $H$ as a block matrix. You can also show the last step is necessary, not just sufficient.
+
+Let $h(A) = (A - a I)(A - b I)...$. The above result gives cool insights into the eigenvalues of $H_n$ (called the Ritz values).
++ The Ritz values of $A + lambda I$ are just shifted up by $lambda$.
++ The Ritz values of $lambda A$ are just scaled by $lambda$.
+
+To see this, just think about how to change the roots of $h(A)$ in order to keep $h(A)b$ as small as possible.
+
+This also gives insights into why the Ritz values are good approximations of eigenvalues. Namely, imagine if $h$ wasn't forced to be degree $n$, and could be larger. Then you could choose $h$ to be the characteristic polynomial of $A$, which would force $h(A)b = 0$ by the Cayley-Hamilton theorem. Since $h$ is only of dimension $n$, you cannot do that, but you could choose the zeros of $h$ to be close to the largest eigenvalues of $A$. This zeros out the eigenspaces which typically contribute to most of the magnitude of $h(A)b$. Of course, $b$ might not have much of a component in those dominant eigenspaces, so it may not be optimal to do this, but this nonetheless explains the tendency.
+
+== GMRES
+
 
 = Properties
 

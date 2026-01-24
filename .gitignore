@@ -2,6 +2,7 @@
 dist/
 # html/
 # meta.json
+.vscode/**
 
 # generated types
 .astro/
