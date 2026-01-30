@@ -143,4 +143,45 @@ The above two cones are useful for quantifying vertices, edges, and if we've rea
   $
 ]
 
-*TODO*: Setup of a convex optimization problem, Epigraph, Eipgraph Theorem
+This object is the heart of convex analysis. Just like convex sets, there are a ton of properties that can be shown about them...
+#theorem[
+  If a convex function is differentiable, it obeys 
+  $
+    f(y) >= f(x) + gradient f(x) (y - x)
+  $
+
+  If it's twice differentiable, it obeys
+  $
+    gradient^2 f succ.eq 0
+  $
+]
+
+The first statement says any tangent line lower-bounds the convex function, which is pretty intuitive. The second statement says the Hessian must be positive semi-definite. This can be interpreted as saying no matter what direction I walk in, the slope along that curve must be non-decreasing.
+
+A useful tool for relating properties of convex sets to convex functions is the epigraph.
+#definition(name: "Epigraph")[
+  $
+    "Epi"(f) = { (x, t): f(x) <= t }
+  $
+]
+#theorem[
+  $"Epi"(f)$ is convex iff $f$ is convex.
+]
+#proof[
+  Suppose $z_1 = (x_1, t_1), z_2 = (x_2, t_2) in "Epi"(f)$.
+  If $"Epi"$ is convex, then by definition of convexity, 
+  $
+    theta z_1 + (1 - theta) z_2 = (theta x_1 + (1 - theta) x_2 , theta t_1 + (1 - theta) t_2) in "Epi" (f)
+  $
+
+  By definition of an epigraph, this means
+  $
+    f(theta x_1 + (1 - theta) x_2) <= theta t_1 + (1 - theta) t_2 = theta f(x_1) + (1 - theta) f(x_2)
+  $
+
+  Thus, $f$ is a convex function. The reverse direction is similar.
+]
+
+From this property, you can immediately deduce that maxes of convex function are still convex, and a lot of other properties.
+
+*TODO*: Setup of a convex optimization problem.
