@@ -365,8 +365,8 @@ $
 
 This Hessenberg matrix also has an interesting interpretation. 
 $
-  A Q_n = Q_(n + 1)tilde(H_n)
-  Q_n^* A Q_n = Q_n^* Q_(n + 1)tilde(H_n)
+  A Q_n = Q_(n + 1)tilde(H_n) \
+  Q_n^* A Q_n = Q_n^* Q_(n + 1)tilde(H_n) \
   Q_n^* A Q_n = H_n
 $
 
@@ -381,6 +381,8 @@ This gives Arnoldi iterations a connection to polynomials of matrices. You can p
 $
   ||h(A) b||
 $
+
+Over the space of monic degree $n$ polynomials.
 
 As a quick ad-lib of what happens,
 $
