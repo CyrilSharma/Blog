@@ -650,7 +650,7 @@ $
     ||A||_* = sum sigma_i
   $
 ]
-Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Also, for orthonormal matrices you can use this norm to bound the rank.
+Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm has the nice property that the corresponding norm ball has its extreme points at rank 1 matrices. Hence, it shows up in convex optimization contexts when you want low-rank results.
 
 == Projection
 #definition[
