@@ -790,19 +790,19 @@ If you have backwards stability, you can bound the error of the computation as f
 + Compute the maximum a local perturbation can affect the output (e.g. a $epsilon$ difference causes at most a $k epsilon$ change in the output). The size of this difference is known as the _condition_ of the problem.
 + Use step 1 to bound the error of the algorithm by bounding how different the output to the approximate problem is versus the original problem.
 
-This is known as backwards error analysis is much simpler than the naive approach, where you try to compute the aggregate errors of individual floating point operations in an algorithm.
+This is known as backwards error analysis and is much simpler than the naive approach, where you try to compute the aggregate errors of individual floating point operations in an algorithm.
 
 
 #definition[
   The condition number of a matrix is how sensitive it is to small perturbations. Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number tells me the maximum ratio of relative error in $b$ to relative error in $x$.
   $
    max_(epsilon, b != 0) frac((||A^(-1) epsilon||) / (||A^(-1) b||), (||epsilon||) / (||b||), style: "horizontal") = 
-   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) = \
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) <= \
    max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(gamma != 0) ((||A gamma||) / (||gamma||)) =\
    ||A^(-1)||||A||
   $
 
-  Where the last step came from choosing $b = A gamma$.
+  Where the last step came from choosing $b = A gamma$. You can also verify you get this same bound if there's relative error in $A$ or in $x$.
 ]
 
 *TODO*: Discretizing differential equations...
