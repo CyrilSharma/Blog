@@ -372,7 +372,7 @@ $
 
 Where $H_n$ is the same as $tilde(H_n)$ with the bottom row chopped off. $H_n$ can be viewed as a projection matrix. Imagine I have some vector in the basis of $Q_n$, applying $H_n$ is equivalent to applying $A$ and then projecting back onto the Krylov subspace.
 
-This Krylov basis ($Kappa_n$) is interesting. Imagine writing a vector $x$ in this basis.
+This Krylov basis ($cal(K)_n$) is interesting. Imagine writing a vector $x$ in this basis.
 $
   x = c_0 b + c_1 A b + ... + c_(n - 1) A^(n - 1) b = q(A) b
 $
@@ -389,10 +389,10 @@ $
   min ||h(A) b|| = min ||A^n b - Q_n y|| \
   h(A) b perp "column"(Q_n) \
   Q_n^* h(A) b = 0 arrow Q_n^* Q h(H) Q^* b = 0 \
-  arrow h(H_n) = 0
+  h(H_n) = 0 models Q_n^* Q h(H) Q^* b = 0
 $
 
-The last step you get by analyzing $H$ as a block matrix. You can also show the last step is necessary, not just sufficient.
+The last step you get by analyzing $H$ as a block matrix. It's only necessary that the first column of $h(H_n) = 0$ since $Q^* b$ is by construction a multiple of $e_1$. If any other polynomial (say $q$) satisfied these conditions, you could say $(q - h)(A)(b) = 0$ which would imply $cal(K)_n$ is not full rank. 
 
 Let $h(A) = (A - a I)(A - b I)...$. The above result gives cool insights into the eigenvalues of $H_n$ (called the Ritz values).
 + The Ritz values of $A + lambda I$ are just shifted up by $lambda$.
@@ -403,7 +403,37 @@ To see this, just think about how to change the roots of $h(A)$ in order to keep
 This also gives insights into why the Ritz values are good approximations of eigenvalues. Namely, imagine if $h$ wasn't forced to be degree $n$, and could be larger. Then you could choose $h$ to be the characteristic polynomial of $A$, which would force $h(A)b = 0$ by the Cayley-Hamilton theorem. Since $h$ is only of dimension $n$, you cannot do that, but you could choose the zeros of $h$ to be close to the largest eigenvalues of $A$. This zeros out the eigenspaces which typically contribute to most of the magnitude of $h(A)b$. Of course, $b$ might not have much of a component in those dominant eigenspaces, so it may not be optimal to do this, but this nonetheless explains the tendency.
 
 == GMRES
+GMRES aims to solve $A x = b$. It does this by finding $x_n in cal(K)_n$ to solve the following least-squares problem.
+$
+  inf_(x_n) ||b - A x_n||
+$
 
+Since $x_n in cal(K)_n$ we can equivalently write the problem as 
+$
+  inf_(y) ||b - A Q_n y|| = inf_(y) ||b - Q_(n + 1) tilde(H_n) y|| = inf_y ||tilde(H_n) y - Q_(n + 1)^* b||
+$
+
+Where the last step comes from observing both terms are in the column space of $Q_(n + 1)$, so "projecting" it via $Q_(n + 1)^*$ won't change any norms. This is a typical least-squares problem, and can be solved in the usual way. So the algorithm GMRES proposes is...
++ Run a step of the arnoldi iteration.
++ Solve a least squares problem to compute $y$, then compute an approximate solution to $A x = b$ as $x_n = Q_n y$.
++ Go back to step 1.
+
+In addition, it's possible to reuse work in successive least-squares computations that brings down the overhead to linear time.
+
+=== Convergence
+This can again be analyzed as a polynomial approximation problem.
+$
+  ||r_n|| = inf_(x_n) || b - A x_n || = inf_(q) || b - q(A)b || =\ inf_(p in P_n) ||p(A)b||
+  <= ||b|| inf_(p in P_n) ||p(A)||
+$
+
+This time, we have $p(0) = 1$ and $p$ is a degree-n polynomial. How fast $frac(style: "horizontal", ||r_n||, b)$ shrinks is determined by how small $inf_(p in P_n) ||p(A)||$ can get. If you assume $A$ is diagonalizable,
+$
+  inf_(p in P_n) ||p(A)|| <= inf_(p in P_n) ||V D V^*|| <= ||V|| ||V^*|| inf_(p in P_n) || p(D) || = \
+  kappa(A) inf_(p in P_n)  || p(D) || 
+$
+
+So essentially, GMRES converges fast if the condition number is small, and if you can find a polynomial that makes all the eigenvalues small. Now, complex analysis tells us that for any holomorphic function, the value at its interior is equal to the average of values on a ring around it. Hence, if the eigenvalues form a ring around 0 (where the polynomial evaluates to 1), then the convergence rate is very slow. If they're tightly concentrated somewhere else, say at $z = z_0$, then it's easy to see a polynomial of the form $(z - z_0)^n$ reduces the error very quickly. The more spread out eigenvalues, the more unique roots you will need and the slower the overall convergence.
 
 = Properties
 
