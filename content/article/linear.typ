@@ -430,10 +430,28 @@ $
 This time, we have $p(0) = 1$ and $p$ is a degree-n polynomial. How fast $frac(style: "horizontal", ||r_n||, b)$ shrinks is determined by how small $inf_(p in P_n) ||p(A)||$ can get. If you assume $A$ is diagonalizable,
 $
   inf_(p in P_n) ||p(A)|| <= inf_(p in P_n) ||V D V^*|| <= ||V|| ||V^*|| inf_(p in P_n) || p(D) || = \
-  kappa(A) inf_(p in P_n)  || p(D) || 
+  kappa(V) inf_(p in P_n)  || p(D) || 
 $
 
 So essentially, GMRES converges fast if the condition number is small, and if you can find a polynomial that makes all the eigenvalues small. Now, complex analysis tells us that for any holomorphic function, the value at its interior is equal to the average of values on a ring around it. Hence, if the eigenvalues form a ring around 0 (where the polynomial evaluates to 1), then the convergence rate is very slow. If they're tightly concentrated somewhere else, say at $z = z_0$, then it's easy to see a polynomial of the form $(z - z_0)^n$ reduces the error very quickly. The more spread out eigenvalues, the more unique roots you will need and the slower the overall convergence.
+
+== Bi-Orthogonalization Methods
+These methods solve the same problems as before, $A x = b$ and $A x = lambda x$. However, unlike the Arnoldi iteration, they don't construct a basis for $cal(K_n)$ that is orthonormal. Instead, they construct a basis that adheres to a 3-term recurrence.
+$
+  A v_i = alpha v_(i - 1) + beta v_i + gamma v_(i + 1)
+$
+
+They construct two such bases and force them to be mutually orthogonal.
+$
+  V_n^* W_n = I \
+  A V_n = V_(n + 1) tilde(T_n) \
+  A^* W_n = W_(n + 1) tilde(W_n) \
+  W_n^* A V_n = T_n
+$
+
+This is very analogous to previous methods. You can use the eigenvalues of $T_n$ to estimate the eigenvalues of $A$. You can choose $w_i$ or $v_i$ to be the closest vector to $b$ in the current Krylov subspace (residual minimization), etc.
+
+The main advantage of these methods is they need only a 3-term recurrence, while the main disadvantage is their stability guarantees aren't as good ($V_n$ and $W_n$ need not be well-conditioned).
 
 = Properties
 
@@ -835,4 +853,5 @@ This is known as backwards error analysis and is much simpler than the naive app
   Where the last step came from choosing $b = A gamma$. You can also verify you get this same bound if there's relative error in $A$ or in $x$.
 ]
 
-*TODO*: Discretizing differential equations...
+= Applications
+*TODO*: Discretizing differential equations, Muon, ...
