@@ -491,11 +491,20 @@ The main advantage of these methods is they need only a 3-term recurrence, while
     )
   $
 
-  From here, it is clear the row-rank is equal to the column-rank as only columns / rows with pivots (leading ones) affect the rank, and there are an equal number of those.
+  We can do a similar set of transforms with columns by multiplying by an invertible matrix on the right,  allowing us to arrive at a matrix with at most a single one per column or row. From here, it is clear the row-rank is equal to the column-rank.
 ]
 
 This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
 
+#theorem[$ "rank"(A^top A) = "rank"(A) $]
+#proof[
+  Suppose we have $v in "Col"(A)$. I claim $v in.not "Null"(A^top)$ but suppose that this was false. Then,
+  $
+    "dot"(a_i, v) = 0, forall i \
+    "dot"(v, v) = "dot"(c_1 a_1 + ... + c_n a_n, v) = 0
+  $
+  This can only be true if $v = 0$. So now imagine we have $u, v in "Col(A)"$ and $A^top u = A^top v$. Then, $A^top (u - v) = 0, u - v in "Col"(A)$. But this implies $u - v = 0$. Hence, every non-zero vector out of $A$ gets mapped to a unique vector out of $A^top A$.
+]
 == Trace
 #theorem[The trace is invariant to cyclic permutations.]
 #proof[$

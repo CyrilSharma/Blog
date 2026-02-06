@@ -185,3 +185,33 @@ A useful tool for relating properties of convex sets to convex functions is the 
 From this property, you can immediately deduce that maxes of convex function are still convex, and a lot of other properties.
 
 *TODO*: Setup of a convex optimization problem.
+
+= Inequalities
+It turns out many of the most useful inequalities can be derived through analyzing a suitable convex function. 
+#theorem(name: "Jensen's Inequality")[$ f(E(x)) <= E(f(x)) $]
+#proof[
+  $
+    f(E(x)) = f(lim_(Delta x -> 0) (sum_i (x + i Delta x)p(x + i Delta x) Delta x)) =\
+     lim_(h -> 0) sum_i f(x + i Delta x)p(x + i Delta x)Delta x = E(f(x))
+  $
+]
+
+#theorem(name: "Young's Inequality")[$ 1/p + 1/q => a b <= a^p / p + b^q / q $]
+#proof[$
+  exp(x/p + y/q) <=_"Convexity" exp(x)/p + exp(y)/q \
+  a, b > 0 | exp(log(a^p)/p + log(b^p)/q) <= exp(log(a^p))/p + exp(log(b^p))/q \
+  a b <= a^p / p + b^q / q
+$]
+
+#theorem(name: "Holder's Inequality")[$ 1/p + 1/q => sum_i |x_i y_i| = norm(x)_p norm(y)_q $]
+#proof[
+  $
+    a_i = x_i / norm(x)_p, b_i = y_i / norm(y)_q\
+    |a_i| |b_i| <= abs(a_i)^p / p + abs(b_i)^q / q  \
+    sum_i |a_i b_i| <= sum_i (abs(a_i)^p / p + abs(b_i)^q / q) \
+    1/(norm(x)_p norm(y)_q) sum_i x_i y_i <= 1/p sum_i abs(a_i)^p + 1/q sum_i abs(b_i)^q = 1/p + 1/q = 1 \
+    sum_i |x_i y_i| = norm(x)_p norm(y)_q
+  $
+]
+
+Plugging in $p = 2$ gives you the Cauchy-Schwarz inequality.
