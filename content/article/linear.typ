@@ -902,6 +902,12 @@ $
   min_R ||R X - Y||_F
 $
 
+You can reformulate this into a closest orthonormal matrix.
+$
+  min_R "TR"(X^top X) - 2"TR"(X^top R^top Y) + "TR"(Y^top Y) = \
+  max_R "TR"(X^top R^top Y) = max_R "TR"(R^top (Y X^top)) = min_R ||R - Y X^top||
+$
+
 You can extend this to "closest rigid transform" by simply subtracting the centroids from both point sets and then computing this. The difference in centroids tells you the movement, $R$ tells you the rotation. This works great for things that naturally see the world in point clouds, like Lidar. SLAM (a modern pose estimation algorithm) essentially does this but with an initial guess of what points from the previous timestep correspond to points from the current timestep.
 
 == Muon
