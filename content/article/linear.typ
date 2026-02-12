@@ -910,7 +910,12 @@ $
   ||Delta W x|| <= alpha, forall x
 $
 
-One way to do this is to force the gradient update to be orthonormal. But which orthonormal matrix is "closest" to the gradient? This depends on what norm you pick. Under the Frobenius Norm the #link(<closest>)[closest orthonormal matrix] is $U V^top$, where $U$ and $V$ come from the SVD. Perhaps a more natural way to justify this choice is our new matrix $U V^top$ only cares about inputs that live in the rank-$r$ subspace that $V^T$ spans (just like $G$) and still only creates outputs in the rank-$r$ column space of $U$ (just like $G$). Even if $G$ is full rank, you can still say that it maps the dominant input directions to the dominant output directions.
+One way to do this is to force the gradient update to be orthonormal. But which orthonormal matrix is "closest" to the gradient? This depends on what norm you pick. Under the Frobenius Norm the #link(<closest>)[closest orthonormal matrix] is $U V^top$, where $U$ and $V$ come from the SVD. Here's another way to justify this choice. We can write
+$
+  G = sum_i sigma_i u_i v_i^top
+$
+
+Hence, components in $v_i$ are mapped to $u_i$. Now, the nice thing about $U V^top$ it also does this! It messes up the scaling, but it keeps the input-output structure intact. If I change the input along one of the right singular vectors, the output still exclusively moves along one of the left singular vectors.
 
 Anyways, the main problem with this idea is computing the SVD is expensive. Here's how they got around it.
 
