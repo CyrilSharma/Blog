@@ -938,6 +938,6 @@ $]
 
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
-Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD has positive singular values. 
+Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because singular values are positive. 
 
 *TODO*: Discretizing differential equations
