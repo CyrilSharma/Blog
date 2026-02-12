@@ -9,6 +9,391 @@
 
 #show: note_page
 
+= Fundamentals
+
+== Rank and Spaces
+#definition[
+  The dimension of the space spanned by the columns of a matrix is called the column-rank. The analogous quantity for the rows is the row-rank. There are analogous quantities for null spaces.
+]
+
+#lemma[Let $B = F A$. If $F$ is invertible, the columns of $A$ are linearly independent iff the columns of $B$ are linearly independent.]
+#proof[
+  Suppose $exists alpha_1, ..., alpha_n$ s.t.
+  $
+    alpha_1 a_1 + ... + alpha_n a_n = 0
+  $
+  Then left-multiplying by $F$ immediately reveals...
+  $
+    alpha_1 F a_1 + ... + alpha_n F a_n = 0 \
+    alpha_1 b_1 + ... + alpha_n b_n = 0 \ 
+  $
+  The reverse direction is shown by using $A = F^(-1) B$.
+]
+
+#lemma[Let $B = F A$. If $F$ is invertible, $"col-rank"(A) = "col-rank"(B)$]
+#proof[
+  Suppose $A$ has column-rank $r$, e.g it has $r$ linearly independent vectors. The previous lemma implies that $B$ has at least $r$ linearly independent vectors. Thus $"col-rank"(A) <= "col-rank"(B)$. The reverse is also true, since we can apply the same argument in reverse by saying $A = F^(-1) B$. This forces equality. 
+]
+
+#theorem[The row-rank is equal to the column-rank.]
+#proof[
+  Since all standard row operations (swapping, scaling, adding) can be represented as an invertible matrix applied on the left, we can row-reduce the matrix until it is in reduced #link("https://en.wikipedia.org/wiki/Row_echelon_form")[row-echelon] form.
+  $
+    mat(
+      1, a, 0, d, 0, 0;
+      0, 0, 1, 0, 0, 0;
+      0, 0, 0, 0, 1, 0;
+      0, 0, 0, 0, 0, 1;
+    )
+  $
+
+  We can do a similar set of transforms with columns by multiplying by an invertible matrix on the right,  allowing us to arrive at a matrix with at most a single one per column or row. From here, it is clear the row-rank is equal to the column-rank.
+]
+
+This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
+
+#theorem[$ "rank"(A^top A) = "rank"(A) $]
+#proof[
+  Suppose we have $v in "Col"(A)$. I claim $v in.not "Null"(A^top)$ but suppose that this was false. Then,
+  $
+    "dot"(a_i, v) = 0, forall i \
+    "dot"(v, v) = "dot"(c_1 a_1 + ... + c_n a_n, v) = 0
+  $
+  This can only be true if $v = 0$. So now imagine we have $u, v in "Col(A)"$ and $A^top u = A^top v$. Then, $A^top (u - v) = 0, u - v in "Col"(A)$. But this implies $u - v = 0$. Hence, every non-zero vector out of $A$ gets mapped to a unique vector out of $A^top A$.
+]
+== Trace
+#theorem[The trace is invariant to cyclic permutations.]
+#proof[$
+sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = \
+sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = \
+sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
+$]
+
+Furthermore, 
+$
+T(P^(-1) D P) = T(D) = sum_i lambda_i
+$
+
+So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
+
+== Triangular Matrices
+#theorem[
+  The determinant of a triangular matrix is the product of its diagonal entries.
+]
+#proof[
+  The determinant is invariant to column addition (think about a parallelogram), hence you can just zero out all the entries not in the diagonals, and the claim becomes plainly true.
+]
+#theorem[
+  The Triangular matrix equation $T x = b$ can be solved in $n^2$ time.
+]
+#proof[
+  Use back-substitution.
+]
+
+== Similar Matrices
+#definition[
+  $A$ and $B$ are similar if $A = P^(-1)B P$ for some matrix $P$
+]
+
+Similar matrices have a lot of nice properties.
+$
+  det(A) = det(P^(-1))det(B)det(P) = det(B)
+$
+
+Using Taylor expansions…
+
+$
+ f(A) = "poly"(A) = "poly"(P^(-1)Q P) = P^(-1)"poly"(Q) P = P^(-1)f(B)P
+$
+
+Crucially, every square matric is similar to an upper-triangular matrix. You can see this with the Schur or Jordan Decompositions. By the two properties above, we have
+$
+  det(f(A) - lambda I) = det(f(T) - lambda I)
+$
+
+This leads to the Spectral Mapping Theorem, which states that the eigenvalues of $f(A)$ are $f(T_(i i))$. To see the Spectral Mapping theorem, observe that for a triangular matrix $T$ its determinant is equal to the product of its diagonal entries.
+
+This immediately implies the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
+
+
+== Symmetric Matrices
+#theorem[All eigenvalues of a symmetric real matrix are real.]
+#proof[$
+  "dot"(A u, u) = u^dagger A^dagger u = u^dagger A u = lambda u^dagger u \
+  "dot"(A u, u) = (lambda u)^dagger u = lambda^dagger u^dagger u \
+  lambda^dagger = lambda
+$]
+
+#theorem[For a symmetric matrix, all eigenvectors with different eigenvalues are orthogonal.]
+#proof[$
+  "dot"(A u, v) = lambda_1 "dot"(u, v) \
+  "dot"(A v, u) = lambda_2 "dot"(u, v) \
+  "dot"(A v, u) = "dot"(A u, v) \
+  lambda_1 "dot"(u, v) = lambda_2 "dot"(u, v) \
+  "dot"(u, v) = 0 
+$]
+
+#theorem[Symmetric Matrices are diagonalizable.] <diagonalizable>
+#proof[
+  We know all the eigenvalues of the symmetric matrix $A_n$ are real. Hence, $A_n$ has some real eigenvector corresponding to some real eigenvalue, call this $u_1$. Extend $u_1$ to an orthonormal basis $u_1, ..., u_n$ for $bb(R)^n$. Let $U_n$ be the orthonormal matrix whose columns are $u_1, ... u_n$. Now, define $A_(n - 1)$ as
+  $
+    A_(n - 1) = U_n A_n U_n^top
+  $
+
+  Observe $A_(n - 1)$ is symmetric.
+  $
+    A_(n - 1)^top = U_n A_n^top U_n^top = A_(n - 1) 
+  $
+
+  Hence, $A_(n - 1)$ is symmetric. Furthermore, 
+  $
+    A_(n - 1)vec(1, 0, ..., 0) = U_n A_n U_n^top vec(1, 0, ..., 0) = \
+    U_n A_n u_1 = U_n lambda_1 u_1 = \
+    vec(lambda_1, 0, ..., 0)
+  $
+
+  Combining the two properties, $A_(n - 1)$ looks like this.
+  $
+    mat(
+      lambda_1, 0;
+      0, B;
+    )
+  $
+
+  Because $A_(n - 1)$ is symmetric its principal submatrix $B$ is also symmetric. Observe that any eigenvector $b$ for $B$ can produce an eigenvector for $A_(n - 1)$, $vec(0, b)$. We can use the first column of $A_(n - 1)$ and $vec(0, b)$ to orthogonalize $A_(n - 1)$, and we can keep doing this until we arrive at $A_1$ which is completely diagonal.
+  $
+    Q_1 .... Q_n A_n Q_n^top ... Q_1 ^top = Q A_n Q^top = D
+  $
+
+  Where $D$ is a diagonal matrix consisting of the eigenvalues of $A_n$ and $Q$ is the product of the orthonormal matrices. Since the product of orthonormal matrices is also orthonormal, $Q^top = Q^(-1)$ and thus $A_n$ is diagonalizable.
+]
+
+== Orthogonality
+#theorem[
+  A set of mutually orthogonal vectors is a set of linearly independent vectors.
+]
+
+#proof[
+  Define the basis to be $u_1, ..., u_n$. Then we have
+  $
+      "dot"(u_i, u_j) = 0 quad forall i != j,
+  $
+
+  Now suppose the basis was linearly dependent. Then, there must exist $a_1, ..., a_n$ such that 
+  $
+    a_1 u_1 + ... + a_n u_n = 0
+  $
+
+  Now we have
+  $
+    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = \
+    a_1 a_2 "dot"(u_1, u_2) + ... + a_1 a_n "dot"(u_1, u_n) = 0 \
+    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = "dot"(a_1 u_1, -a_1 u_1) = -a_1 "dot"(u_1, u_1) < 0
+  $
+
+  Hence, we've arrived at a contradiction, and our basis must be linearly independent.
+]
+
+#theorem[The product of orthonormal matrices is also orthonormal.]
+#proof[$
+  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
+  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
+  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
+$]
+
+== Norms
+#definition[
+  The operator norm of a matrix is the largest amount it can scale any vector.
+  $
+    ||A|| = sup{ ||A v|| : ||v|| <= 1}
+  $
+]
+
+The specific value of the operator norm depends on how you measure "large". For example, you could measure how much the L2-Norm scales. You can even use different input and output norms. For example,
+$
+  sup{ ||A v||_(l_2) : ||v||_(l_1) <= 1}
+$
+
+#theorem[$
+  ||A||_(l_2 arrow l_2) = max_i sigma_i
+$]
+#proof[
+  Observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
+]
+
+#definition[
+  The Frobenius norm of a matrix is the L2-norm of its singular value vector.
+  $
+    ||A||_F = sqrt(sum sigma_i^2)
+  $
+]
+
+This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms).
+This is algebraically powerful because you can express it in terms of traces.
+$
+  ||A||_F = sqrt("Tr"(A^top A))
+$ 
+
+
+#definition[
+  The Nuclear or Trace norm is the L1-norm of its singular value vector.
+  $
+    ||A||_* = sum sigma_i
+  $
+]
+Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm has the nice property that the corresponding norm ball has its extreme points at rank 1 matrices. Hence, it shows up in convex optimization contexts when you want low-rank results.
+
+== Projection
+#definition[
+  A projector $P$ is a matrix which satisfies $P^2 = P$.
+]
+#lemma[
+  If $P$ is a projector, then $I - P$ is also a projector, which projects onto the null space of $P$.
+]
+#proof[$
+  (I - P)^2 v = (I^2 - 2 I P + P^2)v = (I - P)v \
+  P(I - P)v = (P - P^2)v = 0
+$]
+#theorem[
+  Let $S_1 = "range"(P)$ and $S_2 = "range"(I - P)$. Then the unique solution to 
+  $
+    v_1 + v_2 = v quad v_1 in S_1, v_2 in S_2
+  $
+
+  is $v_1 = P v, v_2 = (I - P) v$.
+]
+#proof[
+  The choice of $v_1$ and $v_2$ above clearly produces a valid solution. However, perhaps there is some vector $v_3$, such that $v_1 - v_3 in S_1$, and $v_2 + v_3 in S_2$, which yields another solution? This requires $v_3 in S_1 inter S_2$. As $"range"(P) inter "null"(P) = 0$, the only vector which satisfies this is zero.
+]
+
+#definition[
+  A projector whose null space is orthogonal to its range is an orthogonal projector.
+]
+#theorem[
+  Orthogonal projectors must satisfy $P = P^*$.
+]
+#proof[
+  For the forward direction we have
+  $
+    "dot"(P v, (I - P)v) = v P^* (I - P) v = v (P - P^2) v = 0         
+  $
+
+  For the backwards, let $q_1, ..., q_n$ be a basis for $"range"(P)$ and let $q_(n + 1), ... q_m$ be a basis for $"null"(P)$. Since we are assuming $P$ is an orthogonal projector, these two sets of vectors are mutually independent and thus form a basis for $R^m$. Define the $i$th column of $Q$ to be $q_i$. We immediately have,
+  $
+    P Q = mat(q_1, ..., q_n, 0, ..., 0)
+  $
+
+  And thus, 
+  $
+    Q^* P Q = mat(
+      1, , , ;
+      , 1, , ;
+      , , 1, ;
+      , , , 0...
+    ) = Sigma
+  $
+
+  Hence, we've shown $P = Q Sigma Q^*$, and it's easy to see that $P = P^*$.
+]
+
+From the last proof, we also can say any orthogonal projector can be written as $P = hat(Q) hat(Q)^*$ where $hat(Q) = mat(u_1, ..., u_n)$. You can check that the reverse also holds. If I have some subspace defined the orthonormal basis encoded in $hat(Q)$, then $hat(Q) hat(Q)^*$ defines a projector onto that subspace. 
+
+You can also do this trick even when given a non-orthogonal basis $A$. Let $v$ be in the input vector and let $y$ be the projection. Since $y in "range"(A)$, let $y = A x$. Then
+$
+  a_i^*(v - y) = 0 quad forall i \
+  A^*(v - A x) = 0 arrow x = (A^* A)^(-1)A^* v \
+  y = A (A^* A)^(-1)A^* v
+$
+
+So we get the new projector, $A (A^* A)^(-1)A^*$. This is familiar to anyone who's seen linear regression. Essentially, the matrix of data values is $A$, $y$ are the target values, and $b arrow x$ is the optimal set of coefficients.
+
+== Kronecker Product
+#definition[
+  The Kronecker product $A times.o B$ is a block-matrix of the form
+  $
+    mat(A_11 B, ..., A_(1 n) B; ..., ..., ...; A_(n 1) B, ..., A_(n n) B; )
+  $
+]
+#definition[
+  $"vec"(X)$ is the vector obtained by stacking the columns of $X$.
+]
+#theorem[$
+  "vec"(A X B) = (B^top times.o A) "vec"(X)
+$]
+#proof[
+  Observe that
+  $
+    A X B_i = sum_j B_(i j) A X_j
+  $
+  If you do this for every $i$, you get the appropriate Kronecker product.
+]
+This is a useful tool when you are solving for matrices, for example
+$
+  A X B + X = C arrow (B^top times.o A + I)"vec"(X) = "vec"(C)
+$
+
+
+== Definite and Indefinite
+#definition[
+  A matrix $A$ is positive-definite if
+  $
+    x^top A x > 0, forall x
+  $
+
+  You can similarly definite negative definite and the semi variants which allow $x^top A x = 0$. If it doesn't fit into any of these categories, it's called indefinite.
+]
+
+The best way to think about these matrices is in terms of the $x^top A x$ object. This object is literally a quadratic equation in high dimensions. For a definite matrix, all choices of $x$ decrease $x^top A x$, or all directions increase $x^top A x$. Hence, you have a nice bowl shaped quadratic and this makes optimization easy. On the other hand, if some directions move you up and some move you down, you end up with a saddle. This can mess up gradient-descent based optimization methods.
+
+#theorem[
+  Positive definite matrices have positive diagonal entries.
+]
+#proof[
+  $
+    e_i^top A e_i = e_i A_i = A_(i i) > 0
+  $ 
+]
+
+== Companion Matrix
+A companion matrix is just a construction whose eigenvalue equation is exactly some polynomial. For the polynomial $c_1 + c_2 x + ... + c_n x^n + x^(n + 1)$. It can be constructed as follows.
+$
+  mat(
+    0, 0, 0, ..., 0, c_1;
+    1, 0, 0, ..., 0, c_2;
+    0, 1, 0, ..., 0, c_3;
+    0, 0, 1, ..., 0, c_4;
+    dots.v, dots.v, dots.v, dots.down, dots.v, dots.v;
+    0, 0, 0, ..., 1, c_n;
+  )
+$
+
+This is useful to know because it means every root finding problem can be formulated as an eigenvalue problem. Since there is no formula for polynomials of degree five and greater, it implies there is no finite sequence of operations which can diagonalize an arbitrary matrix.
+
+== Stability
+/ Forward-Stable: An algorithm that gives almost the right answer (within epsilon relative error) to almost the right problem (inputs within epsilon relative error).
+/ Backward-Stable: An algorithm which can be interpreted to give the exact right answer to a perturbed problem (within epsilon relative error of the original problem).
+
+Inner products are forward and backward stable. Outer products are not backwards stable, because you cannot usually interpret the output matrix as the outer product of two perturbed input vectors (the perturbation to the output matrix doesn't factor).
+
+If you have backwards stability, you can bound the error of the computation as follows.
++ Compute the maximum a local perturbation can affect the output (e.g. a $epsilon$ difference causes at most a $k epsilon$ change in the output). The size of this difference is known as the _condition_ of the problem.
++ Use step 1 to bound the error of the algorithm by bounding how different the output to the approximate problem is versus the original problem.
+
+This is known as backwards error analysis and is much simpler than the naive approach, where you try to compute the aggregate errors of individual floating point operations in an algorithm.
+
+
+#definition[
+  The condition number of a matrix is how sensitive it is to small perturbations. Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number tells me the maximum ratio of relative error in $b$ to relative error in $x$.
+  $
+   max_(epsilon, b != 0) frac((||A^(-1) epsilon||) / (||A^(-1) b||), (||epsilon||) / (||b||), style: "horizontal") = 
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) <= \
+   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(gamma != 0) ((||A gamma||) / (||gamma||)) =\
+   ||A^(-1)||||A||
+  $
+
+  Where the last step came from choosing $b = A gamma$. You can also verify you get this same bound if there's relative error in $A$ or in $x$.
+]
+
 = Decompositions
 
 == Jordon Normal Form
@@ -175,7 +560,7 @@ Where the last step follows from $R$ being triangular.
 
 The simpler decomposition and lack of pivoting makes this decomposition very useful when its applicable.
 
-= Algorithms
+= Linear Routines
 == Richardson Iteration
 #theorem[
   Suppose we want to solve $A x = b$. Computing inverses is expensive, and not easily done in parallel. Under certain conditions, we can instead run the following equation until we reach a fixed point.
@@ -453,166 +838,82 @@ This is very analogous to previous methods. You can use the eigenvalues of $T_n$
 
 The main advantage of these methods is they need only a 3-term recurrence, while the main disadvantage is their stability guarantees aren't as good ($V_n$ and $W_n$ need not be well-conditioned).
 
-= Properties
-
-== Rank and Spaces
-#definition[
-  The dimension of the space spanned by the columns of a matrix is called the column-rank. The analogous quantity for the rows is the row-rank. There are analogous quantities for null spaces.
-]
-
-#lemma[Let $B = F A$. If $F$ is invertible, the columns of $A$ are linearly independent iff the columns of $B$ are linearly independent.]
+= Applications
+== Inequalities
+#theorem(name: "Von Neumann Trace Inequality")[
+  $
+    abs("TR"(A B)) <= sum_i sigma_i (A) sigma_i (B)
+  $
+] <von-neumann>
 #proof[
-  Suppose $exists alpha_1, ..., alpha_n$ s.t.
+  Decompose things using the SVD.
   $
-    alpha_1 a_1 + ... + alpha_n a_n = 0
+    "TR"(A B) = "TR"(U_A Sigma_A V_A^top U_B Sigma_B V_B^top) = \
+    "TR"(Sigma_A (V_A^top U_B) Sigma_B (V_B^top U_A)) = "TR"(Sigma_A S Sigma_B T)
   $
-  Then left-multiplying by $F$ immediately reveals...
+
+  Where $S, T$ are orthonormal. Now, define $P_k$ to be the diagonal matrix where the first $k$ entries are $1$, and the rest are $0$. We can write $Sigma_A$ and $Sigma_B$ (whose diagonal entries are in non-increasing order) as 
   $
-    alpha_1 F a_1 + ... + alpha_n F a_n = 0 \
-    alpha_1 b_1 + ... + alpha_n b_n = 0 \ 
+    Sigma_A = (sigma_1 (A) - sigma_2 (A))P_1 + ... + (sigma_(n - 1) (A) - sigma_(n)(A))P_(n - 1) + sigma_n P_n
   $
-  The reverse direction is shown by using $A = F^(-1) B$.
+
+  Let's rewrite the desired inequality using this decomposition. Let $a_i, b_i$ be the positive coefficients associated with $Sigma_A$ and $Sigma_B$.
+  $
+    abs(sum_(i j) "TR"(a_i b_i P_i S P_j T)) <= sum_(i j) "TR"(a_i b_i P_i P_j)
+  $
+
+  So if we can show this holds for each term, by triangle inequality we're done.
+  $
+    "TR"(P_i S P_j T) <= "TR"(P_i P_j)
+  $
+
+  Assume $j < i$, if this is not the case, permute the items in the trace and do the same analysis with $i$. Denote $S_i$ to be the $i$th column of $S$, and $T_i$ to be the $i$th row of $T$. Then we immediately obtain...
+  $
+     "TR"(P_i S P_j T) = "TR"(P_i sum_j S_j T_j) = sum_j S_(j j) T_(j j) <=_1 j \
+     "TR"(P_i P_j) = j
+  $
+
+  1 holds because no entry of an orthonormal matrix can exceed 1 as that would make at least one column not have unit length.
 ]
 
-#lemma[Let $B = F A$. If $F$ is invertible, $"col-rank"(A) = "col-rank"(B)$]
-#proof[
-  Suppose $A$ has column-rank $r$, e.g it has $r$ linearly independent vectors. The previous lemma implies that $B$ has at least $r$ linearly independent vectors. Thus $"col-rank"(A) <= "col-rank"(B)$. The reverse is also true, since we can apply the same argument in reverse by saying $A = F^(-1) B$. This forces equality. 
-]
+The main insight of this proof is decompose the matrix into a bunch of simple matrices, and use the triangle inequality to allow reasoning about a single entry.
 
-#theorem[The row-rank is equal to the column-rank.]
-#proof[
-  Since all standard row operations (swapping, scaling, adding) can be represented as an invertible matrix applied on the left, we can row-reduce the matrix until it is in reduced #link("https://en.wikipedia.org/wiki/Row_echelon_form")[row-echelon] form.
-  $
-    mat(
-      1, a, 0, d, 0, 0;
-      0, 0, 1, 0, 0, 0;
-      0, 0, 0, 0, 1, 0;
-      0, 0, 0, 0, 0, 1;
-    )
-  $
+You can use this result to show a lot of things. For example, that the $k$ largest diagonal entries are upper-bounded by the $k$ largest singular values (it's a fun puzzle, think about what matrices you need to multiply by for the trace inequality to prove this), or for bounding Frobenius norms.
 
-  We can do a similar set of transforms with columns by multiplying by an invertible matrix on the right,  allowing us to arrive at a matrix with at most a single one per column or row. From here, it is clear the row-rank is equal to the column-rank.
-]
-
-This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
-
-#theorem[$ "rank"(A^top A) = "rank"(A) $]
-#proof[
-  Suppose we have $v in "Col"(A)$. I claim $v in.not "Null"(A^top)$ but suppose that this was false. Then,
-  $
-    "dot"(a_i, v) = 0, forall i \
-    "dot"(v, v) = "dot"(c_1 a_1 + ... + c_n a_n, v) = 0
-  $
-  This can only be true if $v = 0$. So now imagine we have $u, v in "Col(A)"$ and $A^top u = A^top v$. Then, $A^top (u - v) = 0, u - v in "Col"(A)$. But this implies $u - v = 0$. Hence, every non-zero vector out of $A$ gets mapped to a unique vector out of $A^top A$.
-]
-== Trace
-#theorem[The trace is invariant to cyclic permutations.]
-#proof[$
-sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = \
-sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = \
-sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
-$]
-
-Furthermore, 
+== Closest Orthonormal Matrix <closest>
+Suppose we want to find $G$ such that $min ||G - A||_F$, where $F$ represents the Frobenium norm. Then we have
 $
-T(P^(-1) D P) = T(D) = sum_i lambda_i
+  min_G ||G - A||_F = min_G "TR"(G^top G - G^top A - A^top G + A^top A) = \
+  min_G -"TR"(G^top A) - "TR"(A^top G) + C = max_G (G^top A)
 $
 
-So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
-
-== Triangular Matrices
-#theorem[
-  The determinant of a triangular matrix is the product of its diagonal entries.
-]
-#proof[
-  The determinant is invariant to column addition (think about a parallelogram), hence you can just zero out all the entries not in the diagonals, and the claim becomes plainly true.
-]
-#theorem[
-  The Triangular matrix equation $T x = b$ can be solved in $n^2$ time.
-]
-#proof[
-  Use back-substitution.
-]
-
-== Similar Matrices
-#definition[
-  $A$ and $B$ are similar if $A = P^(-1)B P$ for some matrix $P$
-]
-
-Similar matrices have a lot of nice properties.
+By the #link(<von-neumann>)[Von Neumann Trace Inequality], 
 $
-  det(A) = det(P^(-1))det(B)det(P) = det(B)
+  max_G "TR"(G^top A) <= sum sigma_i (G) sigma_i (A) = sum sigma_i (A) \
 $
 
-Using Taylor expansions…
-
+Hence, it's easy to see $G = U V^top$ is the optimal choice.
 $
- f(A) = "poly"(A) = "poly"(P^(-1)Q P) = P^(-1)"poly"(Q) P = P^(-1)f(B)P
-$
-
-Crucially, every square matric is similar to an upper-triangular matrix. You can see this with the Schur or Jordan Decompositions. By the two properties above, we have
-$
-  det(f(A) - lambda I) = det(f(T) - lambda I)
+  "TR"((U V^top)^top U Sigma V^top) = "TR"(Sigma) = sum sigma_i (A)
 $
 
-This leads to the Spectral Mapping Theorem, which states that the eigenvalues of $f(A)$ are $f(T_(i i))$. To see the Spectral Mapping theorem, observe that for a triangular matrix $T$ its determinant is equal to the product of its diagonal entries.
+This has a really cool application in robotics. Essentially, imagine I have a point cloud representing an object defined by $X$. Suppose I know in it's base reference frame, the point cloud looks like $Y$. Then computing my rotation is equivalent to solving the following problem.
+$
+  min_R ||R X - Y||_F
+$
 
-This immediately implies the Cayley-Hamilton theorem, which states that every matrix satisfies its own characteristic equation.
+You can extend this to "closest rigid transform" by simply subtracting the centroids from both point sets and then computing this. The difference in centroids tells you the movement, $R$ tells you the rotation. This works great for things that naturally see the world in point clouds, like Lidar. SLAM (a modern pose estimation algorithm) essentially does this but with an initial guess of what points from the previous timestep correspond to points from the current timestep.
 
+== Muon
+The main insight of Muon (imo) is the gradient updates on weight matrices shouldn't change the outputs too drastically. Specifically, it would be nice if your weight update satified
+$
+  ||Delta W x|| <= alpha, forall x
+$
 
-== Symmetric Matrices
-#theorem[All eigenvalues of a symmetric real matrix are real.]
-#proof[$
-  "dot"(A u, u) = u^dagger A^dagger u = u^dagger A u = lambda u^dagger u \
-  "dot"(A u, u) = (lambda u)^dagger u = lambda^dagger u^dagger u \
-  lambda^dagger = lambda
-$]
+One way to do this is to force the gradient update to be orthonormal. But which orthonormal matrix is "closest" to the gradient? This depends on what norm you pick. Under the Frobenius Norm the #link(<closest>)[closest orthonormal matrix] is $U V^top$, where $U$ and $V$ come from the SVD. Perhaps a more natural way to justify this choice is our new matrix $U V^top$ only cares about inputs that live in the rank-$r$ subspace that $V^T$ spans (just like $G$) and still only creates outputs in the rank-$r$ column space of $U$ (just like $G$). Even if $G$ is full rank, you can still say that it maps the dominant input directions to the dominant output directions.
 
-#theorem[For a symmetric matrix, all eigenvectors with different eigenvalues are orthogonal.]
-#proof[$
-  "dot"(A u, v) = lambda_1 "dot"(u, v) \
-  "dot"(A v, u) = lambda_2 "dot"(u, v) \
-  "dot"(A v, u) = "dot"(A u, v) \
-  lambda_1 "dot"(u, v) = lambda_2 "dot"(u, v) \
-  "dot"(u, v) = 0 
-$]
+Anyways, the main problem with this idea is computing the SVD is expensive. Here's how they got around it.
 
-#theorem[Symmetric Matrices are diagonalizable.] <diagonalizable>
-#proof[
-  We know all the eigenvalues of the symmetric matrix $A_n$ are real. Hence, $A_n$ has some real eigenvector corresponding to some real eigenvalue, call this $u_1$. Extend $u_1$ to an orthonormal basis $u_1, ..., u_n$ for $bb(R)^n$. Let $U_n$ be the orthonormal matrix whose columns are $u_1, ... u_n$. Now, define $A_(n - 1)$ as
-  $
-    A_(n - 1) = U_n A_n U_n^top
-  $
-
-  Observe $A_(n - 1)$ is symmetric.
-  $
-    A_(n - 1)^top = U_n A_n^top U_n^top = A_(n - 1) 
-  $
-
-  Hence, $A_(n - 1)$ is symmetric. Furthermore, 
-  $
-    A_(n - 1)vec(1, 0, ..., 0) = U_n A_n U_n^top vec(1, 0, ..., 0) = \
-    U_n A_n u_1 = U_n lambda_1 u_1 = \
-    vec(lambda_1, 0, ..., 0)
-  $
-
-  Combining the two properties, $A_(n - 1)$ looks like this.
-  $
-    mat(
-      lambda_1, 0;
-      0, B;
-    )
-  $
-
-  Because $A_(n - 1)$ is symmetric its principal submatrix $B$ is also symmetric. Observe that any eigenvector $b$ for $B$ can produce an eigenvector for $A_(n - 1)$, $vec(0, b)$. We can use the first column of $A_(n - 1)$ and $vec(0, b)$ to orthogonalize $A_(n - 1)$, and we can keep doing this until we arrive at $A_1$ which is completely diagonal.
-  $
-    Q_1 .... Q_n A_n Q_n^top ... Q_1 ^top = Q A_n Q^top = D
-  $
-
-  Where $D$ is a diagonal matrix consisting of the eigenvalues of $A_n$ and $Q$ is the product of the orthonormal matrices. Since the product of orthonormal matrices is also orthonormal, $Q^top = Q^(-1)$ and thus $A_n$ is diagonalizable.
-]
-
-== Odd Polynomials & The SVD
 #definition[$
   M^(2k + 1)  = M (M^top M)^k
 $]
@@ -630,237 +931,8 @@ $]
   M(M^top M)^k = (U Sigma V^top)(V Sigma^(2 k) V^top) = U Sigma^(2 k + 1) V^top
 $]
 
-The main observation here is that $M^top M$ has a rather simple form in terms of its SVD which makes its powers well-behaved.
-
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
-Anyway, this gives you a lot of power. Muon uses this insight to cheaply "orthogonalize" a matrix e.g. converting $A = U Sigma V^T$ to $U I V^T$. They do this by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD has positive singular values.
+Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because the SVD has positive singular values. 
 
-== Orthogonality
-#theorem[
-  A set of mutually orthogonal vectors is a set of linearly independent vectors.
-]
-
-#proof[
-  Define the basis to be $u_1, ..., u_n$. Then we have
-  $
-      "dot"(u_i, u_j) = 0 quad forall i != j,
-  $
-
-  Now suppose the basis was linearly dependent. Then, there must exist $a_1, ..., a_n$ such that 
-  $
-    a_1 u_1 + ... + a_n u_n = 0
-  $
-
-  Now we have
-  $
-    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = \
-    a_1 a_2 "dot"(u_1, u_2) + ... + a_1 a_n "dot"(u_1, u_n) = 0 \
-    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = "dot"(a_1 u_1, -a_1 u_1) = -a_1 "dot"(u_1, u_1) < 0
-  $
-
-  Hence, we've arrived at a contradiction, and our basis must be linearly independent.
-]
-
-#theorem[The product of orthonormal matrices is also orthonormal.]
-#proof[$
-  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
-  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
-  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
-$]
-
-== Norms
-#definition[
-  The operator norm of a matrix is the largest amount it can scale any vector.
-  $
-    ||A|| = sup{ ||A v|| : ||v|| <= 1}
-  $
-]
-
-The specific value of the operator norm depends on how you measure "large". For example, you could measure how much the L2-Norm scales. You can even use different input and output norms. For example,
-$
-  sup{ ||A v||_(l_2) : ||v||_(l_1) <= 1}
-$
-
-#theorem[$
-  ||A||_(l_2 arrow l_2) = max_i sigma_i
-$]
-#proof[
-  Observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
-]
-
-#definition[
-  The Frobenius norm of a matrix is the L2-norm of its singular value vector.
-  $
-    ||A||_F = sqrt(sum sigma_i^2)
-  $
-]
-
-This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms).
-This is algebraically powerful because you can express it in terms of traces.
-$
-  ||A||_F = sqrt("Tr"(A^top A))
-$ 
-
-
-#definition[
-  The Nuclear or Trace norm is the L1-norm of its singular value vector.
-  $
-    ||A||_* = sum sigma_i
-  $
-]
-Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm has the nice property that the corresponding norm ball has its extreme points at rank 1 matrices. Hence, it shows up in convex optimization contexts when you want low-rank results.
-
-== Projection
-#definition[
-  A projector $P$ is a matrix which satisfies $P^2 = P$.
-]
-#lemma[
-  If $P$ is a projector, then $I - P$ is also a projector, which projects onto the null space of $P$.
-]
-#proof[$
-  (I - P)^2 v = (I^2 - 2 I P + P^2)v = (I - P)v \
-  P(I - P)v = (P - P^2)v = 0
-$]
-#theorem[
-  Let $S_1 = "range"(P)$ and $S_2 = "range"(I - P)$. Then the unique solution to 
-  $
-    v_1 + v_2 = v quad v_1 in S_1, v_2 in S_2
-  $
-
-  is $v_1 = P v, v_2 = (I - P) v$.
-]
-#proof[
-  The choice of $v_1$ and $v_2$ above clearly produces a valid solution. However, perhaps there is some vector $v_3$, such that $v_1 - v_3 in S_1$, and $v_2 + v_3 in S_2$, which yields another solution? This requires $v_3 in S_1 inter S_2$. As $"range"(P) inter "null"(P) = 0$, the only vector which satisfies this is zero.
-]
-
-#definition[
-  A projector whose null space is orthogonal to its range is an orthogonal projector.
-]
-#theorem[
-  Orthogonal projectors must satisfy $P = P^*$.
-]
-#proof[
-  For the forward direction we have
-  $
-    "dot"(P v, (I - P)v) = v P^* (I - P) v = v (P - P^2) v = 0         
-  $
-
-  For the backwards, let $q_1, ..., q_n$ be a basis for $"range"(P)$ and let $q_(n + 1), ... q_m$ be a basis for $"null"(P)$. Since we are assuming $P$ is an orthogonal projector, these two sets of vectors are mutually independent and thus form a basis for $R^m$. Define the $i$th column of $Q$ to be $q_i$. We immediately have,
-  $
-    P Q = mat(q_1, ..., q_n, 0, ..., 0)
-  $
-
-  And thus, 
-  $
-    Q^* P Q = mat(
-      1, , , ;
-      , 1, , ;
-      , , 1, ;
-      , , , 0...
-    ) = Sigma
-  $
-
-  Hence, we've shown $P = Q Sigma Q^*$, and it's easy to see that $P = P^*$.
-]
-
-From the last proof, we also can say any orthogonal projector can be written as $P = hat(Q) hat(Q)^*$ where $hat(Q) = mat(u_1, ..., u_n)$. You can check that the reverse also holds. If I have some subspace defined the orthonormal basis encoded in $hat(Q)$, then $hat(Q) hat(Q)^*$ defines a projector onto that subspace. 
-
-You can also do this trick even when given a non-orthogonal basis $A$. Let $v$ be in the input vector and let $y$ be the projection. Since $y in "range"(A)$, let $y = A x$. Then
-$
-  a_i^*(v - y) = 0 quad forall i \
-  A^*(v - A x) = 0 arrow x = (A^* A)^(-1)A^* v \
-  y = A (A^* A)^(-1)A^* v
-$
-
-So we get the new projector, $A (A^* A)^(-1)A^*$. This is familiar to anyone who's seen linear regression. Essentially, the matrix of data values is $A$, $y$ are the target values, and $b arrow x$ is the optimal set of coefficients.
-
-== Kronecker Product
-#definition[
-  The Kronecker product $A times.o B$ is a block-matrix of the form
-  $
-    mat(A_11 B, ..., A_(1 n) B; ..., ..., ...; A_(n 1) B, ..., A_(n n) B; )
-  $
-]
-#definition[
-  $"vec"(X)$ is the vector obtained by stacking the columns of $X$.
-]
-#theorem[$
-  "vec"(A X B) = (B^top times.o A) "vec"(X)
-$]
-#proof[
-  Observe that
-  $
-    A X B_i = sum_j B_(i j) A X_j
-  $
-  If you do this for every $i$, you get the appropriate Kronecker product.
-]
-This is a useful tool when you are solving for matrices, for example
-$
-  A X B + X = C arrow (B^top times.o A + I)"vec"(X) = "vec"(C)
-$
-
-
-== Definite and Indefinite
-#definition[
-  A matrix $A$ is positive-definite if
-  $
-    x^top A x > 0, forall x
-  $
-
-  You can similarly definite negative definite and the semi variants which allow $x^top A x = 0$. If it doesn't fit into any of these categories, it's called indefinite.
-]
-
-The best way to think about these matrices is in terms of the $x^top A x$ object. This object is literally a quadratic equation in high dimensions. For a definite matrix, all choices of $x$ decrease $x^top A x$, or all directions increase $x^top A x$. Hence, you have a nice bowl shaped quadratic and this makes optimization easy. On the other hand, if some directions move you up and some move you down, you end up with a saddle. This can mess up gradient-descent based optimization methods.
-
-#theorem[
-  Positive definite matrices have positive diagonal entries.
-]
-#proof[
-  $
-    e_i^top A e_i = e_i A_i = A_(i i) > 0
-  $ 
-]
-
-== Companion Matrix
-A companion matrix is just a construction whose eigenvalue equation is exactly some polynomial. For the polynomial $c_1 + c_2 x + ... + c_n x^n + x^(n + 1)$. It can be constructed as follows.
-$
-  mat(
-    0, 0, 0, ..., 0, c_1;
-    1, 0, 0, ..., 0, c_2;
-    0, 1, 0, ..., 0, c_3;
-    0, 0, 1, ..., 0, c_4;
-    dots.v, dots.v, dots.v, dots.down, dots.v, dots.v;
-    0, 0, 0, ..., 1, c_n;
-  )
-$
-
-This is useful to know because it means every root finding problem can be formulated as an eigenvalue problem. Since there is no formula for polynomials of degree five and greater, it implies there is no finite sequence of operations which can diagonalize an arbitrary matrix.
-
-== Stability
-/ Forward-Stable: An algorithm that gives almost the right answer (within epsilon relative error) to almost the right problem (inputs within epsilon relative error).
-/ Backward-Stable: An algorithm which can be interpreted to give the exact right answer to a perturbed problem (within epsilon relative error of the original problem).
-
-Inner products are forward and backward stable. Outer products are not backwards stable, because you cannot usually interpret the output matrix as the outer product of two perturbed input vectors (the perturbation to the output matrix doesn't factor).
-
-If you have backwards stability, you can bound the error of the computation as follows.
-+ Compute the maximum a local perturbation can affect the output (e.g. a $epsilon$ difference causes at most a $k epsilon$ change in the output). The size of this difference is known as the _condition_ of the problem.
-+ Use step 1 to bound the error of the algorithm by bounding how different the output to the approximate problem is versus the original problem.
-
-This is known as backwards error analysis and is much simpler than the naive approach, where you try to compute the aggregate errors of individual floating point operations in an algorithm.
-
-
-#definition[
-  The condition number of a matrix is how sensitive it is to small perturbations. Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number tells me the maximum ratio of relative error in $b$ to relative error in $x$.
-  $
-   max_(epsilon, b != 0) frac((||A^(-1) epsilon||) / (||A^(-1) b||), (||epsilon||) / (||b||), style: "horizontal") = 
-   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(b != 0) ((||b||) / (||A^(-1) b||)) <= \
-   max_(epsilon != 0) ((||A^(-1) epsilon||) / (||epsilon||)) max_(gamma != 0) ((||A gamma||) / (||gamma||)) =\
-   ||A^(-1)||||A||
-  $
-
-  Where the last step came from choosing $b = A gamma$. You can also verify you get this same bound if there's relative error in $A$ or in $x$.
-]
-
-= Applications
-*TODO*: Discretizing differential equations, Muon, ...
+*TODO*: Discretizing differential equations
