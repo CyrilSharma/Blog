@@ -864,16 +864,16 @@ The main advantage of these methods is they need only a 3-term recurrence, while
 
   So if we can show this holds for each term, by triangle inequality we're done.
   $
-    "TR"(P_i S P_j T) <= "TR"(P_i P_j)
+    abs("TR"(P_i S P_j T)) <= "TR"(P_i P_j)
   $
 
   Assume $j < i$, if this is not the case, permute the items in the trace and do the same analysis with $i$. Denote $S_i$ to be the $i$th column of $S$, and $T_i$ to be the $i$th row of $T$. Then we immediately obtain...
   $
-     "TR"(P_i S P_j T) = "TR"(P_i sum_j S_j T_j) = sum_j S_(j j) T_(j j) <=_1 j \
+     abs("TR"(P_i S P_j T)) = abs("TR"(P_i sum_(k < j) S_k T_k)) <= abs(sum_(k < j) "dot"(S_k, T_k)) <=_1 j \
      "TR"(P_i P_j) = j
   $
 
-  1 holds because no entry of an orthonormal matrix can exceed 1 as that would make at least one column not have unit length.
+  1 holds by Cauchy-Schwarz.
 ]
 
 The main insight of this proof is decompose the matrix into a bunch of simple matrices, and use the triangle inequality to allow reasoning about a single entry.
@@ -946,4 +946,4 @@ It's easy to extend this to any linear combination of odd powers will also commu
 
 Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because singular values are positive. 
 
-*TODO*: Discretizing differential equations
+*TODO*: Producing samples with a given Covariance. Discretizing differential equations
