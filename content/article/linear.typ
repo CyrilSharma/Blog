@@ -911,14 +911,35 @@ $
 You can extend this to "closest rigid transform" by simply subtracting the centroids from both point sets and then computing this. The difference in centroids tells you the movement, $R$ tells you the rotation. This works great for things that naturally see the world in point clouds, like Lidar. SLAM (a modern pose estimation algorithm) essentially does this but with an initial guess of what points from the previous timestep correspond to points from the current timestep.
 
 == Muon
-The main insight of Muon (imo) is the gradient updates on weight matrices shouldn't change the outputs too drastically. Specifically, it would be nice if your weight update satified
+The main insight of Muon is gradient updates on weight matrices shouldn't change the outputs too drastically. Specifically, it would be nice if your weight update satisfied
 $
   ||Delta W x|| <= alpha, forall x
 $
 
-One way to do this is to force the gradient update to be orthonormal. But which orthonormal matrix is "closest" to the gradient? This depends on what norm you pick. Under the Frobenius Norm the #link(<closest>)[closest orthonormal matrix] is $U V^top$, where $U$ and $V$ come from the SVD. Here's another way to justify this choice. We can write
+This is exactly equivalent to bounding the spectral norm of the matrix. $alpha$ is just a scaling parameter, so let's just consider the family of matrices with spectral norm less then $1$, $cal(S)$. What matrix in $cal(S)$ is the "best" choice? One reasonable choice is the matrix which decreases the loss the most. In other words,
 $
-  G = sum_i sigma_i u_i v_i^top
+  max_(Delta W in cal(S)) "dot"("vec"(Delta W), "vec"(-gradient f)) = \
+  min_(Delta W in cal(S)) "dot"("vec"(Delta W), "vec"(gradient f)) = 
+  min_(Delta W in cal(S)) "TR"((Delta W)^top gradient f)
+$
+
+It's common to apply gradient updates by subtracting them, so in practice we actually want
+$
+  max_(Delta W in cal(S)) "TR"((Delta W)^top gradient f)
+$
+
+I showed in the #link(<closest>)[closest orthonormal matrix section] that the solution to this is obtained via $U V^top$, where $U$ and $V$ come from the SVD of the gradient.
+
+You'll notice the resulting weight update is orthonormal. There's a good reason for that! First observe the $cal(S)$ is convex, meaning if $A, B in cal(S)$, then $theta A + (1 - theta) B in cal(S)$. \
+#proof[$
+  ||theta A + (1 - theta)B|| <= theta ||A|| + (1 - theta) ||B|| = 1
+$]
+
+Thus, this problem boils down to optimizing a linear functional over a convex set. The optimal solution to any such problem will always be found at the vertices of the convex set. It's easy to see that orthonormal matrices are the vertices of $cal(S)$ as their spectral values are all ones, and you can't write $1$ as a convex combination of two numbers where at least one of the two is smaller then $1$.
+
+If you actually compute $U V^top$, or apply it to vectors, you'll notice it seems very different then the gradient. In what tangible sense is $U V^top$ "close" to the gradient? Observe,
+$
+  gradient f = sum_i sigma_i u_i v_i^top
 $
 
 Hence, components in $v_i$ are mapped to $u_i$. Now, the nice thing about $U V^top$ it also does this! It messes up the scaling, but it keeps the input-output structure intact. If I change the input along one of the right singular vectors, the output still exclusively moves along one of the left singular vectors.
@@ -944,6 +965,6 @@ $]
 
 It's easy to extend this to any linear combination of odd powers will also commute with the SVD.
 
-Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$. They choose $"poly"^n ~ "sign"$ which works because singular values are positive. 
+Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$, namely $"poly"^n ~ "sign"$.
 
 *TODO*: Producing samples with a given Covariance. Discretizing differential equations
