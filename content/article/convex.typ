@@ -182,9 +182,39 @@ A useful tool for relating properties of convex sets to convex functions is the 
   Thus, $f$ is a convex function. The reverse direction is similar.
 ]
 
-From this property, you can immediately deduce that maxes of convex function are still convex, and a lot of other properties.
+From this property, you can easily deduce that maxes of convex function are still convex, and a lot of other properties. Here's an epigraph-based proof for a problem that will show up later.
 
-*TODO*: Setup of a convex optimization problem.
+#theorem(name: "Convex Partial Minimization")[
+  Consider the partial minimization of $f$ over the set $bb(C)$:
+  $
+      g(x)  = inf_(y in bb(C)) f(x, y)
+  $
+  If $g$ is always finite, $g$ is convex.
+]
+#proof[
+  First observe $ "Epi"(f) = {(x, y, t): x, y in R^d, f(x, y) <= t } $
+  Now, consider the intersection of $"Epi"(f)$ with
+  $ C' = {(x, y, t): x in R^d, y in C, t in R} $
+  $C'$ is convex, as it can be written $(R^d times C) times R$. $"Epi"(f)$ is convex by the theorem above and we've shown the cartesian product of convex sets is also convex.
+
+  Furthermore,
+  $ "Epi"(f) inter C' = { (x, y, t): x in R^d, y in C, f(x, y) <= t } $
+
+  Now, we can use an affine function to drop the $y$ term. Affine functions preserve convexity.
+  $
+  "Proj"("Epi"(f) inter C') = { (x, t): x in R^d, exists y in C, f(x, y) <= t } 
+  $
+
+  Now consider $"Epi"(g)$. This can be written
+  $
+    "Epi"(g) = { (x, t): x in R^d,  g(x) <= t } = \
+    { (x, t): x in R^d,  inf_{y in C} f(x, y) <= t } =  \
+    { (x, t): x in R^d, exists y in C, f(x, y) <= t } = \
+    "Proj"("Epi"(f) inter C')
+  $
+
+  Hence, $"Epi"(g)$ is convex which implies $g$ is convex.
+]
 
 = Inequalities
 It turns out many of the most useful inequalities can be derived through analyzing a suitable convex function. 
@@ -215,3 +245,295 @@ $]
 ]
 
 Plugging in $p = 2$ gives you the Cauchy-Schwarz inequality.
+
+= Algorithms
+Here's some important terminology...
+#definition(name: "Convergence")[
+  *Point-wise*: $lim_(t -> oo) norm(x_t - x^*) -> 0$\
+  *Function-wise*: $lim_(t -> oo) norm(f(x_t) - f(x^*)) -> 0$
+]
+#definition(name: "Rates of Convergence")[
+  Let $epsilon_t = hf(norm(x_(t+1) - x^*), norm(x_t - x^*))$.\
+  *Linear-Convergence*: $lim_(t -> oo) epsilon_t = C, 0 < C < 1$ \
+  *Superlinear-Convergence*: $lim_(t -> oo) epsilon_t = 0$ \
+  *Sublinear-Convergence*: $lim_(t -> oo) epsilon_t = 1$ \
+  You can also define it for the function values.
+]
+#definition(name: "Descent Direction")[
+  $h | f(x + eta h) <= f(x)$, for sufficiently small $eta$.
+]
+
+And here's some "nice" function classes we typically work with. Note that all of these have zeroth order characterizations, but I find these definitions to be the most intuitive.
+#definition(name: "G-Lipschitz")[
+  $|f(x)-f(y)| <= G|x-y|$
+]
+#definition(name: [$beta$-Smooth])[
+  $norm(gradient f(x) - gradient f(y)) <= beta norm(x - y)$
+]
+#definition(name: [$alpha$-Strongly Convex])[
+  $gradient^2 f(x) succ.eq alpha I $
+]
+
+== Gradient Descent
+#definition(name: "Unconstrained Gradient Descent")[
+  Suppose you have a function $f$ which allows querying values and gradients (1st order oracle). Consider the following problem.
+  $
+    min_(x in bb(R)^d) f(x) 
+  $
+
+  One approach is to do 
+  $
+    x_0 = hat(0) \
+    x_(t + 1) = x_t - eta_t nabla f(x_t)
+  $
+]
+
+#lemma(name: "Descent Lemma")[
+  For a $beta$-smooth function, choosing $eta = hf(1, beta)$ yields
+  $
+    f(x_(t + 1)) <= f(x_t) - eta/2 norm(gradient f(x_t))^2
+  $
+]
+#proof[
+  $
+    f(x + h) <= f(x) + f(x)^top h + beta/2 norm(h)^2 \
+    f(x_(t + 1)) <= f(x) - 1/beta norm(nabla f(x))^2 + 1/(2 beta) norm(nabla f(x_t))^2 \
+    f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 \
+  $
+]
+
+An interesting insight in the above proof is that if you differentiate the first line with respect to $h$, you get $x_(t + 1) = x_t - eta gradient f(x_t)$ is the minimizer of the quadratic in terms of $h$. Hence, you can view gradient descent as repeatedly moving to the minimum of a locally fitted quadratic, where the Hessian is approximated using $beta$.
+
+#theorem[
+  For a $beta$-smooth function, gradient descent gives the following guarantee
+  $
+    min_(t = 1...k) norm(gradient f(x_t))^2 <= 2beta / k (f(x_0) - f(x^*))
+  $
+]
+#proof[
+  Suppose it was false. Then, the gradient must exceed this inequality on every step.
+  $
+    f(x_k) <= f(x_0) - k eta/2 2 beta / k (f(x_0) - f(x^*)) \ 
+    f(x_k) <= f(x^*) -> f(x_k) = f(x^*)
+  $
+
+  Ah, but the gradient at the global optimum is zero, so we've reached a contradiction.
+]
+
+#theorem[
+  For a convex $beta$-smooth function, gradient descent with $eta = hf(1, beta)$ yields
+  $
+    f(x_k) - f(x^*) <= beta/(2k) norm(x_0 - x^*)^2
+  $
+]
+#proof[
+  $
+    norm(x^(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
+    norm(x_t - x^*)^2 + eta^2 norm(gradient f(x_t))^2 - 2 eta gradient f(x_t)^top (x_t - x^*) \
+    2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x^(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
+  $
+
+  *TODO*: Fill in the rest when it's not fresh in my mind.
+]
+
+#theorem[
+  If $f$ is $beta$-smooth and $alpha$-strongly convex, $eta = hf(1, beta)$ yields
+  $
+    norm(x_k - x^*)^2 <= (1 - alpha/beta)^k norm(x_0 - x^*)^2
+  $
+
+  That, is gradient descent yields linear convergence.
+]
+#proof[
+  Almost the same as the above proof.
+]
+
+One popular example of a function that is both $beta$-smooth and $alpha$-strongly convex is $norm(A x - b)^2$! Expanding it yields $x^top A^top A x + "affine"$, $A^top A$ is PSD. Its minimum eigenvalue is equivalent to $alpha$ and its largest is equal to $beta$.
+
+All the above methods rely on choosing a specific step size. However, dynamically choosing the step size might make more sense if you only have weak guarantees on the function's behavior. Simply guessing a step-size and backtracking can be used (backtracking line search). If evaluating $f$ is expensive (neural networks), you probably don't want to do this.
+
+== Subgradient Methods
+#definition(name: "Subgradient")[
+  $g | f(y) >= f(x) + g^top (y - x)$
+]
+From the definition, it's also immediately clear the subgradient is a convex set. If the subgradient is non-empty everywhere the function is convex by a relaxed version of the first order convexity criteria. If $f$ is differentiable, the subgradient has at most one element (e.g. there's only one "tangent" line). Notice that unlike the gradient, the subgradient is a global property, it is a constraint on the entire function.
+
+It's easy to see the following properties.
++ $dif (a f) = a dif(f))$ \
++ $dif (f_1 + f_2) = dif(f_1) + dif(f_2)$ \
++ $g(x) = f(A x + b) -> dif (g(x)) = A^top dif (f(A x + b))$
+
+
+#import "@preview/cetz:0.2.2": draw
+#align(center, graphic(
+  cetz.canvas({
+    import cetz.draw: *;
+    line((0, 0), (2, 0), stroke: (dash: "dashed"))
+    line((2, 0), (4, -2), stroke: (dash: "dashed"))
+    line((2,0), (0, 2))
+    line((2,0), (4, 0))
+    line(
+      (0,0), (2,0), (4,-2),
+      fill: green.transparentize(80%),
+      stroke: none,
+      close: true,
+    )
+  })
+))
+
+One interesting property is the sub-gradient of the maximum of functions.
+$
+  "ConvexHull"(union.big_(forall i | f_i(x) = f(x)) dif f_i(x))
+$
+
+This is pretty intuitive, the functions which don't achieve the maximum don't define the curvature, and the convex hull essentially means anything in between the two subgradients is valid (which you can justify by looking at the green region in the above diagram).
+
+Here's an example application. Consider $abs(x)$. What's the subgradient at $x = 0$? Well, using the above property on $max(x, -x)$, we immediately obtain the convex hull of ${-1, 1}$ which is $[-1, 1]$.
+
+We can generalize our optimality conditions from earlier to use subgradients.
+#lemma[
+  Let $I_C (x) = 0 "if" x in C "else" oo$. For $x in C$, the subgradient is $"NC"(x)$.
+]
+#proof[
+  $
+    f(y) >= f(x) + g^top (y - x) \
+    "Choose" y in C => 0 >= g^top (y - x) = "NC"(x)
+  $
+]
+
+#theorem[
+  $x^*$ is optimal if $exists g in dif f(x) | (-g) in "NC"(x)$
+]
+#proof[
+  $
+    "argmin"_(x in C) f(x) = "argmin" f(x) + I_C(x) = \
+    dif f(x) + I_C(x) = dif f(x) + "NC"(x)
+  $
+  $0$ must be in the subgradient of $x^*$ for it to be optimal.
+  $
+    f(y) >= f(x^*) => f(y) >= f(x^*) + 0^top (y - x)
+  $
+  Hence $0 in dif f(x) + "NC"(x)$ which shows the claim.
+]
+
+#definition(name: "Subgradient Method")[
+  Essentially, replace the gradient in gradient descent with the subgradient. Interestingly, the subgradient is not guaranteed to be a descent direction.
+]
+#theorem[
+  For a convex $G$-lipschitz function and step sizes $n_t$, we have
+  $
+    f(x_t^"best") - f(x^*) <= (norm(x_0 - x^*)^2 + G^2 sum n_t^2)/(2 sum n_t)
+  $
+]
+#proof[
+  TODO!
+]
+
+=== Interior Points
+The point of the Subgradient method is it can be applied to non-differentiable convex functions. Here's an important example. Consider the problem of finding a point at the intersection of some number of convex sets.
+$
+  l | l in inter.big C_i 
+$
+
+This is a very useful problem because oftentimes we are minimizing a function over a constrained domain. For convex minimization, if you can find a single point in this intersection, then following the gradient while staying in the convex set is sufficient to find the optimal answer (this approach is known as interior point methods). 
+
+We can rewrite this problem into a convex minimization problem. Define
+$
+  f(z) = max_(i) min_(y in C_i) norm(y - z)^2
+$
+
+This function tells us to find the closest point for each set, and report the distance to the furthest point. The minimum of zero will occur if we're in an intersection of all sets. This function is clearly convex as it is the maximum of convex minimization problems (and we've shown both operations preserve convexity).
+
+The max makes this non-differentiable, but we can still solve this with Subgradient methods. In particular, the Subgradient of this function will tell us we should move directly towards one of the convex sets (imagine we just had one convex set, and then you can use the property about the max of Subgradients).
+
+#align(center, graphic(
+  cetz.canvas({
+    import cetz.draw: *;
+    let x = 0
+    let px = 0
+    let step = 1.0
+    for i in range(10) {
+      x = step + px
+      let stroke = (paint: blue, dash: "dashed")
+      line((px, 0), (x, step), stroke: stroke)
+      line((x, step), (x, 0), stroke: stroke)
+      px = x
+      step *= 0.5
+    }
+    line((0, 0), (3, 0), (3, -0.2), (0, -0.2), close: true, fill: green.transparentize(80%))
+    line((0, 2), (3, -1), (3.14, -0.86), (0.14, 2.14), close: true, fill: green.transparentize(80%))
+  })
+))
+I won't show this, but you can prove that this algorithm remains stable if you move all the way to the projection of the current point onto that set (see the above diagram). Pretty elegant algorithm!
+
+== Projected Gradient Descent
+#definition(name: "Projected Gradient Descent")[
+  $x_(t + 1) = "Projection"(x_t - eta gradient f(x))$
+]
+The algorithm is quite simple, simply take gradient steps, and then force your point into the convex set after each step.
+
+This is sensible because projection onto convex sets has some nice properties.
+#lemma[
+  $z = "Projection(x)" => "dot"(x - z, y - z) <= 0, forall y in C$
+]
+#proof[
+  We know a point is the minimizer of a convex function if the negative gradient is more than ninety degrees off from any direction into the set (there is no direction we can move which decreases the function). Since minimizing the $norm(x - z)$ is the same as minimizing $1/2 norm(x-z)^2$ we have
+  $
+    "dot"(gradient 1/2 norm(x - z)^2, y - z) = "dot"(z - x, y - z) <= 0, forall y in C
+  $
+]
+
+#theorem[
+  $norm("Projection"(x_1) - "Projection"(x_2)) <= norm(x_1 - x_2)$
+]
+#proof[$
+  "dot"(x_1 - z_1, z_2 - z_1) <= 0 \
+  "dot"(x_2 - z_2, z_1 - z_2) <= 0 \
+  "dot"((x_1 - x_2) + (z_2 - z_1), z_2 - z_1) <= 0 \
+  "dot"(x_1 - x_2, z_2 - z_1) + norm(z_2 - z_1)^2 <= 0\
+  norm(x_2 - x_1) norm(z_1 - z_2) >= norm(z_2 - z_1)^2 \
+  norm(z_2 - z_1) <= norm(x_2 - x_1)
+$]
+
+This is a super useful property! Observe that this means projection strictly improves the answer.
+$
+  norm(P_C (x) - x^*) = norm(P_C (x) - P_C (x^*)) <= norm(x - x^*) 
+$
+
+Using this, it's easy to show all the rates we showed for earlier methods immediately generalize to projected gradient descent. 
+
+== Proximal Gradient Descent
+#definition(name: "Proximal Gradient Descent")[
+  Minimize $f(x) + h(x)$ where $f, h$ are convex, but only $f$ is guaranteed differentiable.
+  $
+    "Prox"(y) = "argmin"_(z in R^d) 1/2 norm(y - z)^2 + h(z)\
+    x_(t + 1) = "Prox"(x_t - eta gradient f(x))
+  $
+]
+This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the indicator function. The main point of this is that just like projected gradient descent recovered the rates of gradient descent, we can recover those rates here too. This is an improvement over the rate you would get by applying the subgradient method. The idea behind $"Prox"$ is a step of GD can be viewed as minimizing a quadratic, and now we're just minimizing a quadratic plus an auxiliary term.
+
+#theorem[$"Prox"$ is a contraction.]
+#proof[
+  $
+    dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
+    1/eta (x - z^*) + dif(h(z^*))
+  $
+  Hence, $z^*$ is a minimizer if and only if
+  $
+    1/eta (x - z^*) in dif(h(z^*))
+  $
+
+  You can then apply subgradient monotonicity
+  $
+    "dot"(g_x - g_y, x - y) >= 0, forall g_x in dif f(x), g_y in dif f(y) \
+    "dot"(1/eta (x - z_1^*) -  1/eta (y - z_2^*), z_1^* - z_2^*)  >= 0 \
+    "dot"(x - y, z_2 - z_1) >= norm(z_2 - z_1)^2 \
+     norm(z_2 - z_1)^2 <= norm(x - y)^2
+  $
+]
+
+#definition(name: "Generalized Gradient")[
+  $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient f(x_t))), eta)$
+]
+
+*TODO*: Show that when the generalized gradient is zero, the function is optimal (use the first step of last proof and just algebra). Also contrast the generalized gradient to the subgradient.

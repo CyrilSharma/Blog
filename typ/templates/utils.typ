@@ -306,3 +306,7 @@
 
   body
 }
+
+#let hf(n, d) = $
+  frac(#n, #d, style: "horizontal")
+$
