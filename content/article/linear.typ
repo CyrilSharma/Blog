@@ -266,6 +266,8 @@ $]
   The choice of $v_1$ and $v_2$ above clearly produces a valid solution. However, perhaps there is some vector $v_3$, such that $v_1 - v_3 in S_1$, and $v_2 + v_3 in S_2$, which yields another solution? This requires $v_3 in S_1 inter S_2$. As $"range"(P) inter "null"(P) = 0$, the only vector which satisfies this is zero.
 ]
 
+The above theorem is probably the single most important fact about projectors. Projectors yield a _unique_ decomposition of vectors via a portion within a subspace and a portion outside of it. One particularly useful way to break down a vector is into a portion within a subspace and a portion orthogonal to it.
+
 #definition[
   A projector whose null space is orthogonal to its range is an orthogonal projector.
 ]
@@ -298,14 +300,21 @@ $]
 
 From the last proof, we also can say any orthogonal projector can be written as $P = hat(Q) hat(Q)^*$ where $hat(Q) = mat(u_1, ..., u_n)$. You can check that the reverse also holds. If I have some subspace defined the orthonormal basis encoded in $hat(Q)$, then $hat(Q) hat(Q)^*$ defines a projector onto that subspace. 
 
-You can also do this trick even when given a non-orthogonal basis $A$. Let $v$ be in the input vector and let $y$ be the projection. Since $y in "range"(A)$, let $y = A x$. Then
+You can also define an orthogonal projector when given a non-orthogonal basis $A$. Let $v$ be in the input vector and let $y$ be the projection. Since $y in "range"(A)$, let $y = A x$. Then
 $
   a_i^*(v - y) = 0 quad forall i \
   A^*(v - A x) = 0 arrow x = (A^* A)^(-1)A^* v \
   y = A (A^* A)^(-1)A^* v
 $
 
-So we get the new projector, $A (A^* A)^(-1)A^*$. This is familiar to anyone who's seen linear regression. Essentially, the matrix of data values is $A$, $y$ are the target values, and $b arrow x$ is the optimal set of coefficients.
+So we get the new projector, $A (A^* A)^(-1)A^*$.
+
+Orthogonal projectors are nice because they immediately tell you the closest point in a subspace. Suppose I have a vector $y$ and I have a the closest point $x$ in the subspace denoted $U$. Then 
+$
+  "argmin"_x y - x = "argmin"_x v_1 + v_2 - x = "argmin"_x norm(v_1 - x)^2 = v_1 = "Proj"(y)
+$
+
+Where $v_1 in U, v_2 in U^top$. Hence, orthogonal projection is the canonical solution to least squares problems, e.g. find $x$ to minimize $norm(A x - b)^2$.
 
 == Kronecker Product
 #definition[
@@ -839,60 +848,61 @@ This is very analogous to previous methods. You can use the eigenvalues of $T_n$
 The main advantage of these methods is they need only a 3-term recurrence, while the main disadvantage is their stability guarantees aren't as good ($V_n$ and $W_n$ need not be well-conditioned).
 
 = Applications
-== Inequalities
-#theorem(name: "Von Neumann Trace Inequality")[
-  $
-    abs("TR"(A B)) <= sum_i sigma_i (A) sigma_i (B)
-  $
-] <von-neumann>
-#proof[
-  Decompose things using the SVD.
-  $
-    "TR"(A B) = "TR"(U_A Sigma_A V_A^top U_B Sigma_B V_B^top) = \
-    "TR"(Sigma_A (V_A^top U_B) Sigma_B (V_B^top U_A)) = "TR"(Sigma_A S Sigma_B T)
-  $
+// == Inequalities
+// #theorem(name: "Von Neumann Trace Inequality")[
+//   $
+//     abs("TR"(A B)) <= sum_i sigma_i (A) sigma_i (B)
+//   $
+// ] <von-neumann>
+// #proof[
+//   Decompose things using the SVD.
+//   $
+//     "TR"(A B) = "TR"(U_A Sigma_A V_A^top U_B Sigma_B V_B^top) = \
+//     "TR"(Sigma_A (V_A^top U_B) Sigma_B (V_B^top U_A)) = "TR"(Sigma_A S Sigma_B T)
+//   $
 
-  Where $S, T$ are orthonormal. Now, define $P_k$ to be the diagonal matrix where the first $k$ entries are $1$, and the rest are $0$. We can write $Sigma_A$ and $Sigma_B$ (whose diagonal entries are in non-increasing order) as 
-  $
-    Sigma_A = (sigma_1 (A) - sigma_2 (A))P_1 + ... + (sigma_(n - 1) (A) - sigma_(n)(A))P_(n - 1) + sigma_n P_n
-  $
+//   Where $S, T$ are orthonormal. Now, define $P_k$ to be the diagonal matrix where the first $k$ entries are $1$, and the rest are $0$. We can write $Sigma_A$ and $Sigma_B$ (whose diagonal entries are in non-increasing order) as 
+//   $
+//     Sigma_A = (sigma_1 (A) - sigma_2 (A))P_1 + ... + (sigma_(n - 1) (A) - sigma_(n)(A))P_(n - 1) + sigma_n P_n
+//   $
 
-  Let's rewrite the desired inequality using this decomposition. Let $a_i, b_i$ be the positive coefficients associated with $Sigma_A$ and $Sigma_B$.
-  $
-    abs(sum_(i j) "TR"(a_i b_i P_i S P_j T)) <= sum_(i j) "TR"(a_i b_i P_i P_j)
-  $
+//   Let's rewrite the desired inequality using this decomposition. Let $a_i, b_i$ be the positive coefficients associated with $Sigma_A$ and $Sigma_B$.
+//   $
+//     abs(sum_(i j) "TR"(a_i b_i P_i S P_j T)) <= sum_(i j) "TR"(a_i b_i P_i P_j)
+//   $
 
-  So if we can show this holds for each term, by triangle inequality we're done.
-  $
-    abs("TR"(P_i S P_j T)) <= "TR"(P_i P_j)
-  $
+//   So if we can show this holds for each term, by triangle inequality we're done.
+//   $
+//     abs("TR"(P_i S P_j T)) <= "TR"(P_i P_j)
+//   $
 
-  Assume $j < i$, if this is not the case, permute the items in the trace and do the same analysis with $i$. Denote $S_i$ to be the $i$th column of $S$, and $T_i$ to be the $i$th row of $T$. Then we immediately obtain...
-  $
-     abs("TR"(P_i S P_j T)) = abs("TR"(P_i sum_(k < j) S_k T_k)) <= abs(sum_(k < j) "dot"(S_k, T_k)) <=_1 j \
-     "TR"(P_i P_j) = j
-  $
+//   Assume $j < i$, if this is not the case, permute the items in the trace and do the same analysis with $i$. Denote $S_i$ to be the $i$th column of $S$, and $T_i$ to be the $i$th row of $T$. Then we immediately obtain...
+//   $
+//      abs("TR"(P_i S P_j T)) = abs("TR"(P_i sum_(k < j) S_k T_k)) <= abs(sum_(k < j) "dot"(S_k, T_k)) <=_1 j \
+//      "TR"(P_i P_j) = j
+//   $
 
-  1 holds by Cauchy-Schwarz.
-]
+//   1 holds by Cauchy-Schwarz.
+// ]
 
-The main insight of this proof is decompose the matrix into a bunch of simple matrices, and use the triangle inequality to allow reasoning about a single entry.
+// The main insight of this proof is decompose the matrix into a bunch of simple matrices, and use the triangle inequality to allow reasoning about a single entry.
 
-You can use this result to show a lot of things. For example, that the $k$ largest diagonal entries are upper-bounded by the $k$ largest singular values (it's a fun puzzle, think about what matrices you need to multiply by for the trace inequality to prove this), or for bounding Frobenius norms.
+// You can use this result to show a lot of things. For example, that the $k$ largest diagonal entries are upper-bounded by the $k$ largest singular values (it's a fun puzzle, think about what matrices you need to multiply by for the trace inequality to prove this), or for bounding Frobenius norms.
 
 == Closest Orthonormal Matrix <closest>
 Suppose we want to find $G$ such that $min ||G - A||_F$, where $F$ represents the Frobenium norm. Then we have
 $
   min_G ||G - A||_F = min_G "TR"(G^top G - G^top A - A^top G + A^top A) = \
-  min_G -"TR"(G^top A) - "TR"(A^top G) + C = max_G (G^top A)
+  min_G -"TR"(G^top A) - "TR"(A^top G) + C = max_G "TR"(G^top A) = \
+  max_G "TR"(G^top U Sigma V^top) = max_G "TR"(V^top G^top U Sigma) 
 $
 
-By the #link(<von-neumann>)[Von Neumann Trace Inequality], 
+Define $W = V^top G^top U$. Observe that $W$ is orthonormal as it is the product of orthonormal matrices.
 $
-  max_G "TR"(G^top A) <= sum sigma_i (G) sigma_i (A) = sum sigma_i (A) \
+  max_W (W Sigma) <= sum_i W_(i i) sigma(A)_i <= sum sigma_i (A)
 $
 
-Hence, it's easy to see $G = U V^top$ is the optimal choice.
+The last statement is because no entry of an orthonormal matrix can exceed $1$ by normaity. Hence, it's easy to see $G = U V^top$ is the optimal choice.
 $
   "TR"((U V^top)^top U Sigma V^top) = "TR"(Sigma) = sum sigma_i (A)
 $
@@ -935,7 +945,7 @@ You'll notice the resulting weight update is orthonormal. There's a good reason 
   ||theta A + (1 - theta)B|| <= theta ||A|| + (1 - theta) ||B|| = 1
 $]
 
-Thus, this problem boils down to optimizing a linear functional over a convex set. The optimal solution to any such problem will always be found at the vertices of the convex set. It's easy to see that orthonormal matrices are the vertices of $cal(S)$ as their spectral values are all ones, and you can't write $1$ as a convex combination of two numbers where at least one of the two is smaller then $1$.
+Thus, this problem boils down to optimizing a linear functional over a convex set. The optimal solution to any such problem will always be found at the vertices of the convex set. It's easy to see that orthonormal matrices are vertices of $cal(S)$ as their spectral values are all ones, and you can't write $1$ as a convex combination of two numbers where at least one of the two is smaller then $1$.
 
 If you actually compute $U V^top$, or apply it to vectors, you'll notice it seems very different then the gradient. In what tangible sense is $U V^top$ "close" to the gradient? Observe,
 $
@@ -968,7 +978,9 @@ It's easy to extend this to any linear combination of odd powers will also commu
 Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$, namely $"poly"^n ~ "sign"$.
 
 == PCA
-We would like to approximate $X in bb(R)^(T times d)$ with a $T times r$ matrix, where $r < d$. To be precise, we want to compress $d$ coordinates to $r$ coordinates. Then, we will grade our approximation based on how well the "decompressed" $r$ coordinates line up with the original coordinates. If we insist compression and decompression must be linear, it's easy to see this is equivalent to the following problem.
+We would like to approximate $X in bb(R)^(T times d)$ with a $T times r$ matrix, where $r < d$. This is often useful because high-dimensional representations are harder to visualize and more computationally expensive to handle.
+
+To make our problem more precise, we want to compress $d$ coordinates to $r$ coordinates. Then, we will grade our approximation based on how well the "decompressed" $r$ coordinates line up with the original coordinates. If we insist compression and decompression must be linear, it's easy to see this is equivalent to the following problem.
 $
   "argmin"_(R | "Rank"(R) = r) norm(X - R X)^2_F
 $
