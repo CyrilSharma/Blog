@@ -491,6 +491,8 @@ $
   ~ (R G) / sqrt(k)
 $
 
+So the rate ends up being a bit worse than with $beta$-smoothness. Notice that $beta$-smoothness of any kind is impossible with non-differentiable functions so this is a hard limit. $alpha$-convexity doesn't help you, because you lack on upper-bound on the size of the gradient, so you won't be able to show unconditional convergence.
+
 === Interior Points
 The point of the Subgradient method is it can be applied to non-differentiable convex functions. Here's an important example. Consider the problem of finding a point at the intersection of some number of convex sets.
 $
@@ -601,4 +603,4 @@ This can be seen as a generalization of both gradient descent and projected grad
 *TODO*: Show that when the generalized gradient is zero, the function is optimal (use the first step of last proof and just algebra). Also contrast the generalized gradient to the subgradient.
 
 == Stochastic Gradient Descent
-*TODO*: Prove a sqrt(K) convergence rat.e
+*TODO*: Prove a sqrt(K) convergence rate.
