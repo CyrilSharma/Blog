@@ -296,9 +296,9 @@ And here's some "nice" function classes we typically work with. Note that all of
 ]
 #proof[
   $
-    f(x + h) <= f(x) + f(x)^top h + beta/2 norm(h)^2 \
+    f(x + h) <= f(x) + gradient f(x)^top h + beta/2 norm(h)^2 \
     f(x_(t + 1)) <= f(x) - 1/beta norm(nabla f(x))^2 + 1/(2 beta) norm(nabla f(x_t))^2 \
-    f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 \
+    f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 = f(x) - eta/2 norm(gradient f(x_t))^2 \
   $
 ]
 
@@ -328,12 +328,27 @@ An interesting insight in the above proof is that if you differentiate the first
 ]
 #proof[
   $
-    norm(x^(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
+    norm(x_(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
     norm(x_t - x^*)^2 + eta^2 norm(gradient f(x_t))^2 - 2 eta gradient f(x_t)^top (x_t - x^*) \
-    2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x^(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
+    2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
+  $
+  Substitute in the first order convexity condition.
+  $
+     2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2
   $
 
-  *TODO*: Fill in the rest when it's not fresh in my mind.
+  Now use the descent lemma.
+  $
+     2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 2 /eta (f(x_t) - f(x_(t + 1))) \
+     2 eta (f(x_(t + 1)) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 \
+  $
+
+  Finally, use a telescoping sum to simplify things.
+  $
+     sum_(t=0)^(k-1) 2 eta (f(x_(t+1)) - f(x^*)) <= sum_(t=0)^(k-1) (norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2) \
+    2 k eta (f(x_k) - f(x^*)) <= norm(x_0 - x^*)^2 - norm(x^(k) - x^*)^2 \
+    f(x_k) - f(x^*) <= 1/(2 k eta) norm(x_0 - x^*)^2  = beta /(2 k) norm(x_0 - x^*)^2
+  $
 ]
 
 #theorem[
@@ -345,7 +360,22 @@ An interesting insight in the above proof is that if you differentiate the first
   That, is gradient descent yields linear convergence.
 ]
 #proof[
-  Almost the same as the above proof.
+  Almost the same as the above proof. The first order convexity condition for $alpha$-strongly convex functions is as follows.
+  $
+    f(y) >= f(x) + gradient f(x)^top (y - x) + alpha/2 norm(y - x)^2
+  $
+
+  So if you substitute that in to the above proof you get
+  $
+     f(x_k) - f(x^*) + alpha / (2 k) sum_(t = 0)^k norm(x_t - x^*)^2 <= beta /(2 k) norm(x_0 - x^*)^2 \
+     sum_(t=0)^k norm(x_t - x^*)^2 <= beta / alpha  norm(x_0 - x^*)^2
+  $
+
+  Now we do a quick proof by contradiction.
+  $
+    norm(x_k - x^*)^2 > (1 - alpha/beta)^k norm(x_0 - x^*)^2 \
+    sum_(t=0)^k (1 - alpha/beta)^k norm(x_0 - x^*)^2 = beta / alpha norm(x_0 - x^*)^2
+  $
 ]
 
 One popular example of a function that is both $beta$-smooth and $alpha$-strongly convex is $norm(A x - b)^2$! Expanding it yields $x^top A^top A x + "affine"$, $A^top A$ is PSD. Its minimum eigenvalue is equivalent to $alpha$ and its largest is equal to $beta$.
@@ -426,8 +456,40 @@ We can generalize our optimality conditions from earlier to use subgradients.
   $
 ]
 #proof[
-  TODO!
+  The beginning is almost identical to previous proofs, where we try to bound how different consecutive $x$s are. I'll skip ahead a bit.
+  $
+    2 eta_t g^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta_t^2 norm(gradient f(x_t))^2 \
+  $
+
+  Now apply the $G$-lipschitz property.
+  $
+    2 eta_t (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + G^2 eta_t^2 \
+  $
+  
+  Performing a telescoping sum yields the desired claim.
 ]
+
+To extract a rate out of this, let $norm(x_0 - x^*) = R$. Then we have
+$
+   f(x_t^"best") - f(x^*) <= R^2/(2 sum n_t) + (G^2 sum n_t^2)/(2 sum n_t)
+$
+
+$
+  k^(-1/2 - epsilon), k^(-1 - 2 epsilon) \
+  k^(1/2 - epsilon), k^(- 2epsilon)
+$
+
+Let's assume $n_t = C t^alpha$. Then we get 
+$
+  R^2/(2 sum n_t) + (G^2 sum n_t^2)/(2 sum n_t) =
+  R^2/(2 C sum t^alpha) + (G^2 C^2 sum t^(2 alpha))/(2 C sum t^alpha) \
+  R^2/(2 C k^(alpha + 1)) + (G^2 C^2 k^(2 alpha + 1))/(2 C k^(alpha + 1))
+$
+
+Set $C = R/G$ and $alpha = -1/2 - epsilon$.
+$
+  ~ (R G) / sqrt(k)
+$
 
 === Interior Points
 The point of the Subgradient method is it can be applied to non-differentiable convex functions. Here's an important example. Consider the problem of finding a point at the intersection of some number of convex sets.
@@ -537,3 +599,6 @@ This can be seen as a generalization of both gradient descent and projected grad
 ]
 
 *TODO*: Show that when the generalized gradient is zero, the function is optimal (use the first step of last proof and just algebra). Also contrast the generalized gradient to the subgradient.
+
+== Stochastic Gradient Descent
+*TODO*: Prove a sqrt(K) convergence rat.e
