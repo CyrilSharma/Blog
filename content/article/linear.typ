@@ -967,4 +967,30 @@ It's easy to extend this to any linear combination of odd powers will also commu
 
 Anyway, this gives you a lot of power. Muon uses this insight to cheaply orthogonalize $G$ by choosing a matrix polynomial such that $"poly"^n (Sigma) arrow I$ for any $Sigma$, namely $"poly"^n ~ "sign"$.
 
+== PCA
+We would like to approximate $X in bb(R)^(T times d)$ with a $T times r$ matrix, where $r < d$. To be precise, we want to compress $d$ coordinates to $r$ coordinates. Then, we will grade our approximation based on how well the "decompressed" $r$ coordinates line up with the original coordinates. If we insist compression and decompression must be linear, it's easy to see this is equivalent to the following problem.
+$
+  "argmin"_(R | "Rank"(R) = r) norm(X - R X)^2_F
+$
+
+Suppose the optimal $R$ spanned a rank-$r$ subspace $U$. Let $P$ be the orthogonal projector onto $U$.
+$
+  norm(X_i - P X_i)^2 <= norm(X_i - R X_i)^2 \
+  sum_i  norm(X_i - P X_i)^2 <= sum_i norm(X_i - R X_i)^2 \
+  norm(X - P X)^2_F <= norm(X - R X)^2
+$
+
+Hence, choosing $R = Q Q^*$ to be an orthogonal projector is always optimal. Now, we can analyze our original problem. Let $X = U Sigma V^T$ per the SVD.
+$
+  "argmin"_(R | "Rank"(R) = r) norm(X - R X)^2_F = "TR"((X - R X)^top (X - R X)) = \
+  "argmin"_(R | "Rank"(R) = r) "TR"(X^top R R^top X) - 2 "TR"(X^top R X) = \
+  "argmin"_(R | "Rank"(R) = r) "TR"(X^top R X) - 2 "TR"(X^top R X) = "TR"(X^top R X) = \
+  "argmax"_(R | "Rank"(R) = r) "TR"(Q^* U Sigma^2 U^top Q) = \
+  "argmax"_(R | "Rank"(R) = r) sum_i^r "dot"(Q^* U_i, Q^* U_i) Sigma^2_(i i)
+$
+
+By Cauchy-Schwarz, choosing $Q^* = [U_1^*; ...; U_r^*]$ is optimal.
+
+
+
 *TODO*: Producing samples with a given Covariance. Discretizing differential equations
