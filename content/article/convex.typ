@@ -474,11 +474,6 @@ $
    f(x_t^"best") - f(x^*) <= R^2/(2 sum n_t) + (G^2 sum n_t^2)/(2 sum n_t)
 $
 
-$
-  k^(-1/2 - epsilon), k^(-1 - 2 epsilon) \
-  k^(1/2 - epsilon), k^(- 2epsilon)
-$
-
 Let's assume $n_t = C t^alpha$. Then we get 
 $
   R^2/(2 sum n_t) + (G^2 sum n_t^2)/(2 sum n_t) =
