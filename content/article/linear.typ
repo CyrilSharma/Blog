@@ -52,14 +52,20 @@
 
 This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
 
+#theorem[$"Col"(A) perp "Null"(A^top), "Row"(A) perp "Null"(A)$]
+#proof[
+  Suppose we have $v in "Col"(A), w in "Null"(A^top)$.
+  $
+    "dot"(a_i, w) = 0, forall i \
+    "dot"(v, w) = "dot"(c_1 a_1 + ... + c_n a_n, w) = 0
+  $
+
+  The argument is identical for rowspace except using rows instead of columns.
+]
+
 #theorem[$ "rank"(A^top A) = "rank"(A) $]
 #proof[
-  Suppose we have $v in "Col"(A)$. I claim $v in.not "Null"(A^top)$ but suppose that this was false. Then,
-  $
-    "dot"(a_i, v) = 0, forall i \
-    "dot"(v, v) = "dot"(c_1 a_1 + ... + c_n a_n, v) = 0
-  $
-  This can only be true if $v = 0$. So now imagine we have $u, v in "Col(A)"$ and $A^top u = A^top v$. Then, $A^top (u - v) = 0, u - v in "Col"(A)$. But this implies $u - v = 0$. Hence, every non-zero vector out of $A$ gets mapped to a unique vector out of $A^top A$.
+  Imagine we have $u, v in "Col(A)"$ and $A^top u = A^top v$. Then, $A^top (u - v) = 0, u - v in "Col"(A)$. But this implies $u - v = 0$ by the above theormem. Hence, every non-zero vector out of $A$ gets mapped to a unique vector out of $A^top A$.
 ]
 == Trace
 #theorem[The trace is invariant to cyclic permutations.]
@@ -201,48 +207,6 @@ $]
   "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
 $]
 
-== Norms
-#definition[
-  The operator norm of a matrix is the largest amount it can scale any vector.
-  $
-    ||A|| = sup{ ||A v|| : ||v|| <= 1}
-  $
-]
-
-The specific value of the operator norm depends on how you measure "large". For example, you could measure how much the L2-Norm scales. You can even use different input and output norms. For example,
-$
-  sup{ ||A v||_(l_2) : ||v||_(l_1) <= 1}
-$
-
-#theorem[$
-  ||A||_(l_2 arrow l_2) = max_i sigma_i
-$]
-#proof[
-  Observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
-]
-
-#definition[
-  The Frobenius norm of a matrix is the L2-norm of its singular value vector.
-  $
-    ||A||_F = sqrt(sum sigma_i^2)
-  $
-]
-
-This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms).
-This is algebraically powerful because you can express it in terms of traces.
-$
-  ||A||_F = sqrt("Tr"(A^top A))
-$ 
-
-
-#definition[
-  The Nuclear or Trace norm is the L1-norm of its singular value vector.
-  $
-    ||A||_* = sum sigma_i
-  $
-]
-Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm has the nice property that the corresponding norm ball has its extreme points at rank 1 matrices. Hence, it shows up in convex optimization contexts when you want low-rank results.
-
 == Projection
 #definition[
   A projector $P$ is a matrix which satisfies $P^2 = P$.
@@ -316,31 +280,74 @@ $
 
 Where $v_1 in U, v_2 in U^top$. Hence, orthogonal projection is the canonical solution to least squares problems, e.g. find $x$ to minimize $norm(A x - b)^2$.
 
-== Kronecker Product
-#definition[
-  The Kronecker product $A times.o B$ is a block-matrix of the form
-  $
-    mat(A_11 B, ..., A_(1 n) B; ..., ..., ...; A_(n 1) B, ..., A_(n n) B; )
-  $
+== Generalized Inverse
+Suppose we want to solve $A x = b$. If $A$ is not a square, full-rank matrix, there is no $B$ such that $B A = I$, which essentially means a solution does not exist for all $b$. However, there still might be a solution to the above system if $b$ just happens to lie in the column space of $A$. This motivates the following definition.
+
+#definition(name: "Moore-Penrose-PseudoInverse")[
+  Let $A^+$ be the matrix which satisfies
+  + $A A^+$ is an orthogonal projector onto the column space of $A$.
+  + $A^+ A$ is an orthogonal projector onto the row space of $A$.
 ]
-#definition[
-  $"vec"(X)$ is the vector obtained by stacking the columns of $X$.
-]
-#theorem[$
-  "vec"(A X B) = (B^top times.o A) "vec"(X)
-$]
-#proof[
-  Observe that
-  $
-    A X B_i = sum_j B_(i j) A X_j
-  $
-  If you do this for every $i$, you get the appropriate Kronecker product.
-]
-This is a useful tool when you are solving for matrices, for example
+
+To see why this is useful, let's plug these definitions into our problem.
 $
-  A X B + X = C arrow (B^top times.o A + I)"vec"(X) = "vec"(C)
+  x = A^+ b => A(A^+ b) = (A A^+) b = "argmin"_(c in "Col"(A)) norm(b - c)
 $
 
+Suppose $b in "Col"(A)$.
+$
+  x = A^+ A y = "argmin"_(r in "Row"(A)) norm(y - r)
+$
+
+So if $b in.not "Col"(A)$ we find $x$ to produce the closest vector, and if $b in "Col"(A)$ we find the smallest $x$ that produces it. The motivation for the second condition is it's a natural tie-breaker when there are multiple solutions.
+
+From these definitions, it's easy to see the generalized inverse is satisfied by the following decomposition.
+$
+  A^+ = V_r Sigma_r^(-1) U_r^top
+$
+
+
+== Norms
+#definition[
+  The operator norm of a matrix is the largest amount it can scale any vector.
+  $
+    ||A|| = sup{ ||A v|| : ||v|| <= 1}
+  $
+]
+
+The specific value of the operator norm depends on how you measure "large". For example, you could measure how much the L2-Norm scales. You can even use different input and output norms. For example,
+$
+  sup{ ||A v||_(l_2) : ||v||_(l_1) <= 1}
+$
+
+#theorem[$
+  ||A||_(l_2 arrow l_2) = max_i sigma_i
+$]
+#proof[
+  Observe that $A$ can be written as $U Sigma V^T$ using the SVD. Since $U$ and $V^T$ are orthonormal, $Sigma$ controls the scaling. Hence, the operator norm is equal to the largest entry of $Sigma$. 
+]
+
+#definition[
+  The Frobenius norm of a matrix is the L2-norm of its singular value vector.
+  $
+    ||A||_F = sqrt(sum sigma_i^2)
+  $
+]
+
+This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms).
+This is algebraically powerful because you can express it in terms of traces.
+$
+  ||A||_F = sqrt("Tr"(A^top A))
+$ 
+
+
+#definition[
+  The Nuclear or Trace norm is the L1-norm of its singular value vector.
+  $
+    ||A||_* = sum sigma_i
+  $
+]
+Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm has the nice property that the corresponding norm ball has its extreme points at rank 1 matrices. Hence, it shows up in convex optimization contexts when you want low-rank results.
 
 == Definite and Indefinite
 #definition[
@@ -390,7 +397,6 @@ If you have backwards stability, you can bound the error of the computation as f
 
 This is known as backwards error analysis and is much simpler than the naive approach, where you try to compute the aggregate errors of individual floating point operations in an algorithm.
 
-
 #definition[
   The condition number of a matrix is how sensitive it is to small perturbations. Suppose I have the equation $A x = b$, and there is some error $epsilon$, in $b$. The condition number tells me the maximum ratio of relative error in $b$ to relative error in $x$.
   $
@@ -402,6 +408,31 @@ This is known as backwards error analysis and is much simpler than the naive app
 
   Where the last step came from choosing $b = A gamma$. You can also verify you get this same bound if there's relative error in $A$ or in $x$.
 ]
+
+== Kronecker Product
+#definition[
+  The Kronecker product $A times.o B$ is a block-matrix of the form
+  $
+    mat(A_11 B, ..., A_(1 n) B; ..., ..., ...; A_(n 1) B, ..., A_(n n) B; )
+  $
+]
+#definition[
+  $"vec"(X)$ is the vector obtained by stacking the columns of $X$.
+]
+#theorem[$
+  "vec"(A X B) = (B^top times.o A) "vec"(X)
+$]
+#proof[
+  Observe that
+  $
+    A X B_i = sum_j B_(i j) A X_j
+  $
+  If you do this for every $i$, you get the appropriate Kronecker product.
+]
+This is a useful tool when you are solving for matrices, for example
+$
+  A X B + X = C arrow (B^top times.o A + I)"vec"(X) = "vec"(C)
+$
 
 = Decompositions
 
