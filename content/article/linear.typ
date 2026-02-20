@@ -10,10 +10,52 @@
 #show: note_page
 
 = Fundamentals
+== Linear Independence
+#definition[
+  A set of vectors $a_1, ..., a_n$ is linearly independent iff
+  $
+    c_1 a_1 + ... + c_n a_n = 0 => c_1, ..., c_n = 0
+  $
+]
+#definition[
+  A basis for a set of vectors $V$ is any set of vectors $B$ where linear combinations of vectors in $B$ can yield every vector in $V$.
+]
+== Orthogonality
+#theorem[
+  A set of mutually orthogonal vectors is a set of linearly independent vectors.
+]
+
+#proof[
+  Define the basis to be $u_1, ..., u_n$. Then we have
+  $
+      "dot"(u_i, u_j) = 0 quad forall i != j,
+  $
+
+  Now suppose the basis was linearly dependent. Then, there must exist $a_1, ..., a_n$ such that 
+  $
+    a_1 u_1 + ... + a_n u_n = 0
+  $
+
+  Now we have
+  $
+    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = \
+    a_1 a_2 "dot"(u_1, u_2) + ... + a_1 a_n "dot"(u_1, u_n) = 0 \
+    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = "dot"(a_1 u_1, -a_1 u_1) = -a_1 "dot"(u_1, u_1) < 0
+  $
+
+  Hence, we've arrived at a contradiction, and our basis must be linearly independent.
+]
+
+#theorem[The product of orthonormal matrices (columns are orthogonal and unit norm) is orthonormal.]
+#proof[$
+  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
+  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
+  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
+$]
 
 == Rank and Spaces
 #definition[
-  The dimension of the space spanned by the columns of a matrix is called the column-rank. The analogous quantity for the rows is the row-rank. There are analogous quantities for null spaces.
+  The space spanned by the columns of a matrix is called the column space and similarly the space spanned by the rows is the row space. The rank of a space is the size of the smallest basis needed to span it.
 ]
 
 #lemma[Let $B = F A$. If $F$ is invertible, the columns of $A$ are linearly independent iff the columns of $B$ are linearly independent.]
@@ -52,13 +94,19 @@
 
 This has some interesting implications, like $"rank"(A) = "rank"(A^top)$.
 
-#theorem[$"Col"(A) perp "Null"(A^top), "Row"(A) perp "Null"(A)$]
+#theorem[$
+  A in bb(R)^(n times m) \
+  "Col"(A) perp "Null"(A^top), "Row"(A) perp "Null"(A) \
+  "Col"(A) union "Null"(A^top) = RR^m, "Row"(A) union "Null"(A) = RR^n \ 
+$]
 #proof[
   Suppose we have $v in "Col"(A), w in "Null"(A^top)$.
   $
     "dot"(a_i, w) = 0, forall i \
     "dot"(v, w) = "dot"(c_1 a_1 + ... + c_n a_n, w) = 0
   $
+
+  Furthermore, it's easy to see that every vector orthgonal to $"Col"(A)$ is in $"Null"(A^top)$. Hence, we can find an orthonormal basis for $"Col"(A)$ and then extend it to a full basis for $bb(R)^m$ via vectors in $"Null"(A^top)$. Thus, $"Rank"("Col"(A)) + "Rank"("Null"(A^top)) = m$.
 
   The argument is identical for rowspace except using rows instead of columns.
 ]
@@ -173,39 +221,6 @@ $]
 
   Where $D$ is a diagonal matrix consisting of the eigenvalues of $A_n$ and $Q$ is the product of the orthonormal matrices. Since the product of orthonormal matrices is also orthonormal, $Q^top = Q^(-1)$ and thus $A_n$ is diagonalizable.
 ]
-
-== Orthogonality
-#theorem[
-  A set of mutually orthogonal vectors is a set of linearly independent vectors.
-]
-
-#proof[
-  Define the basis to be $u_1, ..., u_n$. Then we have
-  $
-      "dot"(u_i, u_j) = 0 quad forall i != j,
-  $
-
-  Now suppose the basis was linearly dependent. Then, there must exist $a_1, ..., a_n$ such that 
-  $
-    a_1 u_1 + ... + a_n u_n = 0
-  $
-
-  Now we have
-  $
-    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = \
-    a_1 a_2 "dot"(u_1, u_2) + ... + a_1 a_n "dot"(u_1, u_n) = 0 \
-    "dot"(a_1 u_1, a_2 u_2 + ... + a_n u_n) = "dot"(a_1 u_1, -a_1 u_1) = -a_1 "dot"(u_1, u_1) < 0
-  $
-
-  Hence, we've arrived at a contradiction, and our basis must be linearly independent.
-]
-
-#theorem[The product of orthonormal matrices is also orthonormal.]
-#proof[$
-  U := [u_1, ..., u_n], V := [v_1, ..., v_n] \
-  "dot"(U v_i, U v_j) = v_i^top U^top U v_j = 0 \
-  "dot"(U v_i, U v_i) = v_i^top U^top U v_i = 1
-$]
 
 == Projection
 #definition[
