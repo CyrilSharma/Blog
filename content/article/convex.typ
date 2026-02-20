@@ -367,14 +367,9 @@ An interesting insight in the above proof is that if you differentiate the first
 
   So if you substitute that in to the above proof you get
   $
-     f(x_k) - f(x^*) + alpha / (2 k) sum_(t = 0)^k norm(x_t - x^*)^2 <= beta /(2 k) norm(x_0 - x^*)^2 \
-     sum_(t=0)^k norm(x_t - x^*)^2 <= beta / alpha  norm(x_0 - x^*)^2
-  $
-
-  Now we do a quick proof by contradiction.
-  $
-    norm(x_k - x^*)^2 > (1 - alpha/beta)^k norm(x_0 - x^*)^2 \
-    sum_(t=0)^k (1 - alpha/beta)^k norm(x_0 - x^*)^2 = beta / alpha norm(x_0 - x^*)^2
+     2eta(f(x_t) - f(x^*) + alpha / 2 norm(x_t - x^*)^2) <= norm(x_t - x^*)^2 - norm(x_(t + 1) - x^*) \
+     norm(x_(t + 1) - x^*)^2 <= (1 - alpha / beta)norm(x_t - x^*)^2 \
+     norm(x_k - x^*)^2 <= (1 - alpha / beta)^k norm(x_0 - x^*)^2
   $
 ]
 
@@ -486,7 +481,7 @@ $
   ~ (R G) / sqrt(k)
 $
 
-So the rate ends up being a bit worse than with $beta$-smoothness. Notice that $beta$-smoothness of any kind is impossible with non-differentiable functions so this is a hard limit. $alpha$-convexity doesn't help you, because you lack on upper-bound on the size of the gradient, so you won't be able to show unconditional convergence.
+So the rate ends up being a bit worse than with $beta$-smoothness. That's because we were forced to take smaller and smaller steps to deal with the inadequacy of our linear model. $beta$-smooth functions give curvature information and can guarantee a substantive decrease per step.
 
 === Interior Points
 The point of the Subgradient method is it can be applied to non-differentiable convex functions. Here's an important example. Consider the problem of finding a point at the intersection of some number of convex sets.
