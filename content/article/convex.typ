@@ -570,7 +570,7 @@ This can be seen as a generalization of both gradient descent and projected grad
 #proof[
   $
     dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
-    1/eta (x - z^*) + dif(h(z^*))
+    1/eta (z^* - x) + dif(h(z^*))
   $
   Hence, $z^*$ is a minimizer if and only if
   $
@@ -579,7 +579,7 @@ This can be seen as a generalization of both gradient descent and projected grad
 
   You can then apply subgradient monotonicity
   $
-    "dot"(g_x - g_y, x - y) >= 0, forall g_x in dif f(x), g_y in dif f(y) \
+    "dot"(g_x - g_y, x - y) >= 0, forall g_x in dif h(x), g_y in dif f(y) \
     "dot"(1/eta (x - z_1^*) -  1/eta (y - z_2^*), z_1^* - z_2^*)  >= 0 \
     "dot"(x - y, z_2 - z_1) >= norm(z_2 - z_1)^2 \
      norm(z_2 - z_1)^2 <= norm(x - y)^2
@@ -589,8 +589,52 @@ This can be seen as a generalization of both gradient descent and projected grad
 #definition(name: "Generalized Gradient")[
   $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient f(x_t))), eta)$
 ]
+#theorem[
+  $G(x^*) = 0 => x^* = "argmin"_x G(x)$
+]
+#proof[
+  $
+    G(x^*) = 0 => "Prox"_(eta, h)(x_t - eta gradient f(x_t)) = x_t \
+    tilde(x) = x_t - eta gradient f(x_t) quad z^* = "Prox"_(eta, h)(tilde(x)) \
+    1/eta (tilde(x) - z^*) = 1/eta (x_t - z^* - eta gradient f(x_t)) => \
+    G(x_t) in gradient f(x_t) + dif(x_t - eta G(x_t)) \
+    0 in gradient f(x_t) + dif h(x_t)
+  $
+]
 
-*TODO*: Show that when the generalized gradient is zero, the function is optimal (use the first step of last proof and just algebra). Also contrast the generalized gradient to the subgradient.
+So, you can see this approach takes a qualitatively different step then the subgradient method, it evaluates the sub-differential at an offset point. This will actually lead to a better rate of convergence!
 
 == Stochastic Gradient Descent
+#definition(name: "SGD")[
+  You wish to minimize the risk $R = E_(X times Y) l_theta (x, y)$. If you can draw $(x_t, y_t)$ samples simply choose the gradient step to be
+  $
+    theta_(t+1) = theta_t - eta gradient_theta l(f_theta (x_t), y_t)
+  $
+]
+#theorem[
+  Given the following conditions.
+  + $norm(theta_0 - theta^*) = R$
+  + $forall theta, E_(x, y, theta) (norm(nabla_theta l(f_theta (x), y))^2) = E(norm(g)^2) <= G$.
+  SGD achieves the following rate.
+  $
+    E(f(1/k sum theta_t, x, y) - f(theta^*, x, y)) <= (R G)/sqrt(k)
+  $
+]
+#proof[
+  We use our standard approach of bounding step sizes.
+  $
+     norm(theta_(t+1) - theta^*)^2 = norm(theta_t - theta^*)^2 + eta^2 norm(tilde(g_t))^2 - 2 eta tilde(g_t)^top (theta_t - theta^*) \
+     E(norm(theta_(t+1) - theta^*)^2|theta_t) <= norm(theta_t - theta^*)^2 + eta_t^2 E(norm(tilde(g_t))^2 |theta_t) - 2 eta_t tilde(g_t)^top (theta_t - theta^*) \  
+     E(norm(theta_(t+1) - theta^*)^2 | theta_t) <= E(norm(theta_t - theta^*)^2) + eta_t^2 E(norm(tilde(g_t))^2 |theta_t) - 2 eta_t (f(theta_t, x, y) - f(theta^*, x, y)) \
+    //  E(norm(theta_(t+1) - theta^*)^2) <= E(norm(theta_t - theta^*)^2) + eta_t^2 G^2 - 2 eta_t E(g_t^top (theta_t - theta^*)) \
+     E(norm(theta_(t+1) - theta^*)^2) <= E(norm(theta_t - theta^*)^2) + eta_t^2 G^2 - 2 eta_t E(f(theta_t, x, y) - f(theta^*, x, y))
+  $
+
+  Apply the same analysis done in the subgradient portion to obtain
+  $
+    (R G) / sqrt(k) &>= 1/k sum E(f_(theta_i) (x, y) - f_(theta^*) (x, y)))\
+    &= (1/k sum E(f(theta_i, x, y))) - E(f (theta^*, x, y)) \
+    &= E(f(1/k sum (theta_t), x, y)) - E(f(theta^*, x, y))
+  $
+]
 *TODO*: Prove a sqrt(K) convergence rate.
