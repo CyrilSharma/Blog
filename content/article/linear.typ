@@ -295,6 +295,26 @@ $
 
 Where $v_1 in U, v_2 in U^top$. Hence, orthogonal projection is the canonical solution to least squares problems, e.g. find $x$ to minimize $norm(A x - b)^2$.
 
+Here's another problem you can solve with orthogonal projectors.
+$
+  tilde(x) = "argmin"_(x) norm(y - x) | A x = b
+$
+
+We can break y and x into their row and null space components.
+$
+  tilde(x) = "argmin"_x norm(y_"row" + y_"null" - x_"row" - x_"null") | A x = b \
+$
+
+$x_"row"$ is constrained, changing it would violate the constraint. The nullspace component does not have this problem. Hence, choosing $x_"null" = y_"null"$ is optimal. Thus,
+$
+  tilde(x) = x_"row" + y_"null" = y + (x_"row" - y_"row")
+$
+
+We can now solve for this using an orthogonal projector onto the row space of $A$. This is the same construction we had earlier but for $A^top$ instead.
+$
+  tilde(x) = y + A^top (A A^top)^(-1)A (x - y) = y + A^top (A A^top)^(-1)(b - A y)
+$
+
 == Generalized Inverse
 Suppose we want to solve $A x = b$. If $A$ is not a square, full-rank matrix, there is no $B$ such that $B A = I$, which essentially means a solution does not exist for all $b$. However, there still might be a solution to the above system if $b$ just happens to lie in the column space of $A$. This motivates the following definition.
 
