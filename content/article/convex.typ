@@ -67,15 +67,20 @@
 ]
 
 #theorem[
-  Projective functions $P(mat(x_1, ..., x_n)) = mat(x_1 / x_n, ..., x_(n - 1))$ preserve convexity.
+  Perspective functions $P(mat(x_1, ..., x_n)) = mat(x_1 / x_n, ..., x_(n - 1) / x_n)$ preserve convexity. Note that perspective functions require the last coordinate to be strictly positive.
 ]
-#proof[$
-  x = (hat(x), x_n), y = (hat(y), y_n) \
-  P(theta x + (1 - theta) y) =
-  (theta hat(x) + (1 - theta) hat(y)) / (theta x_n + (1 - theta) y_n) =
-  mu hat(x) + (1 - mu) hat(y) 
-    
-$]
+#proof[
+  Does $a, b in P(S) => theta a + (1 - theta) b in P(S)$? Let the pre-images of $a$ and $b$ be as follows.
+  $
+    x = (hat(x), x_n), y = (hat(y), y_n) \
+  $
+  $
+    P(theta x + (1 - theta) y) =
+    (theta hat(x) + (1 - theta) hat(y)) / (theta x_n + (1 - theta) y_n) =
+    mu hat(x) + (1 - mu) hat(y) 
+      
+  $
+]
 
 Composing affine and projective functions lets you say linear fractional functions preserve convexity.
 $
@@ -144,26 +149,119 @@ The above two cones are useful for quantifying vertices, edges, and if we've rea
 ]
 
 This object is the heart of convex analysis. Just like convex sets, there are a ton of properties that can be shown about them...
-#theorem[
-  If a convex function is differentiable, it obeys 
-  $
-    f(y) >= f(x) + gradient f(x) (y - x)
-  $
-
-  If it's twice differentiable, it obeys
-  $
-    gradient^2 f succ.eq 0
-  $
+#theorem(name: "1st Order Convexity Statement")[
+  $f in C^1(RR) => f(y) >= f(x) + gradient f(x) (y - x)$
 ]
 
-The first statement says any tangent line lower-bounds the convex function, which is pretty intuitive. The second statement says the Hessian must be positive semi-definite. This can be interpreted as saying no matter what direction I walk in, the slope along that curve must be non-decreasing.
+// #align(center, graphic(
+//   cetz.canvas({
+//     import cetz.draw: *;
+//     let x = 0
+//     let px = 0
+//     let step = 1.0
+//     for i in range(10) {
+//       x = step + px
+//       let stroke = (paint: blue, dash: "dashed")
+//       line((px, 0), (x, step), stroke: stroke)
+//       line((x, step), (x, 0), stroke: stroke)
+//       px = x
+//       step *= 0.5
+//     }
+//     line((0, 0), (3, 0), (3, -0.2), (0, -0.2), close: true, fill: green.transparentize(80%))
+//     line((0, 2), (3, -1), (3.14, -0.86), (0.14, 2.14), close: true, fill: green.transparentize(80%))
+//   })
+// ))
+#import "@preview/lilaq:0.3.0" as lq
+#let indices = range(-20, 20)
+#let xs = indices.map(i => i * 0.1)
+#let p = 0.80
+#let q = 1 - p
 
-A useful tool for relating properties of convex sets to convex functions is the epigraph.
+#let args = (mark: none, stroke: (thickness: 2pt));
+#align(center,
+  table(
+    columns: 2,
+    graphic(
+      lq.diagram(
+        lq.plot(xs, xs.map(x => x*x), ..args),
+        lq.plot(xs, xs.map(x => 2 - 2.8*(x + 1.4)), stroke: (thickness: 2pt)),
+        lq.plot(xs, xs.map(x => 2 - 1.5*(x + 1.4)), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot(xs, xs.map(x => 2 - 0.5*(x + 1.4)), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot(xs, xs.map(x => 2), ..args),
+        xlim: (-2, 2),
+        ylim: (0, 4)
+      )
+    ),
+    graphic(
+      lq.diagram(
+        lq.plot(xs, xs.map(x => x*x), ..args),
+        lq.plot(xs, xs.map(x => 2), ..args),
+        lq.plot(xs, xs.map(x => 2 + 0.5*x), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot(xs, xs.map(x => 2 - 0.5*x), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot((0,), (2,), mark-size: 16pt),
+        lq.plot((-1.4,), (2,), mark-size: 16pt),
+        lq.plot((1.4,), (2,), mark-size: 16pt),
+        xlim: (-2, 2),
+        ylim: (0, 4)
+      )
+    )
+  )
+)
+
+This essentially says any tangent line lower-bounds the convex function.
+In the first diagram we can see how the zeroth order condition implies an upper bound on the slope ($0 => 1$), and in the second diagram we see how above the line draw by the zeroth order condition, no lower bound will be beneath both boundary points ($1 => 0$).
+
+#theorem(name: "2nd Order Convexity Statement")[
+  $f in C^2(RR) => gradient^2 f succ.eq 0$
+]
+
+#align(center,
+  table(
+    columns: 2,
+    graphic(
+      lq.diagram(
+        lq.plot(xs, xs.map(x => 2 - 0.5*(x + 1.4)), stroke: (thickness: 2pt)),
+        lq.plot(xs, xs.map(x => 2 - 1*(x)), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot((-1,), (1.8,), mark-size: 16pt),
+        lq.plot((1.4,), (0.6,), mark-size: 16pt),
+        xlim: (-2, 2),
+        ylim: (0, 4)
+      )
+    ),
+    graphic(
+      lq.diagram(
+        lq.plot(xs, xs.map(x => 2 - 0*(x)), stroke: (thickness: 2pt)),
+        lq.plot(xs, xs.map(x => 2 + 1.5*(x - 1.0)), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot(xs, xs.map(x => 2 - 1.5*(x + 1.0)), stroke: (thickness: 2pt, dash: "dashed"), mark: none),
+        lq.plot((0,), (2,), mark-size: 16pt),
+        xlim: (-2, 2),
+        ylim: (0, 4)
+      )
+    )
+  )
+)
+
+The second statement says the Hessian must be positive semi-definite. This can be interpreted as saying no matter what direction I walk in, the slope along that curve must be non-decreasing.
+
+The first diagram shows the $1 => 2$, as otherwise one of the lower bounds is broken. The second diagram shows $2 => 1$ as no matter which direction you move the function curves up away from your tangent line.
+
+A useful tool for relating convex sets to convex functions is the epigraph.
 #definition(name: "Epigraph")[
   $
     "Epi"(f) = { (x, t): f(x) <= t }
   $
 ]
+
+#align(center,
+  graphic(
+    lq.diagram(
+      lq.fill-between(xs, xs.map(x => x*x), y2: xs.map(x => 4)),
+      xlim: (-2, 2),
+      ylim: (0, 4)
+    )
+  ),
+)
+
 #theorem[
   $"Epi"(f)$ is convex iff $f$ is convex.
 ]
@@ -283,8 +381,7 @@ And here's some "nice" function classes we typically work with. Note that all of
 
   One approach is to do 
   $
-    x_0 = hat(0) \
-    x_(t + 1) = x_t - eta_t nabla f(x_t)
+    x_0 = hat(0) quad x_(t + 1) = x_t - eta_t nabla f(x_t)
   $
 ]
 
@@ -442,8 +539,13 @@ We can generalize our optimality conditions from earlier to use subgradients.
 ]
 
 #definition(name: "Subgradient Method")[
-  Essentially, replace the gradient in gradient descent with the subgradient. Interestingly, the subgradient is not guaranteed to be a descent direction.
+  Essentially, replace the gradient in gradient descent with the subgradient.
 ]
+
+Interestingly, the negative subgradient is _not_ guaranteed to be a descent direction! You can see this with $|x|$. Furthermore, this can happen even at a suboptimal point. Consider the function $|x| + 2|y|$. At $(1, 0)$ a valid negative subgradient is $(-1, 2)$. Hence, $1 - epsilon + 2 (2 epsilon) = 1 + 3 epsilon$. You can see some nice examples #link("https://parameterfree.com/2018/06/20/54/")[here].
+
+However, for 1D functions this actually cannot happen. This is because the subgradient is convex and for a point to be suboptimal it must not contain zero. Hence, the subgradient and the true descent direction always have the same sign in this case.
+
 #theorem[
   For a convex $G$-lipschitz function and step sizes $n_t$, we have
   $
@@ -637,4 +739,3 @@ So, you can see this approach takes a qualitatively different step then the subg
     &= E(f(1/k sum (theta_t), x, y)) - E(f(theta^*, x, y))
   $
 ]
-*TODO*: Prove a sqrt(K) convergence rate.
