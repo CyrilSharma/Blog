@@ -289,6 +289,15 @@ From this property, you can easily deduce that maxes of convex function are stil
   $
   If $g$ is always finite, $g$ is convex.
 ]
+
+One example of this problem is finding the closest point in a convex set to a given point.
+#align(graphic(cetz.canvas({
+  import cetz.draw: *;
+  line((-1.5, 1.5), (-0.70, 0.70), stroke: blue)
+  rotate(z: 45deg)
+  rect((-1, -1), (1, 1), fill: green.transparentize(90%))
+})))
+
 #proof[
   First observe $ "Epi"(f) = {(x, y, t): x, y in R^d, f(x, y) <= t } $
   Now, consider the intersection of $"Epi"(f)$ with
@@ -314,35 +323,35 @@ From this property, you can easily deduce that maxes of convex function are stil
   Hence, $"Epi"(g)$ is convex which implies $g$ is convex.
 ]
 
-= Inequalities
-It turns out many of the most useful inequalities can be derived through analyzing a suitable convex function. 
-#theorem(name: "Jensen's Inequality")[$ f(E(x)) <= E(f(x)) $]
-#proof[
-  $
-    f(E(x)) = f(lim_(Delta x -> 0) (sum_i (x + i Delta x)p(x + i Delta x) Delta x)) =\
-     lim_(h -> 0) sum_i f(x + i Delta x)p(x + i Delta x)Delta x = E(f(x))
-  $
-]
+// = Inequalities
+// It turns out many of the most useful inequalities can be derived through analyzing a suitable convex function. 
+// #theorem(name: "Jensen's Inequality")[$ f(E(x)) <= E(f(x)) $]
+// #proof[
+//   $
+//     f(E(x)) = f(lim_(Delta x -> 0) (sum_i (x + i Delta x)p(x + i Delta x) Delta x)) <=\
+//      lim_(Delta x -> 0) sum_i f(x + i Delta x)p(x + i Delta x)Delta x = E(f(x))
+//   $
+// ]
 
-#theorem(name: "Young's Inequality")[$ 1/p + 1/q => a b <= a^p / p + b^q / q $]
-#proof[$
-  exp(x/p + y/q) <=_"Convexity" exp(x)/p + exp(y)/q \
-  a, b > 0 | exp(log(a^p)/p + log(b^p)/q) <= exp(log(a^p))/p + exp(log(b^p))/q \
-  a b <= a^p / p + b^q / q
-$]
+// #theorem(name: "Young's Inequality")[$ 1/p + 1/q => a b <= a^p / p + b^q / q $]
+// #proof[$
+//   exp(x/p + y/q) <=_"Convexity" exp(x)/p + exp(y)/q \
+//   a, b > 0 | exp(log(a^p)/p + log(b^p)/q) <= exp(log(a^p))/p + exp(log(b^p))/q \
+//   a b <= a^p / p + b^q / q
+// $]
 
-#theorem(name: "Holder's Inequality")[$ 1/p + 1/q => sum_i |x_i y_i| = norm(x)_p norm(y)_q $]
-#proof[
-  $
-    a_i = x_i / norm(x)_p, b_i = y_i / norm(y)_q\
-    |a_i| |b_i| <= abs(a_i)^p / p + abs(b_i)^q / q  \
-    sum_i |a_i b_i| <= sum_i (abs(a_i)^p / p + abs(b_i)^q / q) \
-    1/(norm(x)_p norm(y)_q) sum_i x_i y_i <= 1/p sum_i abs(a_i)^p + 1/q sum_i abs(b_i)^q = 1/p + 1/q = 1 \
-    sum_i |x_i y_i| = norm(x)_p norm(y)_q
-  $
-]
+// #theorem(name: "Holder's Inequality")[$ 1/p + 1/q => sum_i |x_i y_i| = norm(x)_p norm(y)_q $]
+// #proof[
+//   $
+//     a_i = x_i / norm(x)_p, b_i = y_i / norm(y)_q\
+//     |a_i| |b_i| <= abs(a_i)^p / p + abs(b_i)^q / q  \
+//     sum_i |a_i b_i| <= sum_i (abs(a_i)^p / p + abs(b_i)^q / q) \
+//     1/(norm(x)_p norm(y)_q) sum_i x_i y_i <= 1/p sum_i abs(a_i)^p + 1/q sum_i abs(b_i)^q = 1/p + 1/q = 1 \
+//     sum_i |x_i y_i| = norm(x)_p norm(y)_q
+//   $
+// ]
 
-Plugging in $p = 2$ gives you the Cauchy-Schwarz inequality.
+// Plugging in $p = 2$ gives you the Cauchy-Schwarz inequality.
 
 = Algorithms
 Here's some important terminology...
@@ -373,33 +382,53 @@ And here's some "nice" function classes we typically work with. Note that all of
 ]
 
 == Gradient Descent
-#definition(name: "Unconstrained Gradient Descent")[
-  Suppose you have a function $f$ which allows querying values and gradients (1st order oracle). Consider the following problem.
-  $
-    min_(x in bb(R)^d) f(x) 
-  $
-
-  One approach is to do 
-  $
-    x_0 = hat(0) quad x_(t + 1) = x_t - eta_t nabla f(x_t)
-  $
+#definition(name: "Gradient Descent")[
+  $x_0 = hat(0) quad x_(t + 1) = x_t - eta_t nabla f(x_t) quad x_t approx min_(x in bb(R)^d) f(x)$
 ]
 
 #lemma(name: "Descent Lemma")[
-  For a $beta$-smooth function, choosing $eta = hf(1, beta)$ yields
+  For a $beta$-smooth function, gradient descent with $eta = hf(1, beta)$ yields
   $
-    f(x_(t + 1)) <= f(x_t) - eta/2 norm(gradient f(x_t))^2
-  $
-]
-#proof[
-  $
-    f(x + h) <= f(x) + gradient f(x)^top h + beta/2 norm(h)^2 \
-    f(x_(t + 1)) <= f(x) - 1/beta norm(nabla f(x))^2 + 1/(2 beta) norm(nabla f(x_t))^2 \
-    f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 = f(x) - eta/2 norm(gradient f(x_t))^2 \
+    f(x_(t + 1)) <= f(x_t) - 1/(2 beta) norm(gradient f(x_t))^2
   $
 ]
 
-An interesting insight in the above proof is that if you differentiate the first line with respect to $h$, you get $x_(t + 1) = x_t - eta gradient f(x_t)$ is the minimizer of the quadratic in terms of $h$. Hence, you can view gradient descent as repeatedly moving to the minimum of a locally fitted quadratic, where the Hessian is approximated using $beta$.
+Let's see what $beta$-smoothness tells us about GD.
+$ norm(gradient f(x) - gradient f(y)) <= beta norm(eta gradient f(x)) = beta eta norm(gradient f(x)) $
+#align(graphic(
+  cetz.canvas({
+    import cetz.draw: *;
+    circle((0, 2), radius: 0.5, stroke: (dash: "dashed"))
+    line((0, 0), (0, 2), mark: (end: "straight"), name: "x")
+    line((0, 0), (0.36, 2.4), mark: (end: "straight"), name: "y")
+    content((-1, 1), padding-right: 5pt, [$nabla f(x)$])
+    content((1, 1), padding-right: 5pt, [$nabla f(y)$])
+  })
+))
+
+Picture a circle of small radius (no bigger then $gradient f(x)$) around $gradient f(x)$. Within this small _region of trust_ ($eta <= 1/beta$) all vectors in the circle point at least somewhat in the direction of $gradient f(x)$. If you imagine breaking the path from $nabla f(x) -> nabla f(y)$ up, each step in that path will decrease the function. This is exactly what the proof exploits.
+
+#proof[
+  $
+    "dot"(gradient f(x) - gradient f(y), gradient f(x)) <=_"Cauchy Scharz" beta eta norm(gradient f(x))^2  \
+    norm(gradient f(x))^2 - "dot"(gradient f(y), gradient f(x)) <= beta eta norm(gradient f(x))^2  \
+    -"dot"(gradient f(y), gradient f(x)) <= (beta eta - 1) norm(gradient f(x))^2 \
+    f(x + h) = f(x) + integral_0^(1) gradient f(x + t h)^top (-eta gradient f(x))dif t \
+    f(x + h) <= f(x) + integral_0^(1) (beta t eta - 1) eta norm(gradient f(x)) dif t\
+    f(x + h) <= f(x) + ((beta eta^2) / 2 -  eta) norm(gradient f(x))^2 \
+    f(x + h) <= f(x) - 1/(2 beta) norm(gradient f(x))^2
+  $
+]
+
+// #proof[
+//   $
+//     f(x + h) <= f(x) + gradient f(x)^top h + beta/2 norm(h)^2 \
+//     f(x_(t + 1)) <= f(x) - 1/beta norm(nabla f(x))^2 + 1/(2 beta) norm(nabla f(x_t))^2 \
+//     f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 = f(x) - eta/2 norm(gradient f(x_t))^2 \
+//   $
+// ]
+
+// An interesting insight in the above proof is that if you differentiate the first line with respect to $h$, you get $x_(t + 1) = x_t - beta gradient f(x_t)$ which is the minimizer of the quadratic in terms of $h$. Hence, you can view gradient descent as repeatedly moving to the minimum of a locally fitted quadratic.
 
 #theorem[
   For a $beta$-smooth function, gradient descent gives the following guarantee
@@ -420,33 +449,69 @@ An interesting insight in the above proof is that if you differentiate the first
 #theorem[
   For a convex $beta$-smooth function, gradient descent with $eta = hf(1, beta)$ yields
   $
-    f(x_k) - f(x^*) <= beta/(2k) norm(x_0 - x^*)^2
+    f(x_k) - f(x^*) <= (beta)/(2k) norm(x_0 - x^*)^2
   $
 ]
+// #proof[
+//   $
+//     norm(x_(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
+//     norm(x_t - x^*)^2 + eta^2 norm(gradient f(x_t))^2 - 2 eta gradient f(x_t)^top (x_t - x^*) \
+//     2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
+//   $
+//   Substitute in the first order convexity condition.
+//   $
+//      2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2
+//   $
+
+//   Now use the descent lemma.
+//   $
+//      2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 2 /eta (f(x_t) - f(x_(t + 1))) \
+//      2 eta (f(x_(t + 1)) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 \
+//   $
+
+//   Finally, use a telescoping sum to simplify things.
+//   $
+//      sum_(t=0)^(k-1) 2 eta (f(x_(t+1)) - f(x^*)) <= sum_(t=0)^(k-1) (norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2) \
+//     2 k eta (f(x_k) - f(x^*)) <= norm(x_0 - x^*)^2 - norm(x^(k) - x^*)^2 \
+//     f(x_k) - f(x^*) <= 1/(2 k eta) norm(x_0 - x^*)^2  = beta /(2 k) norm(x_0 - x^*)^2
+//   $
+// ]
+
+#let idxs = range(0, 1000)
+#let xs = idxs.map(i => (float(i) - 500)/125)
+#align(graphic(lq.diagram(
+  lq.plot(xs, xs.map(x => -calc.exp(-x*x))),
+  lq.plot((-3,),(0,), mark-size: 8pt)
+)))
+
+Without convexity, we could only say that the slope got pretty small. The reason we can say more with convexity is it gives a lower-bound on the norm of the gradient which by the descent lemma means we make substantial progress per step. This would not be the case if you were in a relatively flat region of a non-convex curve (shown above).
+
 #proof[
   $
-    norm(x_(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
-    norm(x_t - x^*)^2 + eta^2 norm(gradient f(x_t))^2 - 2 eta gradient f(x_t)^top (x_t - x^*) \
-    2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
+    f(x) - f(y) <= nabla f(x)^top (x - y) => norm(nabla f(x_t)) >= (f(x_t) - f(x^*))/(norm(x_t - x^*)) \
   $
-  Substitute in the first order convexity condition.
+  Substituting this lower-bound into the descent lemma yields...
   $
-     2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2
-  $
-
-  Now use the descent lemma.
-  $
-     2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 2 /eta (f(x_t) - f(x_(t + 1))) \
-     2 eta (f(x_(t + 1)) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 \
+    f(x_(t + 1)) <= f(x_t) - 1/(2 beta)  (f(x_t) - f(x^*))^2/(norm(x_t - x^*))^2 \
+    epsilon_(t + 1) <= epsilon_t - 1/(2 beta)  (epsilon_t^2)/norm(x_t - x^*)^2 <= 
+    epsilon_t - 1/(2 beta)  (epsilon_t^2)/norm(x_0 - x^*)^2\
+    epsilon_(t + 1) <= epsilon_t - c epsilon_t^2
   $
 
-  Finally, use a telescoping sum to simplify things.
+  This is a finite-difference equation! You can rearrange it to make it solvable with telescoping.
   $
-     sum_(t=0)^(k-1) 2 eta (f(x_(t+1)) - f(x^*)) <= sum_(t=0)^(k-1) (norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2) \
-    2 k eta (f(x_k) - f(x^*)) <= norm(x_0 - x^*)^2 - norm(x^(k) - x^*)^2 \
-    f(x_k) - f(x^*) <= 1/(2 k eta) norm(x_0 - x^*)^2  = beta /(2 k) norm(x_0 - x^*)^2
+    (epsilon_t - epsilon_(t + 1))/(epsilon_(t + 1)epsilon_t) >= c epsilon_t^2/(epsilon_(t + 1)epsilon_t) => 1/(epsilon_(t+1)) - 1/(epsilon_(t)) >= c \
+    1/(epsilon_k) - 1/(epsilon_(0)) >= k c => epsilon_k <= 1/(k c)
   $
+
+  So we get 
+  $
+    epsilon_k <= 2/(eta k) norm(x_0 - x^2) = (2 beta)/k norm(x_0 - x^2)
+  $
+  
+  This bound is _not_ as tight as the theorem, however this proof is direct.
 ]
+
 
 #theorem[
   If $f$ is $beta$-smooth and $alpha$-strongly convex, $eta = hf(1, beta)$ yields
@@ -457,22 +522,30 @@ An interesting insight in the above proof is that if you differentiate the first
   That, is gradient descent yields linear convergence.
 ]
 #proof[
-  Almost the same as the above proof. The first order convexity condition for $alpha$-strongly convex functions is as follows.
+  // Almost the same as the above proof. The first order convexity condition for $alpha$-strongly convex functions is as follows.
+  // $
+  //   f(y) >= f(x) + gradient f(x)^top (y - x) + alpha/2 norm(y - x)^2
+  // $
+
+  // So if you substitute that in to the above proof you get
+  // $
+  //    2eta(f(x_t) - f(x^*) + alpha / 2 norm(x_t - x^*)^2) <= norm(x_t - x^*)^2 - norm(x_(t + 1) - x^*) \
+  //    norm(x_(t + 1) - x^*)^2 <= (1 - alpha / beta)norm(x_t - x^*)^2 \
+  //    norm(x_k - x^*)^2 <= (1 - alpha / beta)^k norm(x_0 - x^*)^2
+  // $
+
   $
-    f(y) >= f(x) + gradient f(x)^top (y - x) + alpha/2 norm(y - x)^2
+     f(x_(t + 1)) <= f(x_t) - 1/(2 beta)  (f(x_t) - f(x^*))^2/(norm(x_t - x^*))^2 \
+     alpha/2 norm(x_(t + 1) - x^*)^2 <= alpha/2 norm(x_t - x^*)^2 -(alpha^2)/(4 beta) norm(x_t - x^*)^2 \ 
+     norm(x_(t + 1) - x^*)^2 <= (1 - alpha/(2 beta)) norm(x_t - x^*)^2 \
+     norm(x_k - x^*)^2 <= (1 - alpha/(2 beta))^k norm(x_0 - x^*)^2 
   $
 
-  So if you substitute that in to the above proof you get
-  $
-     2eta(f(x_t) - f(x^*) + alpha / 2 norm(x_t - x^*)^2) <= norm(x_t - x^*)^2 - norm(x_(t + 1) - x^*) \
-     norm(x_(t + 1) - x^*)^2 <= (1 - alpha / beta)norm(x_t - x^*)^2 \
-     norm(x_k - x^*)^2 <= (1 - alpha / beta)^k norm(x_0 - x^*)^2
-  $
+  Again, a slightly worse result then it is possible to prove.
 ]
 
-One popular example of a function that is both $beta$-smooth and $alpha$-strongly convex is $norm(A x - b)^2$! Expanding it yields $x^top A^top A x + "affine"$, $A^top A$ is PSD. Its minimum eigenvalue is equivalent to $alpha$ and its largest is equal to $beta$.
-
-All the above methods rely on choosing a specific step size. However, dynamically choosing the step size might make more sense if you only have weak guarantees on the function's behavior. Simply guessing a step-size and backtracking can be used (backtracking line search). If evaluating $f$ is expensive (neural networks), you probably don't want to do this.
+#align(image("../img/bowl_trajectory_1_20.png"))
+This $hf(alpha,beta)$ term is interesting. It's called the condition number of the problem. The intuitive reason for what this represents is the maximum difference in curvature between different directions. If you have a fixed step size, you have to make your step size small enough to deal with the maximum curvature regions. However, this means you move very slowly along the minimum curvature regions (shown above). Dealing with this problem is why momentum and higher-order methods were developed!
 
 == Subgradient Methods
 #definition(name: "Subgradient")[
@@ -528,7 +601,7 @@ We can generalize our optimality conditions from earlier to use subgradients.
 ]
 #proof[
   $
-    "argmin"_(x in C) f(x) = "argmin" f(x) + I_C(x) = \
+    "argmin"_(x in C) f(x) = "argmin" f(x) + I_C (x) = \
     dif f(x) + I_C(x) = dif f(x) + "NC"(x)
   $
   $0$ must be in the subgradient of $x^*$ for it to be optimal.
@@ -553,7 +626,7 @@ However, for 1D functions this actually cannot happen. This is because the subgr
   $
 ]
 #proof[
-  The beginning is almost identical to previous proofs, where we try to bound how different consecutive $x$s are. I'll skip ahead a bit.
+  Expand $norm(x_(t + 1) - x^*)^2$ in terms of $x_t$ to obtain.
   $
     2 eta_t g^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta_t^2 norm(gradient f(x_t))^2 \
   $
@@ -642,14 +715,52 @@ This is sensible because projection onto convex sets has some nice properties.
 #theorem[
   $norm("Projection"(x_1) - "Projection"(x_2)) <= norm(x_1 - x_2)$
 ]
-#proof[$
-  "dot"(x_1 - z_1, z_2 - z_1) <= 0 \
-  "dot"(x_2 - z_2, z_1 - z_2) <= 0 \
-  "dot"((x_1 - x_2) + (z_2 - z_1), z_2 - z_1) <= 0 \
-  "dot"(x_1 - x_2, z_2 - z_1) + norm(z_2 - z_1)^2 <= 0\
-  norm(x_2 - x_1) norm(z_1 - z_2) >= norm(z_2 - z_1)^2 \
-  norm(z_2 - z_1) <= norm(x_2 - x_1)
-$]
+
+#import "@preview/ctz-euclide:0.1.5": *
+#align(graphic(cetz.canvas({
+  ctz-init()
+  ctz-style(point: (
+    shape: "circle",
+    size: 0.06,
+    stroke: black + 0.8pt,
+    fill: white,
+  ))
+  ctz-def-points(z: (-2, 0), z2: (2, 0), x1: (-3, 1), x2: (3, 1))
+  ctz-draw(
+    points: ("z", "z2", "x1", "x2"),
+    labels: (
+      z: (pos: "below left", text: $z_1$),
+      z2: (pos: "below right", text: $z_2$),
+      x1: (pos: "above left", text: $x_1$),
+      x2: (pos: "above right", text: $x_2$)
+    )
+  ) 
+  ctz-draw-line("z", "z2", stroke: (dash: "dashed"))
+  ctz-draw-line("x1", "x2", stroke: (dash: "dashed"))
+  ctz-draw-line("x1", "z")
+  ctz-draw-line("x2", "z2")
+  ctz-draw-angle("z","x1","z2", radius: 0.4)
+  ctz-draw-angle("z2","z","x2", radius: 0.4)
+  ctz-draw(
+    ellipse: ((0, 0), 2.0, 0.5),
+    sketchy: true, stroke: blue,
+    fill: blue.transparentize((90%)),
+    roughness: 5
+  )
+})))
+
+The proof is just formalizing the above geometric argument.
+
+#proof[
+  $
+    "dot"(x_1 - z_1, z_2 - z_1) <= 0 \
+    "dot"(x_2 - z_2, z_1 - z_2) <= 0 \
+    "dot"((x_1 - x_2) + (z_2 - z_1), z_2 - z_1) <= 0 \
+    "dot"(x_1 - x_2, z_2 - z_1) + norm(z_2 - z_1)^2 <= 0\
+    norm(x_2 - x_1) norm(z_1 - z_2) >= norm(z_2 - z_1)^2 \
+    norm(z_2 - z_1) <= norm(x_2 - x_1)
+  $
+]
 
 This is a super useful property! Observe that this means projection strictly improves the answer.
 $
