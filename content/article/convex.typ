@@ -143,29 +143,11 @@ The above two cones are useful for quantifying vertices, edges, and if we've rea
   $
 ]
 
-This object is the heart of convex analysis. Just like convex sets, there are a ton of properties that can be shown about them...
+This object is the heart of convex analysis. Intuitively, the above definition says convex functions are functions where a line between two points on its graph lie above the rest of the graph. However, there are many other useful and equivalent ways to characterize them.
 #theorem(name: "1st Order Convexity Statement")[
   $f in C^1(RR) => f(y) >= f(x) + gradient f(x) (y - x)$
 ]
 
-// #align(center, graphic(
-//   cetz.canvas({
-//     import cetz.draw: *;
-//     let x = 0
-//     let px = 0
-//     let step = 1.0
-//     for i in range(10) {
-//       x = step + px
-//       let stroke = (paint: blue, dash: "dashed")
-//       line((px, 0), (x, step), stroke: stroke)
-//       line((x, step), (x, 0), stroke: stroke)
-//       px = x
-//       step *= 0.5
-//     }
-//     line((0, 0), (3, 0), (3, -0.2), (0, -0.2), close: true, fill: green.transparentize(80%))
-//     line((0, 2), (3, -1), (3.14, -0.86), (0.14, 2.14), close: true, fill: green.transparentize(80%))
-//   })
-// ))
 #import "@preview/lilaq:0.3.0" as lq
 #let indices = range(-20, 20)
 #let xs = indices.map(i => i * 0.1)
