@@ -51,7 +51,7 @@ It's straightforward to show convex sets remain convex under a variety of transf
   An affine function applied to a convex set is also a convex set.
 ]
 #proof[
-  Suppose $x, y in f(S)$. Is $p = theta a + (1 - theta) b in f(S)$? Well, we know each point must have at least one pre-image in $S$. Call these $x'$ and $y'$ respectively. Furthermore, the convex combination of these points $theta x + (1 - theta) y$ must also be in $S$. Finally, we have
+  Suppose $x, y in f(S)$. Is $p = theta x + (1 - theta) y in f(S)$? Well, we know each point must have at least one pre-image in $S$. Call these $x'$ and $y'$ respectively. Furthermore, the convex combination of these points $theta x + (1 - theta) y$ must also be in $S$. Finally, we have
   $
     A(theta x' + (1 - theta)y') + b = theta(x - b) + (1 - theta)(y - b) + b = \
     theta x + (1 - theta) y - (1 - theta) b - theta b + b = \
