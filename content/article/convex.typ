@@ -10,47 +10,42 @@
 
 = Theory
 == Convex Sets
-
-/ Affine Set:
-  Let $S in RR^n$. $S$ is affine iff $forall a, b in S, theta in R, a theta + b (1 - theta) in S$
-
-/ Convex Set:
+#definition(name: "Convex Set")[
   Let $S in RR^n$. $S$ is convex iff $forall a, b in S, theta in [0, 1], a theta + b (1 - theta) in S$
-
-/ Conic Set:
-  Let $S in RR^n$. $S$ is conic iff $forall a, b in S, theta_1, theta_2 >= 0,  theta_1 a + theta_2 b in S$
-
-#definition(name: "Affine / Convex / Conic Hull")[
-  $"hull"(S)$ is all affine / convex / conic combinations of all points in $S$.
-]
-#definition(name: "Affine Function")[
-  $f: RR^n arrow RR^m$ is affine if it can be written 
-  $ f(x) = A x + b, A in R^(n times m), b in R^m $
 ]
 
+Intuitively, this is a set which contains no "gaps", i.e empty regions between points in the set.
+#align(graphic(cetz.canvas({
+  import cetz.draw: *;
+  circle((-3, 0), radius: 2, fill: green.transparentize(50%), stroke: none)
+  rect((1, -2), (5, 2), fill: red.transparentize(50%), stroke: none)
+  rect((2, -1), (4, 2), stroke: white, fill: white)
+})))
 
-#theorem[
-  The intersection of convex sets is convex. 
-]
-#proof[
-  Suppose $a, b in S_1 inter S_2$. Then,
-  $ a, b in S_1 arrow theta a + (1 - theta) b in S_1 \
-    a, b in S_2 arrow theta a + (1 - theta) b in S_2 \
-    theta a + (1 - theta) b in S_1 inter S_2
-  $
-]
+It's straightforward to show convex sets remain convex under a variety of transforms, such as Cartesian products and intersections. Here are some other useful convexity preserving transformations.
 
-#theorem[
-  The Cartesian product of two sets is convex.
-]
-#proof[
-  Suppose $a, b in S_1 times S_2$. Then,
-  $
-    theta a_1 + (1 - theta) b_1 in S_1 \
-    theta a_2 + (1 - theta) b_2 in S_2 \ 
-    theta a + (1 - theta)b in S_1 times S_2
-  $
-]
+// #theorem[
+//   The intersection of convex sets is convex. 
+// ]
+// #proof[
+//   Suppose $a, b in S_1 inter S_2$. Then,
+//   $ a, b in S_1 arrow theta a + (1 - theta) b in S_1 \
+//     a, b in S_2 arrow theta a + (1 - theta) b in S_2 \
+//     theta a + (1 - theta) b in S_1 inter S_2
+//   $
+// ]
+
+// #theorem[
+//   The Cartesian product of two sets is convex.
+// ]
+// #proof[
+//   Suppose $a, b in S_1 times S_2$. Then,
+//   $
+//     theta a_1 + (1 - theta) b_1 in S_1 \
+//     theta a_2 + (1 - theta) b_2 in S_2 \ 
+//     theta a + (1 - theta)b in S_1 times S_2
+//   $
+// ]
 
 #theorem[
   An affine function applied to a convex set is also a convex set.
@@ -87,10 +82,10 @@ $
   P(vec(A, c^t)x + vec(b, d)) = (A x + b) / (c^t x + d)
 $
 
-#theorem[
-  Any convex set can be represented as the intersection of a (potentially infinite) number of hyperplanes.
-]
-This relies on the Supporting Hyperplane Theorem, which essentially says that for every point on the boundary, I can draw a hyperplane going through that point such that the entire set is on one side of the boundary. This is true if and only if you're working with a convex set.
+// #theorem[
+//   Any convex set can be represented as the intersection of a (potentially infinite) number of hyperplanes.
+// ]
+// This relies on the Supporting Hyperplane Theorem, which essentially says that for every point on the boundary, I can draw a hyperplane going through that point such that the entire set is on one side of the boundary. This is true if and only if you're working with a convex set.
 
 == Topology
 / Interior Point: A point such that a centered ball of some sufficiently small radius epsilon fits entirely within $C$.
@@ -138,7 +133,7 @@ Intuitively, this cone is all the vectors which are more than $90$ degrees off f
 ]
 It's easy to see the Tangent Cone is just the Polar Cone of the Normal Cone.
 
-The above two cones are useful for quantifying vertices, edges, and if we've reached optimality. If your objective function is telling you to go into a normal cone, you'll know you've reached optimality.
+The above two cones are useful for quantifying vertices, edges, and if we've reached optimality.
 
 == Convex Functions
 #definition(name: "Convex Function")[
@@ -302,7 +297,7 @@ One example of this problem is finding the closest point in a convex set to a gi
   First observe $ "Epi"(f) = {(x, y, t): x, y in R^d, f(x, y) <= t } $
   Now, consider the intersection of $"Epi"(f)$ with
   $ C' = {(x, y, t): x in R^d, y in C, t in R} $
-  $C'$ is convex, as it can be written $(R^d times C) times R$. $"Epi"(f)$ is convex by the theorem above and we've shown the cartesian product of convex sets is also convex.
+  $C'$ is convex, as it can be written $(R^d times C) times R$. $"Epi"(f)$ is convex by the theorem above and the cartesian product of convex sets is also convex.
 
   Furthermore,
   $ "Epi"(f) inter C' = { (x, y, t): x in R^d, y in C, f(x, y) <= t } $
@@ -355,22 +350,15 @@ One example of this problem is finding the closest point in a convex set to a gi
 
 = Algorithms
 Here's some important terminology...
-#definition(name: "Convergence")[
-  *Point-wise*: $lim_(t -> oo) norm(x_t - x^*) -> 0$\
-  *Function-wise*: $lim_(t -> oo) norm(f(x_t) - f(x^*)) -> 0$
-]
 #definition(name: "Rates of Convergence")[
-  Let $epsilon_t = hf(norm(x_(t+1) - x^*), norm(x_t - x^*))$.\
-  *Linear-Convergence*: $lim_(t -> oo) epsilon_t = C, 0 < C < 1$ \
-  *Superlinear-Convergence*: $lim_(t -> oo) epsilon_t = 0$ \
-  *Sublinear-Convergence*: $lim_(t -> oo) epsilon_t = 1$ \
-  You can also define it for the function values.
+  Let $epsilon_t = hf(norm(x_(t+1) - x^*), norm(x_t - x^*)) quad lim_(t -> oo) epsilon_t = C$ \
+  $C = 0 => "Super-Linear", C = 1 => "Sub-Linear", 0 < C < 1 => "Linear"$
 ]
 #definition(name: "Descent Direction")[
   $h | f(x + eta h) <= f(x)$, for sufficiently small $eta$.
 ]
 
-And here's some "nice" function classes we typically work with. Note that all of these have zeroth order characterizations, but I find these definitions to be the most intuitive.
+And here's some "nice" function classes we typically work with. Note that all of these have other characterizations.
 #definition(name: "G-Lipschitz")[
   $|f(x)-f(y)| <= G|x-y|$
 ]
