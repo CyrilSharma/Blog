@@ -265,7 +265,7 @@ From this property, you can easily deduce that maxes of convex function are stil
       g(x)  = inf_(y in bb(C)) f(x, y)
   $
   If $g$ is always finite, $g$ is convex.
-]
+] <partial-minimization>
 
 One example of this problem is finding the closest point in a convex set to a given point.
 #align(graphic(cetz.canvas({
@@ -785,38 +785,204 @@ This can be seen as a generalization of both gradient descent and projected grad
   $
 ]
 
-So, you can see this approach takes a qualitatively different step then the subgradient method, it evaluates the sub-differential at an offset point. This will actually lead to a better rate of convergence!
+So, you can see this approach takes a qualitatively different step then the subgradient method, it evaluates the sub-differential at an offset point.
+
+You can show that this generalized gradient obeys its own version of the descent lemma.
+#lemma[
+  $
+    eta <= 1/beta =>  forall z, f(x - eta G(x)) <= f(z) + G(x)^top (x - z) + eta/2 norm(G(x))^2 - alpha/2 norm(x - z)^2
+  $
+]
+
+#theorem[
+  $
+    eta = hf(1, beta) => f(x_t) - f(x^*) <= beta / 2k norm(x_0 - x^*)^2 
+  $
+]
+#proof[
+  Almost identical proof to previous methods.
+]
+
+=== The Netflix Problem
+Given a matrix mapping how customers rated movies, and a few filled in entries, infer the rest of the entries. Since this is impossible in general, we need to make some kind of assumption. One idea is that perhaps each movie has a smaller set of characteristics (writing quality, nostalgia, action) which mostly determine its score in the eyes of a user. This lets you write the matrix as the following 
+$
+  sum u_("preference for feature") v_("amount of feature")^top
+$
+
+Which directly implies $M$ is low-rank. So we want a low-rank matrix which fits the observed data. Thus, we get the following problem.
+$
+  hat(M) = "argmin"_M sum (M_(i j) - y_(i j))^2 + lambda "rank"(M)
+$
+
+The first term is smooth and easy to deal with and the second term isn't. This suggests Proximal gradient descent, but unfortunately $"rank"(M)$ is not convex. So, instead, we can take a convex relaxation of the problem.
+#definition(name: "Convex Envelope")[
+  The largest convex function that lies below another function.
+]
+
+#import "@preview/lilaq:0.5.0" as lq
+
+// Dense x grid over [-2, 2]
+#let xs = lq.linspace(-2, 2, num: 300)
+
+// A non-convex function: double-well  f(x) = x^4 - 2x^2 + 0.5
+#let f(x) = calc.pow(x, 4) - 2*calc.pow(x, 2) + 0.5
+
+// Convex envelope of the double-well on [-2, 2].
+// The envelope equals f outside the flat segment and the
+// linear "taut-string" value -0.5 for x in (-1, 1).
+#let fconv(x) = {
+  let v = f(x)
+  let flat = -0.5   // f(±1) = 1 - 2 + 0.5 = -0.5
+  if x >= -1 and x <= 1 { flat } else { v }
+}
+
+#let ys     = xs.map(f)
+#let ys_env = xs.map(fconv)
+
+#align(graphic(
+  lq.diagram(
+    width:  10cm,
+    height: 7cm,
+    xlabel: $x$,
+    ylabel: $f(x)$,
+    xlim: (-2.1, 2.1),
+    ylim: (-1.2, 3.0),
+    title: [Convex envelope of $f(x) = x^4 - 2x^2 + frac(1,2)$],
+
+    // Shaded gap between f and its envelope
+    lq.fill-between(
+      xs, ys_env,
+      y2: ys,
+      fill:   blue.transparentize(80%),
+      stroke: none,
+      label:  [gap $f - hat(f)$],
+    ),
+
+    // Original non-convex function
+    lq.plot(
+      xs, ys,
+      mark:   none,
+      stroke: (paint: red, thickness: 1.5pt),
+      label:  $f(x)$,
+    ),
+
+    // Convex envelope
+    lq.plot(
+      xs, ys_env,
+      mark:   none,
+      stroke: (paint: blue, thickness: 2pt),
+      label:  $hat(f)(x)$ + [ (conv. envelope)],
+    ),
+  )
+))
+
+The convex envelope of $"rank"(M)$ is the nuclear norm at least when $norm(M) <= 1$. This is still not differentiable (so we cannot use vanilla gradient descent) since the nuclear norm is basically an L1 norm in disguise. The prox operator is now
+$
+  "argmin"_M 1/(2 eta) norm(M - L)^2 + norm(M)_* = "argmin"_(M = U M' V^top) 1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') \
+  1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') >= 1/(2 eta) norm(M' - Sigma)^2 + sum M'_(i i)\
+  "argmin"_(M'_(i i)) 1/(2 eta)(M'_(i i) - Sigma_(i i))^2 + M'_(i i) => M'_(i i) = max(0, Sigma_(i i) - eta) \
+  M = U max(0, Sigma - eta I) V^top
+$
+
+The max appeared because we require the entries of the matrix to be positive (these are movie ratings after all). Anyhow, you can now plug this into the proximal gradient descent algorithm and solve the Netflix problem!
 
 == Stochastic Gradient Descent
 #definition(name: "SGD")[
-  You wish to minimize the risk $R = E_(X times Y) l_theta (x, y)$. If you can draw $(x_t, y_t)$ samples simply choose the gradient step to be
-  $
-    theta_(t+1) = theta_t - eta gradient_theta l(f_theta (x_t), y_t)
-  $
+  Identical to gradient descent except with stochastic estimates of the gradient.
 ]
 #theorem[
-  Given the following conditions.
-  + $norm(theta_0 - theta^*) = R$
-  + $forall theta, E_(x, y, theta) (norm(nabla_theta l(f_theta (x), y))^2) = E(norm(g)^2) <= G$.
-  SGD achieves the following rate.
+  Given $norm(x_0 - x^*) = R$, $E(g_t | x_t) = nabla f(x_t)$ and $E(norm(g)^2) <= G$, SGD achieves
   $
-    E(f(1/k sum theta_t, x, y) - f(theta^*, x, y)) <= (R G)/sqrt(k)
+    E(f(1/k sum x_t) - f(x^*)) <= (R G)/sqrt(k)
   $
 ]
 #proof[
   We use our standard approach of bounding step sizes.
   $
-     norm(theta_(t+1) - theta^*)^2 = norm(theta_t - theta^*)^2 + eta^2 norm(tilde(g_t))^2 - 2 eta tilde(g_t)^top (theta_t - theta^*) \
-     E(norm(theta_(t+1) - theta^*)^2|theta_t) <= norm(theta_t - theta^*)^2 + eta_t^2 E(norm(tilde(g_t))^2 |theta_t) - 2 eta_t tilde(g_t)^top (theta_t - theta^*) \  
-     E(norm(theta_(t+1) - theta^*)^2 | theta_t) <= E(norm(theta_t - theta^*)^2) + eta_t^2 E(norm(tilde(g_t))^2 |theta_t) - 2 eta_t (f(theta_t, x, y) - f(theta^*, x, y)) \
-    //  E(norm(theta_(t+1) - theta^*)^2) <= E(norm(theta_t - theta^*)^2) + eta_t^2 G^2 - 2 eta_t E(g_t^top (theta_t - theta^*)) \
-     E(norm(theta_(t+1) - theta^*)^2) <= E(norm(theta_t - theta^*)^2) + eta_t^2 G^2 - 2 eta_t E(f(theta_t, x, y) - f(theta^*, x, y))
+     norm(x_(t+1) - x^*)^2 = norm(x_t - x^*)^2 + eta_t^2 norm(tilde(g_t))^2 - 2 eta tilde(g_t)^top (x_t - x^*) \
+     E(norm(x_(t+1) - x^*)^2|x_t) <= norm(x_t - x^*)^2 + eta_t^2 E(norm(tilde(g_t))^2 |x_t) - 2 eta_t g_t^top (x_t - x^*) \  
+     E(norm(x_(t+1) - x^*)^2 | x_t) <= E(norm(x_t - x^*)^2) + eta_t^2 E(norm(tilde(g_t))^2 |x_t) - 2 eta_t (f(x_t) - f(x^*)) \
+    //  E(norm(x_(t+1) - x^*)^2) <= E(norm(x_t - x^*)^2) + eta_t^2 G^2 - 2 eta_t E(g_t^top (x_t - x^*)) \
+     E(norm(x_(t+1) - x^*)^2) <= E(norm(x_t - x^*)^2) + eta_t^2 G^2 - 2 eta_t E(f(x_t) - f(x^*))
   $
 
   Apply the same analysis done in the subgradient portion to obtain
   $
-    (R G) / sqrt(k) &>= 1/k sum E(f_(theta_i) (x, y) - f_(theta^*) (x, y)))\
-    &= (1/k sum E(f(theta_i, x, y))) - E(f (theta^*, x, y)) \
-    &= E(f(1/k sum (theta_t), x, y)) - E(f(theta^*, x, y))
+    (R G) / sqrt(k) &>= 1/k sum E(f(x_i) - f(x^*))\
+    &= (1/k sum E(f(x_i))) - E(f (x^*)) \
+    &>= E(f(1/k sum x_i)) - E(f(x^*))
   $
 ]
+
+= Duality
+// Weak Duality, Strong Duality.
+#definition(name: "Linear Program")[Find $"argmin"_x c^top x | A x <= b$]
+
+A reasonable question is what's the best lower-bound for $c^top x$.
+$
+  A x <= b =>_(d "non-negative") -d^top A x >= -d^top b \
+  c^top x >= "argmax"_(d) -d^top b | c^top = -d^top A
+$
+The RHS is known as the dual program. You can also define the dual for maximization problems, where this time you're looking for the best upper-bound. It's easy to see $"dual"(max f) = -"dual"(min -f)$.
+
+You can show taking the dual twice yields the original problem. 
+$
+   -"argmin"_(d') -b^top d' | A^top d' = c, d' <= 0\
+   -"argmin"_(d) -b^top d' | vec(A^top, -A^top, I) d' <= vec(c, -c, 0) \
+   => -"argmax"_(x) -(x_1^top, x_2^top) vec(c, -c) | -b^top = -(x_1^top, x_2^top, x_3^top) vec(A^top, -A^top, I), x >= 0 \
+   -"argmax"_(x') (x_1'^top, x_2'^top) vec(c, -c) | -b^top = (x_1'^top, x_2'^top, x_3'^top) vec(A^top, -A^top, I), x' <= 0 \
+   -"argmax"_(x) c(x_1'^top - x_2'^top) | -b^top = (x_1^top' - x_2^top') A^top + x_3^top', x' <= 0 \
+   -"argmax"_(x) c(-x^top) | -b^top <= (-x^top) A^top \
+   "argmin"_(x) c^top x | A x <= b
+$
+
+The dual and original problem (the primal) characterize each other. Call the solution of the primal $p$ and the solution of the dual $d$. If the dual is unbounded ($d -> oo$), the primal is infeasible ($p -> oo$), if the primal is unbounded ($p -> -oo$) the dual is infeasible ($d -> -oo$). This comes straight from defining the dual as a lower-bound. It is known as *weak-duality*. You can also show something stronger: _if both the dual and primal are finite, then they are equal_. This is called *strong-duality*. *strong-duality* only holds for linear constraints, it is not true in general.
+
+== Lagrangian Duality
+We can generalize the above definition of duality as follows. We want $"argmin"_x c^top x | A x = b, G x <= h$. This is an equivalent way of writing the problem we had before (an equality constraint can be written as two $<=$ constraints). Clearly, 
+
+$
+  v >= 0 => c^top x >= c^top x + u^top (A x - b) + v^top (G x - h) = L(x, u, v)
+$
+
+The last expression is called the Lagrangian. Consider the feasible set of $x$-values: $C$. Then, we can lower-bound the primal as...
+$
+  "argmin"_(x in C) c^top x >= "argmin"_(x in C) L(x, u, v) >= "argmin"_(x in R^n) L(x, u, v) = L(u, v) \
+  L(u, v) = min_x c^top x + u^top (A x - b) + v^top (G x - h) = \
+  min_x (c^top + u^top A + v^top G) x - u^top b - v^top h =\ cases(
+    -u^top b - v^top h quad "if" c^top = -(u^top A + v^top G),
+    -oo quad "otherwise"
+  )
+$
+
+Obviously the best lower-bound is obtained in the first case, and that first case is exactly equivalent to the dual we derived in the above section (it's in a bit of a different form, but just focus on the $G$ term).
+
+The benefit of deriving things this way is it generalizes to non-linear functions. With the other approach, we needed to compute $A^top$ which only makes sense when all your constraints are linear.
+
+Suppose we have the following problem.
+$
+  "argmax"_x f(x) \
+  h_i (x) <= 0 \
+  g_j (x) = 0 \
+$
+
+$L(u, v)$ becomes...
+$
+  "min"_x f(x) + sum u_j g_j + sum v_j h_j
+$
+
+For any fixed $x$, we have an affine function of $u$ and $v$. Thus, this minimization problem is the minimum of concave functions which is itself concave. This is a pretty amazing result! It shows that for any kind of optimization problem on any kind of constraint set, there is this neat lower-bound which can be found via fast and simple convex optimization.
+
+// Class Notes.
+// Fenchel-Moreau: Dual of the Dual of a proper closed convex optimization problem is the same problem.
+// Primal and dual can both be infeasible, primal can be infeasible while dual is finite, dual can be infeasible while primal is finite
+// Strong duality does not imply anything about the dual of the dual property.
+// Weak Slater's Condition.
+// Implies bpth LPs and QPs which only have affine constraints satisfy strong duality at feasible points.
+// sup(inf) vs. inf(sup)
+// Minimax Formulation, use it to show weak duality
+// Saddle Points.
+// KKT Conditions
+// Show KKT condiitions under convexity imply primal optimality
+// If strong duality holds and x^t is a primal optimal solution we're at a dual optimal solution and a KKT point. <- Most important for understanding where these conditions come from.
+// Second order conditions for quadratic form.
