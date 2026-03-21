@@ -21,15 +21,15 @@ typst: $(TYP_HTML)
 
 meta: $(META_JSON)
 
-watch:
-	@for src in $(TYP_SRC); do \
-	  slug=$$(basename $$src .typ); \
-	  out="$(TYP_OUT_DIR)/$$slug/index.html"; \
-	  mkdir -p "$(TYP_OUT_DIR)/$$slug"; \
-	  echo "Watching $$src -> $$out"; \
-	  typst watch "$$src" "$$out" --format html --features html --root . & \
-	done; \
-	wait
+# watch:
+# 	@for src in $(TYP_SRC); do \
+# 	  slug=$$(basename $$src .typ); \
+# 	  out="$(TYP_OUT_DIR)/$$slug/index.html"; \
+# 	  mkdir -p "$(TYP_OUT_DIR)/$$slug"; \
+# 	  echo "Watching $$src -> $$out"; \
+# 	  typst watch "$$src" "$$out" --format html --features html --root . & \
+# 	done; \
+# 	wait
 
 # Compile each .typ to a per-slug index.html
 $(TYP_OUT_DIR)/%/index.html: $(TYP_SRC_DIR)/%.typ $(TEMPLATE_SRC) $(TEMPLATE_CFG)

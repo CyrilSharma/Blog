@@ -74,6 +74,20 @@ def create_new_typst_file():
         console.print(f"[red]Error writing file:[/red] {e}")
         sys.exit(1)
 
+    # Watch the file.
+    # 	  slug=$$(basename $$src .typ); \
+    # 	  out="$(TYP_OUT_DIR)/$$slug/index.html"; \
+    # 	  mkdir -p "$(TYP_OUT_DIR)/$$slug"; \
+    # 	  echo "Watching $$src -> $$out"; \
+    # 	  typst watch "$$src" "$$out" --format html --features html --root . & \
+    # 	done; \
+    # 	wait
+    TYP_OUT_DIR = 'html'
+    subprocess.run("mkdir", "-p", f'{TYP_OUT_DIR}/{filename}')
+    subprocess.Popen([
+        "typst", "watch", filepath, f'{TYP_OUT_DIR}/{filename}/index.html',
+        '--format', 'html', '--features', 'html', '--root', '.'
+    ])
 
 def main():
     console.print("\n[bold underline]Typst Blog Helper[/bold underline]\n")

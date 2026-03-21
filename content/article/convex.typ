@@ -986,3 +986,9 @@ For any fixed $x$, we have an affine function of $u$ and $v$. Thus, this minimiz
 // Show KKT condiitions under convexity imply primal optimality
 // If strong duality holds and x^t is a primal optimal solution we're at a dual optimal solution and a KKT point. <- Most important for understanding where these conditions come from.
 // Second order conditions for quadratic form.
+// Saddle point => optimal primal and dual, and strong duality.
+// Strong Duality => Saddle Point
+// Tangent Spaces, equality constrains only, reduced KKT conditions
+// Method of Lagrange Multipliers
+// How to deal with inequalities?
+// Test if you're at a local minimum?
