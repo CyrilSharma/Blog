@@ -1,7 +1,7 @@
 # build output
 dist/
-# html/
-# meta.json
+html/
+meta.json
 .vscode/**
 
 # generated types
