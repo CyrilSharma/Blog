@@ -41,7 +41,14 @@ jobs:
         with:
           node-version: 22
           cache: "pnpm"
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
       - run: pnpm install
+      - run: make all
       - run: pnpm build
       - name: Setup Pages
         uses: actions/configure-pages@v5
