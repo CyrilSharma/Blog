@@ -1,7 +1,6 @@
 ---
 import fs from "node:fs";
 import path from "node:path";
-import BaseHead from "$components/BaseHead.astro";
 import BlogPost from "$layouts/BlogPost.astro";
 import { getCollection } from "astro:content";
 
@@ -41,6 +40,5 @@ const allTags = Array.from(
   updatedDate={post.data.updatedDate}
   tags={post.data.tags}
 >
-  <BaseHead title={post.data.title} description={post.data.desc} />
   <div set:html={html} />
 </BlogPost>

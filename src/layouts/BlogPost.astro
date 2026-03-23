@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry } from "astro:content";
 import ArticleHeader from "$components/ArticleHeader.astro";
+import BaseHead from "$components/BaseHead.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 const { title, desc, date, updatedDate, tags } = Astro.props;
@@ -10,7 +11,7 @@ const { title, desc, date, updatedDate, tags } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <!-- <BaseHead title={title} description={desc} /> -->
+    <BaseHead title={title} description={desc} />
     <style>
       .prose {
         width: 100%;
@@ -50,6 +51,14 @@ const { title, desc, date, updatedDate, tags } = Astro.props;
           </div>
       </article>
     </main>
+  <script>
+    if (import.meta.hot) {
+      import.meta.hot.on("typst-update", ({ content }) => {
+        const prose = document.querySelector(".prose");
+        if (prose) prose.innerHTML = content;
+      });
+    }
+  </script>
   </body>
 </html>
 

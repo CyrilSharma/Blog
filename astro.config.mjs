@@ -30,8 +30,24 @@ export default defineConfig({
         name: "watch-html-content",
         configureServer(server) {
           server.watcher.add(`./html/**/*.html`);
+          const pending = new Map();
           server.watcher.on("change", (file) => {
-            server.ws.send({ type: "full-reload" });
+            if (!file.includes("/html/")) return;
+            if (pending.has(file)) clearTimeout(pending.get(file));
+            pending.set(
+              file,
+              setTimeout(() => {
+                pending.delete(file);
+                const full = fs.readFileSync(file, "utf8");
+                const match = full.match(/<body[^>]*>([\s\S]*?)<\/body>/is);
+                const content = match ? match[1] : full;
+                server.ws.send({
+                  type: "custom",
+                  event: "typst-update",
+                  data: { content },
+                });
+              }, 150)
+            );
           });
         },
       },
