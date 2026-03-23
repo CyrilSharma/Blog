@@ -70,24 +70,10 @@ def create_new_typst_file():
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
         console.print(f"\n✅ [green]Created new Typst file:[/green] [bold]{filename}[/bold]")
+        console.print(f"\n✅ [green]Blog URL:[/green] [bold]http://localhost:4321/{filename}/[/bold]")
     except OSError as e:
         console.print(f"[red]Error writing file:[/red] {e}")
         sys.exit(1)
-
-    # Watch the file.
-    # 	  slug=$$(basename $$src .typ); \
-    # 	  out="$(TYP_OUT_DIR)/$$slug/index.html"; \
-    # 	  mkdir -p "$(TYP_OUT_DIR)/$$slug"; \
-    # 	  echo "Watching $$src -> $$out"; \
-    # 	  typst watch "$$src" "$$out" --format html --features html --root . & \
-    # 	done; \
-    # 	wait
-    TYP_OUT_DIR = 'html'
-    subprocess.run("mkdir", "-p", f'{TYP_OUT_DIR}/{filename}')
-    subprocess.Popen([
-        "typst", "watch", filepath, f'{TYP_OUT_DIR}/{filename}/index.html',
-        '--format', 'html', '--features', 'html', '--root', '.'
-    ])
 
 def main():
     console.print("\n[bold underline]Typst Blog Helper[/bold underline]\n")
