@@ -741,21 +741,29 @@ Using this, it's easy to show all the rates we showed for earlier methods immedi
 
 == Proximal Gradient Descent
 #definition(name: "Proximal Gradient Descent")[
-  Minimize $f(x) + h(x)$ where $f, h$ are convex, but only $f$ is guaranteed differentiable.
+  Find $inf_x f(x) + h(x)$, where $f, h$ are convex and only $f$ is differentiable.
   $
     "Prox"(y) = "argmin"_(z in R^d) 1/2 norm(y - z)^2 + h(z)\
     x_(t + 1) = "Prox"(x_t - eta gradient f(x))
   $
 ]
-This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the indicator function. The main point of this is that just like projected gradient descent recovered the rates of gradient descent, we can recover those rates here too. This is an improvement over the rate you would get by applying the subgradient method. The idea behind $"Prox"$ is a step of GD can be viewed as minimizing a quadratic, and now we're just minimizing a quadratic plus an auxiliary term.
+This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the indicator function. The point of this is just like projected gradient descent recovered the rates of gradient descent, we can recover those rates here too. This is an improvement over the rate you would get by applying the subgradient method.
+
+The idea behind $"Prox"$ is it takes a "safe" gradient descent step along $h$. To see this, consider under what conditions $z^*$ is a minimizer.
+$
+  dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
+  1/eta (z^* - x) + dif(h(z^*))
+$
+Hence, $z^*$ is a minimizer if and only if
+$
+  1/eta (x - z^*) in dif(h(z^*))
+$
+
+Consider $h(x) = abs(x)$. Then $z^* = y - eta d(h(z^*)) = y - eta$ if $y > eta$, $y + eta$ if $y < -eta$, and $0$ if $y in [-eta, eta]$. Notice that prox doesn't overshoot the minimum.
 
 #theorem[$"Prox"$ is a contraction.]
 #proof[
-  $
-    dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
-    1/eta (z^* - x) + dif(h(z^*))
-  $
-  Hence, $z^*$ is a minimizer if and only if
+  $z^*$ is a minimizer if and only if
   $
     1/eta (x - z^*) in dif(h(z^*))
   $
@@ -1012,12 +1020,14 @@ $
   f(x^*) + sum u_j^* g_j (x^*) + sum v_j^* h_j (x^*) = f(x^*)
 $
 
-The KKT conditions merely give you that 0 is in the sub-differential, hence they don't tell you if $x$ is a local minimum or not. To determine this, you can employ a variant of the second-derivative test where you only consider movement in directions _along the constraints_.
+Without convexity, the KKT conditions merely give you that 0 is in the sub-differential, hence they don't tell you if $x$ is a local minimum or not. To determine this, you can employ a variant of the second-derivative test where you only consider movement in directions _along the constraints_.
 $
   forall d | d^top nabla g_i(x) = 0, d^top L_(x x) d > 0 => "Local Minimum"
 $
 
-Note that the above works when we only have equality constraints. To make it work in general you'd also need to ensure tangency to the $h_j$ constraints that were tight.
+You have to find the minimum point over all candidates to be sure you've found a Saddle. Note that the above works when we only have equality constraints. To make it work in general you'd also need to ensure tangency to the $h_j$ constraints that were tight.
+
+In general, you can think of solving a system with inequality constraints as first choosing which constraints will be tight and then applying the method of Lagrange multipliers. Note that the method of Lagrange multipliers can work _even if there is a duality gap_.
 
 // Class Notes.
 // Fenchel-Moreau: Dual of the Dual of a proper closed convex optimization problem is the same problem.
@@ -1038,3 +1048,4 @@ Note that the above works when we only have equality constraints. To make it wor
 // Method of Lagrange Multipliers
 // How to deal with inequalities?
 // Test if you're at a local minimum?
+// Prox is just a more careful gradient descent step.
