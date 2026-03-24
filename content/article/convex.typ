@@ -749,21 +749,15 @@ Using this, it's easy to show all the rates we showed for earlier methods immedi
 ]
 This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the indicator function. The point of this is just like projected gradient descent recovered the rates of gradient descent, we can recover those rates here too. This is an improvement over the rate you would get by applying the subgradient method.
 
-The idea behind $"Prox"$ is it takes a "safe" gradient descent step along $h$. To see this, consider under what conditions $z^*$ is a minimizer.
-$
-  dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
-  1/eta (z^* - x) + dif(h(z^*))
-$
-Hence, $z^*$ is a minimizer if and only if
-$
-  1/eta (x - z^*) in dif(h(z^*))
-$
-
-Consider $h(x) = abs(x)$. Then $z^* = y - eta d(h(z^*)) = y - eta$ if $y > eta$, $y + eta$ if $y < -eta$, and $0$ if $y in [-eta, eta]$. Notice that prox doesn't overshoot the minimum.
+The idea behind $"Prox"$ is it takes a "safe" gradient descent step along $h$. To see this, observe that  staying at the same point will always be better than moving to a new point with a worse $h(z)$. Hence, $"Prox"$ strictly decreases the value of $h(z)$, which is _not_ true for gradient steps along $h$.
 
 #theorem[$"Prox"$ is a contraction.]
 #proof[
-  $z^*$ is a minimizer if and only if
+  $
+    dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
+    1/eta (z^* - x) + dif(h(z^*))
+  $
+  Hence, $z^*$ is a minimizer if and only if
   $
     1/eta (x - z^*) in dif(h(z^*))
   $
