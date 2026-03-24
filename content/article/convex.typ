@@ -876,7 +876,7 @@ The first term is smooth and easy to deal with and the second term isn't. This s
   )
 ))
 
-The convex envelope of $"rank"(M)$ is the nuclear norm at least when $norm(M) <= 1$. This is still not differentiable (so we cannot use vanilla gradient descent) since the nuclear norm is basically an L1 norm in disguise. The prox operator is now
+The convex envelope of $"rank"(M)$ is the nuclear norm at least when $norm(M) <= 1$, which you guarantee with scaling. This is still not differentiable (so we cannot use vanilla gradient descent) since the nuclear norm is basically an L1 norm in disguise. The prox operator is now
 $
   "argmin"_M 1/(2 eta) norm(M - L)^2 + norm(M)_* = "argmin"_(M = U M' V^top) 1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') \
   1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') >= 1/(2 eta) norm(M' - Sigma)^2 + sum M'_(i i)\
@@ -916,30 +916,30 @@ The max appeared because we require the entries of the matrix to be positive (th
 
 = Duality
 // Weak Duality, Strong Duality.
-#definition(name: "Linear Program")[Find $"argmin"_x c^top x | A x <= b$]
+#definition(name: "Linear Program")[Find $inf_x c^top x | A x <= b$]
 
 A reasonable question is what's the best lower-bound for $c^top x$.
 $
   A x <= b =>_(d "non-negative") -d^top A x >= -d^top b \
-  c^top x >= "argmax"_(d) -d^top b | c^top = -d^top A
+  c^top x >= sup_(d) -d^top b | c^top = -d^top A
 $
 The RHS is known as the dual program. You can also define the dual for maximization problems, where this time you're looking for the best upper-bound. It's easy to see $"dual"(max f) = -"dual"(min -f)$.
 
 You can show taking the dual twice yields the original problem. 
 $
-   -"argmin"_(d') -b^top d' | A^top d' = c, d' <= 0\
-   -"argmin"_(d) -b^top d' | vec(A^top, -A^top, I) d' <= vec(c, -c, 0) \
-   => -"argmax"_(x) -(x_1^top, x_2^top) vec(c, -c) | -b^top = -(x_1^top, x_2^top, x_3^top) vec(A^top, -A^top, I), x >= 0 \
-   -"argmax"_(x') (x_1'^top, x_2'^top) vec(c, -c) | -b^top = (x_1'^top, x_2'^top, x_3'^top) vec(A^top, -A^top, I), x' <= 0 \
-   -"argmax"_(x) c(x_1'^top - x_2'^top) | -b^top = (x_1^top' - x_2^top') A^top + x_3^top', x' <= 0 \
-   -"argmax"_(x) c(-x^top) | -b^top <= (-x^top) A^top \
-   "argmin"_(x) c^top x | A x <= b
+   -inf_(d') -b^top d' | A^top d' = c, d' <= 0\
+   -inf_(d) -b^top d' | vec(A^top, -A^top, I) d' <= vec(c, -c, 0) \
+   => -sup_(x) -(x_1^top, x_2^top) vec(c, -c) | -b^top = -(x_1^top, x_2^top, x_3^top) vec(A^top, -A^top, I), x >= 0 \
+   -sup_(x') (x_1'^top, x_2'^top) vec(c, -c) | -b^top = (x_1'^top, x_2'^top, x_3'^top) vec(A^top, -A^top, I), x' <= 0 \
+   -sup_(x) c(x_1'^top - x_2'^top) | -b^top = (x_1^top' - x_2^top') A^top + x_3^top', x' <= 0 \
+   -sup_(x) c(-x^top) | -b^top <= (-x^top) A^top \
+   inf_(x) c^top x | A x <= b
 $
 
 The dual and original problem (the primal) characterize each other. Call the solution of the primal $p$ and the solution of the dual $d$. If the dual is unbounded ($d -> oo$), the primal is infeasible ($p -> oo$), if the primal is unbounded ($p -> -oo$) the dual is infeasible ($d -> -oo$). This comes straight from defining the dual as a lower-bound. It is known as *weak-duality*. You can also show something stronger: _if both the dual and primal are finite, then they are equal_. This is called *strong-duality*. *strong-duality* only holds for linear constraints, it is not true in general.
 
 == Lagrangian Duality
-We can generalize the above definition of duality as follows. We want $"argmin"_x c^top x | A x = b, G x <= h$. This is an equivalent way of writing the problem we had before (an equality constraint can be written as two $<=$ constraints). Clearly, 
+We can generalize the above definition of duality as follows. We want $inf_x c^top x | A x = b, G x <= h$. This is an equivalent way of writing the problem we had before (an equality constraint can be written as two $<=$ constraints). Clearly, 
 
 $
   v >= 0 => c^top x >= c^top x + u^top (A x - b) + v^top (G x - h) = L(x, u, v)
@@ -947,7 +947,7 @@ $
 
 The last expression is called the Lagrangian. Consider the feasible set of $x$-values: $C$. Then, we can lower-bound the primal as...
 $
-  "argmin"_(x in C) c^top x >= "argmin"_(x in C) L(x, u, v) >= "argmin"_(x in R^n) L(x, u, v) = L(u, v) \
+  inf_(x in C) c^top x >= inf_(x in C) L(x, u, v) >= inf_(x in R^n) L(x, u, v) = L(u, v) \
   L(u, v) = min_x c^top x + u^top (A x - b) + v^top (G x - h) = \
   min_x (c^top + u^top A + v^top G) x - u^top b - v^top h =\ cases(
     -u^top b - v^top h quad "if" c^top = -(u^top A + v^top G),
@@ -957,21 +957,67 @@ $
 
 Obviously the best lower-bound is obtained in the first case, and that first case is exactly equivalent to the dual we derived in the above section (it's in a bit of a different form, but just focus on the $G$ term).
 
-The benefit of deriving things this way is it generalizes to non-linear functions. With the other approach, we needed to compute $A^top$ which only makes sense when all your constraints are linear.
+
+The benefit of deriving things this way is it generalizes to non-linear functions. With the other approach, we needed to express $f(x)$ as a linear sum of the constraint functions, which doesn't work when you move to non-linear functions.
 
 Suppose we have the following problem.
 $
-  "argmax"_x f(x) \
+  inf_x f(x) \
   h_i (x) <= 0 \
   g_j (x) = 0 \
 $
 
-$L(u, v)$ becomes...
+The dual problem becomes...
 $
-  "min"_x f(x) + sum u_j g_j + sum v_j h_j
+  sup_(u, v) inf_x f(x) + sum u_j g_j + sum v_j h_j
 $
 
-For any fixed $x$, we have an affine function of $u$ and $v$. Thus, this minimization problem is the minimum of concave functions which is itself concave. This is a pretty amazing result! It shows that for any kind of optimization problem on any kind of constraint set, there is this neat lower-bound which can be found via fast and simple convex optimization.
+For any fixed $x$, we have an affine function of $u$ and $v$. Thus, this minimization problem is the minimum of concave functions which is itself concave. Hence, there is this neat lower-bound which can be found via fast and simple convex optimization. This also has another consequence, namely the dual of the dual will be a _convex minimization_ problem. Hence, the primal must be convex for dual of the dual to give back the primal. There are some other necessary conditions, called the #link("https://en.wikipedia.org/wiki/Fenchel%E2%80%93Moreau_theorem")[Fenchel Moreau Theorem].
+
+Anyway, the Lagrangian Dual satisfies weak duality.
+$
+  d^* = sup_(u, v) inf_x L(x, u, v) <= inf_x sup_(u, v) L(x, u, v) = inf_(x in "feasible") f(x) = p^* \
+$
+
+
+// We know the function is concave, how do we know it has some finite maximum? And how do we know that finite maximum is attained at the primal maximizer?
+// 
+
+=== Saddle Points
+It'd be useful to know under what conditions the Lagrangian Dual satisfies *strong duality*. Suppose *strong duality* holds. Then we have
+$
+  d^* = sup_(u, v) inf_x L(x, u, v) =\
+  inf_x L(x, hat(u), hat(v)) <= L(hat(x), hat(u), hat(v)) <= sup_(u, v) L(hat(x), u, v) = \
+  inf_x sup_(u, v) L(x, u, v) = inf_x sup_(u, v) L(x, u, v) = p^*
+$
+
+Hence, $hat(x), hat(u), hat(v)$ is the solution of both the dual and the primal and is clearly a saddle point. Furthermore, if we have a saddle point $hat(x), hat(u), hat(v)$ then,
+$
+  L(hat(x), hat(u), hat(v)) <= sup_(u, v) L(hat(x), u, v) = p^* <= d^* = inf_x L(x, hat(u), hat(v)) <= L(hat(x), hat(u), hat(v))
+$
+
+So we immediately obtain *strong duality*. This makes it clear that strong duality is somewhat rare, as it requires the Lagrangian to have saddle points which is a particular kind of global structure that's not guaranteed. It's worth noting (although I won't show this) that the #link("https://en.wikipedia.org/wiki/Slater%27s_condition")[Weak Slater's Condition] essentially establishes that most convex programs will satisfy strong duality.
+
+=== KKT Conditions
+Next, suppose $(x, u, v)$ is a saddle-point. What conditions must it satisfy?
++ $x$ must be feasible.
++ $(u, v)$ must be feasible.
++ $(u, v)$ must be the $sup$ of $sup_(u, v) inf_x f(x) + sum u_j g_j (x) + sum v_j h_j (x)$. Since $x$ is feasible, this means $h_j (x) <= 0 => v_j h_j (x) = 0$
++ $x$ must be the $inf$ of $inf_x sup_(u, v) f(x) + sum u_j g_j (x) + sum v_j h_j (x)$, hence $0 in d(L(x, u, v))$.
+
+Interestingly, the KKT conditions also imply you're at a saddle point, if $f(x)$ is convex.
+$
+  g(u, v) = inf_x L(x, u, v) \
+  g(u^*, v^*) = inf_x f(x) + sum u_j^* g_j (x) + sum v_j^* h_j (x) = \
+  f(x^*) + sum u_j^* g_j (x^*) + sum v_j^* h_j (x^*) = f(x^*)
+$
+
+The KKT conditions merely give you that 0 is in the sub-differential, hence they don't tell you if $x$ is a local minimum or not. To determine this, you can employ a variant of the second-derivative test where you only consider movement in directions _along the constraints_.
+$
+  forall d | d^top nabla g_i(x) = 0, d^top L_(x x) d > 0 => "Local Minimum"
+$
+
+Note that the above works when we only have equality constraints. To make it work in general you'd also need to ensure tangency to the $h_j$ constraints that were tight.
 
 // Class Notes.
 // Fenchel-Moreau: Dual of the Dual of a proper closed convex optimization problem is the same problem.
