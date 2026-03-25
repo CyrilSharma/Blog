@@ -741,68 +741,97 @@ Using this, it's easy to show all the rates we showed for earlier methods immedi
 
 == Proximal Gradient Descent
 #definition(name: "Proximal Gradient Descent")[
-  Find $inf_x f(x) + h(x)$, where $f, h$ are convex and only $f$ is differentiable.
+  Find $inf_x f(x) = inf_x g(x) + h(x)$, where $g, h$ are convex.
   $
     "Prox"(y) = "argmin"_(z in R^d) 1/2 norm(y - z)^2 + h(z)\
-    x_(t + 1) = "Prox"(x_t - eta gradient f(x))
+    x_(t + 1) = "Prox"(x_t - eta gradient g(x))
   $
 ]
-This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the indicator function. The point of this is just like projected gradient descent recovered the rates of gradient descent, we can recover those rates here too. This is an improvement over the rate you would get by applying the subgradient method.
+This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the set indicator function. The idea behind $"Prox"$ is it takes a "safe" gradient descent step along $h$. To see this, observe that  staying at the same point will always be better than moving to a new point with a worse $h(z)$. Hence, $"Prox"$ strictly decreases the value of $h(z)$, which crucially _did not require any assumptions of smoothness on h_. Hence, this method allows optimizing highly non-smooth and even non-differentiable functions.
 
-The idea behind $"Prox"$ is it takes a "safe" gradient descent step along $h$. To see this, observe that  staying at the same point will always be better than moving to a new point with a worse $h(z)$. Hence, $"Prox"$ strictly decreases the value of $h(z)$, which is _not_ true for gradient steps along $h$.
+#theorem[$"Prox"$ is a contraction for convex functions.]
+Imagine you have two points straddling an interval. Since convex functions have a slope that's increasing wrt to x, the point closer to the minima will have a lower magnitude slope then the point further away from it. The further away point can "afford" a bigger step than the other point because the function is decreasing faster.
 
-#theorem[$"Prox"$ is a contraction.]
-#proof[
-  $
-    dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
-    1/eta (z^* - x) + dif(h(z^*))
-  $
-  Hence, $z^*$ is a minimizer if and only if
-  $
-    1/eta (x - z^*) in dif(h(z^*))
-  $
+// #proof[
+//   $
+//     dif (1/(2 eta) norm(x - z^*)^2 + h(z^*)) \
+//     1/eta (z^* - x) + dif(h(z^*))
+//   $
+//   Hence, $z^*$ is a minimizer if and only if
+//   $
+//     1/eta (x - z^*) in dif(h(z^*))
+//   $
 
-  You can then apply subgradient monotonicity
-  $
-    "dot"(g_x - g_y, x - y) >= 0, forall g_x in dif h(x), g_y in dif f(y) \
-    "dot"(1/eta (x - z_1^*) -  1/eta (y - z_2^*), z_1^* - z_2^*)  >= 0 \
-    "dot"(x - y, z_2 - z_1) >= norm(z_2 - z_1)^2 \
-     norm(z_2 - z_1)^2 <= norm(x - y)^2
-  $
-]
+//   You can then apply subgradient monotonicity
+//   $
+//     "dot"(g_x - g_y, x - y) >= 0, forall g_x in dif h(x), g_y in dif f(y) \
+//     "dot"(1/eta (x - z_1^*) -  1/eta (y - z_2^*), z_1^* - z_2^*)  >= 0 \
+//     "dot"(x - y, z_2 - z_1) >= norm(z_2 - z_1)^2 \
+//      norm(z_2 - z_1)^2 <= norm(x - y)^2
+//   $
+// ]
 
 #definition(name: "Generalized Gradient")[
-  $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient f(x_t))), eta)$
+  $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient g(x_t))), eta)$
 ]
 #theorem[
   $G(x^*) = 0 => x^* = "argmin"_x G(x)$
 ]
 #proof[
   $
-    G(x^*) = 0 => "Prox"_(eta, h)(x_t - eta gradient f(x_t)) = x_t \
-    tilde(x) = x_t - eta gradient f(x_t) quad z^* = "Prox"_(eta, h)(tilde(x)) \
-    1/eta (tilde(x) - z^*) = 1/eta (x_t - z^* - eta gradient f(x_t)) => \
-    G(x_t) in gradient f(x_t) + dif(x_t - eta G(x_t)) \
-    0 in gradient f(x_t) + dif h(x_t)
+    G(x^*) = 0 => "Prox"_(eta, h)(x_t - eta gradient g(x_t)) = x_t \
+    tilde(x) = x_t - eta gradient g(x_t) quad z^* = "Prox"_(eta, h)(tilde(x)) \
+    1/eta (tilde(x) - z^*) = 1/eta (x_t - z^* - eta gradient g(x_t)) => \
+    G(x_t) in gradient g(x_t) + dif(x_t - eta G(x_t)) \
+    0 in gradient g(x_t) + dif h(x_t)
   $
 ]
 
-So, you can see this approach takes a qualitatively different step then the subgradient method, it evaluates the sub-differential at an offset point.
+So, you can see this approach takes a qualitatively different step then gradient descent, it evaluates the sub-differential $h$ at an offset point.
 
-You can show that this generalized gradient obeys its own version of the descent lemma.
+By construction, $"prox"$ was made to force descent, and if $g$ is smooth you can choose the step-size to force descent. Combined, you can show the generalized gradient has its own descent lemma. 
 #lemma[
   $
     eta <= 1/beta =>  forall z, f(x - eta G(x)) <= f(z) + G(x)^top (x - z) + eta/2 norm(G(x))^2 - alpha/2 norm(x - z)^2
   $
 ]
+#proof[
+  By smoothness of $f$ we immediately have,
+  $
+    //  h(y) >= h(x) + G(x)^top (y - x) \
+    //  h(y) >= h(x - eta G(x)) + G(x)^top (y - x) \
+    g(x - eta G(x)) <= g(x) + nabla g(x)^top (-eta G(x)) + beta/2 norm(eta G(x))^2 \
+  $
+
+  Next, plug in what it means for $x - eta G(x)$ to be the result of the prox operator.
+  $
+    // h(x - eta G(x)) >= h(z) + d h(z)^top (x-eta G(x)-z) \
+    // 1/n (x - z) in d h(z) => h(y) >= h(x) + 1/n (x - z)^top (y - x) \
+    // h(z) >= h(x - eta G(x)) + 1/n (x - eta G(x) - z)^top (z - x) \
+    1/eta (x - eta nabla g(x) - (x - eta G(x))) in d h(x - eta G(x))\
+    (G(x) - nabla g(x)) in d h(x - eta G(x)) \
+    h(z) >= h(x - eta G(x)) + (G(x) - nabla g(x))^top (z - x + eta G(x)) \
+    h(z) >= h(x - eta G(x)) + (G(x) - nabla g(x))^top (z - x) + eta norm(G(x))^2 - eta nabla g(x)^top G(x)\
+    h(x - eta G(x)) <= h(z) + eta nabla g(x)^top G(x) - eta norm(G(x))^2 - (G(x) - nabla g(x))^top (z - x) 
+  $
+
+  Add the two and apply strong convexity of $g$.
+  $
+    f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - G(x)^top (z - x) + nabla g(x)^top (z - x)\
+    f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 + g(z) - g(x) - alpha/2 norm(x - z)^2 \
+    f(x - eta G(x)) <= h(z) + g(z) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 \
+    eta <= 1/beta => beta <= 3 / eta, beta eta^2 - 2 eta <= eta \
+    f(x - eta G(x)) <= f(z) + (eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 
+  $
+]
 
 #theorem[
   $
-    eta = hf(1, beta) => f(x_t) - f(x^*) <= beta / 2k norm(x_0 - x^*)^2 
+    eta = hf(1, beta) => f(x_t) - f(x^*) <= beta / (2k) norm(x_0 - x^*)^2 
   $
 ]
 #proof[
-  Almost identical proof to previous methods.
+  Plug in $z = x^*$ in the above descent lemma, and then use the iterate-bounding technique from the subgradient method and substitute this in.
 ]
 
 === The Netflix Problem
@@ -878,7 +907,7 @@ The first term is smooth and easy to deal with and the second term isn't. This s
   )
 ))
 
-The convex envelope of $"rank"(M)$ is the nuclear norm at least when $norm(M) <= 1$, which you guarantee with scaling. This is still not differentiable (so we cannot use vanilla gradient descent) since the nuclear norm is basically an L1 norm in disguise. The prox operator is now
+The convex envelope of $"rank"(M)$ is the nuclear norm at least when $norm(M) <= 1$, which you guarantee with scaling. The prox operator is now
 $
   "argmin"_M 1/(2 eta) norm(M - L)^2 + norm(M)_* = "argmin"_(M = U M' V^top) 1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') \
   1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') >= 1/(2 eta) norm(M' - Sigma)^2 + sum M'_(i i)\
@@ -974,7 +1003,7 @@ $
   sup_(u, v) inf_x f(x) + sum u_j g_j + sum v_j h_j
 $
 
-For any fixed $x$, we have an affine function of $u$ and $v$. Thus, this minimization problem is the minimum of concave functions which is itself concave. Hence, there is this neat lower-bound which can be found via fast and simple convex optimization. This also has another consequence, namely the dual of the dual will be a _convex minimization_ problem. Hence, the primal must be convex for dual of the dual to give back the primal. There are some other necessary conditions, called the #link("https://en.wikipedia.org/wiki/Fenchel%E2%80%93Moreau_theorem")[Fenchel Moreau Theorem].
+For any fixed $x$, we have an affine function of $u$ and $v$. Thus, this minimization problem is the minimum of concave functions which is itself concave. Hence, there is a non-trivial lower-bound which can be found via fast and simple convex optimization. This also has another consequence, namely the dual of the dual will be a _convex minimization_ problem. Hence, the primal must be convex for dual of the dual to give back the primal. There are some other necessary conditions, called the #link("https://en.wikipedia.org/wiki/Fenchel%E2%80%93Moreau_theorem")[Fenchel Moreau Theorem].
 
 Anyway, the Lagrangian Dual satisfies weak duality.
 $
