@@ -369,8 +369,7 @@ $]
   $
 ]
 
-This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms).
-This is algebraically powerful because you can express it in terms of traces.
+This is also equivalent to the sum of the matrice's entries squared (just look at the SVD and observe orthonormal matrices don't change vector norms). This is useful most often as a distance measure between two entries. You can express it in terms of traces.
 $
   ||A||_F = sqrt("Tr"(A^top A))
 $ 
@@ -379,10 +378,10 @@ $
 #definition[
   The Nuclear or Trace norm is the L1-norm of its singular value vector.
   $
-    ||A||_* = sum sigma_i
+    ||A||_* = sum abs(sigma_i) =_("if A symmetric") "Tr"(A)
   $
 ]
-Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm has the nice property that the corresponding norm ball has its extreme points at rank 1 matrices. Hence, it shows up in convex optimization contexts when you want low-rank results.
+Traces have some very nice algebraic properties, so this is probably the easiest norm from an algebraic standpoint. Furthermore, the Nuclear norm is kind of like a relaxation of rank. If you require all spectral values to be $<= 1$, then restricting the nuclear norm to be less then $k$ also restricts the rank to be less then $k$.
 
 == Definite and Indefinite
 #definition[
@@ -403,6 +402,21 @@ The best way to think about these matrices is in terms of the $x^top A x$ object
   $
     e_i^top A e_i = e_i A_i = A_(i i) > 0
   $ 
+]
+
+#theorem[
+  If a Symmetric Positive Definite matrix has a zero diagonal entry, the entire row and column must also be zero.
+]
+#proof[
+  Suppose $X_(i i) = 0$. Then,
+  $
+    e_i^top X e_i = e_i^top Q Sigma Q^top e_i = v^top Sigma v = 0 \
+    sum Sigma_(i i) v_i^2 = 0 =>_(Sigma_(i i) >= 0) Sigma_(i i)v_i = 0 \
+    (X e_i)^top (X e_i) = e_i X^top X e_i = e_i Q Sigma^2 Q^top e_i = v^top Sigma^2 v\
+    = sum Sigma_(i i)^2 v_i^2 = sum Sigma_(i i)(Sigma_(i i) v_i^2) = 0
+  $
+
+  Thus, the $i$th column (and by symmetry, the $i$th row) is 0.
 ]
 
 == Companion Matrix
@@ -471,26 +485,26 @@ $
 
 = Decompositions
 
-== Jordon Normal Form
-#theorem[
-  Every square matrix can be written as $P^(-1)Q P$ where $Q$ is block-diagonal.
-]
+// == Jordon Normal Form
+// #theorem[
+//   Every square matrix can be written as $P^(-1)Q P$ where $Q$ is block-diagonal.
+// ]
 
-The "blocks" in the block diagonal correspond to repeated eigenvalues, and the only off-diagonal entries have value $1$, are right above the diagonal and have an equal left and bottom child.
-$
-  Q =mat(
-    lambda_1, 1, 0, 0, 0, 0;
-    0, lambda_1, 0, 0, 0, 0;
-    0, 0, lambda_2, 1, 0, 0;
-    0, 0, 0, lambda_2, 1, 0;
-    0, 0, 0, 0, lambda_2, 0; 
-    0, 0, 0, 0, 0, lambda_3, 
-  )
-$
+// The "blocks" in the block diagonal correspond to repeated eigenvalues, and the only off-diagonal entries have value $1$, are right above the diagonal and have an equal left and bottom child.
+// $
+//   Q =mat(
+//     lambda_1, 1, 0, 0, 0, 0;
+//     0, lambda_1, 0, 0, 0, 0;
+//     0, 0, lambda_2, 1, 0, 0;
+//     0, 0, 0, lambda_2, 1, 0;
+//     0, 0, 0, 0, lambda_2, 0; 
+//     0, 0, 0, 0, 0, lambda_3, 
+//   )
+// $
 
-The block decomposition is so simple that we can analytically compute $f(A)$ by using Taylor expansions for each block. Pretty awesome.
+// The block decomposition is so simple that we can analytically compute $f(A)$ by using Taylor expansions for each block. Pretty awesome.
 
-One big problem is it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition].
+// One big problem is it’s not numerically stable because it depends a lot on whether two eigenvalues are exactly equal or not. Hence, it’s often preferred to use the #link("https://en.wikipedia.org/wiki/Schur_decomposition")[Schur Decomposition].
 
 == Schur Decomposition
 #theorem[

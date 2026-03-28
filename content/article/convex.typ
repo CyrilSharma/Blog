@@ -749,8 +749,8 @@ Using this, it's easy to show all the rates we showed for earlier methods immedi
 ]
 This can be seen as a generalization of both gradient descent and projected gradient descent by choosing $h$ to be zero or the set indicator function. The idea behind $"Prox"$ is it takes a "safe" gradient descent step along $h$. To see this, observe that  staying at the same point will always be better than moving to a new point with a worse $h(z)$. Hence, $"Prox"$ strictly decreases the value of $h(z)$, which crucially _did not require any assumptions of smoothness on h_. Hence, this method allows optimizing highly non-smooth and even non-differentiable functions.
 
-#theorem[$"Prox"$ is a contraction for convex functions.]
-Imagine you have two points straddling an interval. Since convex functions have a slope that's increasing wrt to x, the point closer to the minima will have a lower magnitude slope then the point further away from it. The further away point can "afford" a bigger step than the other point because the function is decreasing faster.
+// #theorem[$"Prox"$ is a contraction for convex functions.]
+// Imagine you have two points straddling an interval. Since convex functions have a slope that's increasing wrt to x, the point closer to the minima will have a lower magnitude slope then the point further away from it. The further away point can "afford" a bigger step than the other point because the function is decreasing faster.
 
 // #proof[
 //   $
@@ -775,19 +775,19 @@ Imagine you have two points straddling an interval. Since convex functions have 
   $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient g(x_t))), eta)$
 ]
 #theorem[
-  $G(x^*) = 0 => x^* = "argmin"_x G(x)$
+  $G(x^*) = 0 => x^* = "argmin"_x f(x)$
 ]
 #proof[
   $
     G(x^*) = 0 => "Prox"_(eta, h)(x_t - eta gradient g(x_t)) = x_t \
     tilde(x) = x_t - eta gradient g(x_t) quad z^* = "Prox"_(eta, h)(tilde(x)) \
-    1/eta (tilde(x) - z^*) = 1/eta (x_t - z^* - eta gradient g(x_t)) => \
-    G(x_t) in gradient g(x_t) + dif(x_t - eta G(x_t)) \
+    1/eta (tilde(x) - z^*) = 1/eta (x_t - z^* - eta gradient g(x_t)) in dif h(x_t - eta G(x_t))\
+    G(x_t) in gradient g(x_t) + dif h(x_t - eta G(x_t)) \
     0 in gradient g(x_t) + dif h(x_t)
   $
 ]
 
-So, you can see this approach takes a qualitatively different step then gradient descent, it evaluates the sub-differential $h$ at an offset point.
+So, you can see this approach takes a qualitatively different step then gradient descent, it evaluates the sub-differential of $h$ at an offset point.
 
 By construction, $"prox"$ was made to force descent, and if $g$ is smooth you can choose the step-size to force descent. Combined, you can show the generalized gradient has its own descent lemma. 
 #lemma[
@@ -1072,3 +1072,6 @@ In general, you can think of solving a system with inequality constraints as fir
 // How to deal with inequalities?
 // Test if you're at a local minimum?
 // Prox is just a more careful gradient descent step.
+// 
+// 
+// TODO: should add a section talking about Franke-Wolfe Algorithms!
