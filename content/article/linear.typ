@@ -115,20 +115,6 @@ $]
 #proof[
   Imagine we have $u, v in "Col(A)"$ and $A^top u = A^top v$. Then, $A^top (u - v) = 0, u - v in "Col"(A)$. But this implies $u - v = 0$ by the above theormem. Hence, every non-zero vector out of $A$ gets mapped to a unique vector out of $A^top A$.
 ]
-== Trace
-#theorem[The trace is invariant to cyclic permutations.]
-#proof[$
-sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = \
-sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = \
-sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
-$]
-
-Furthermore, 
-$
-T(P^(-1) D P) = T(D) = sum_i lambda_i
-$
-
-So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
 
 == Triangular Matrices
 #theorem[
@@ -189,7 +175,7 @@ $]
 
 #theorem[Symmetric Matrices are diagonalizable.] <diagonalizable>
 #proof[
-  We know all the eigenvalues of the symmetric matrix $A_n$ are real. Hence, $A_n$ has some real eigenvector corresponding to some real eigenvalue, call this $u_1$. Extend $u_1$ to an orthonormal basis $u_1, ..., u_n$ for $bb(R)^n$. Let $U_n$ be the orthonormal matrix whose columns are $u_1, ... u_n$. Now, define $A_(n - 1)$ as
+  We know all the eigenvalues of the symmetric matrix $A_n$ are real. Hence, $A_n$ has some real eigenvector corresponding to some real eigenvalue, call this $u_1$. Extend $u_1$ to an orthonormal basis $u_1, ..., u_n$ for $bb(R)^n$. Let $U_n^top$ be the orthonormal matrix whose columns are $u_1, ... u_n$. Now, define $A_(n - 1)$ as
   $
     A_(n - 1) = U_n A_n U_n^top
   $
@@ -201,9 +187,7 @@ $]
 
   Hence, $A_(n - 1)$ is symmetric. Furthermore, 
   $
-    A_(n - 1)vec(1, 0, ..., 0) = U_n A_n U_n^top vec(1, 0, ..., 0) = \
-    U_n A_n u_1 = U_n lambda_1 u_1 = \
-    vec(lambda_1, 0, ..., 0)
+    A_(n - 1)arrow(e_1) = U_n A_n U_n^top arrow(e_1) = U_n A_n u_1 = U_n lambda_1 u_1 = lambda arrow(e_1)
   $
 
   Combining the two properties, $A_(n - 1)$ looks like this.
@@ -214,7 +198,7 @@ $]
     )
   $
 
-  Because $A_(n - 1)$ is symmetric its principal submatrix $B$ is also symmetric. Observe that any eigenvector $b$ for $B$ can produce an eigenvector for $A_(n - 1)$, $vec(0, b)$. We can use the first column of $A_(n - 1)$ and $vec(0, b)$ to orthogonalize $A_(n - 1)$, and we can keep doing this until we arrive at $A_1$ which is completely diagonal.
+  Because $A_(n - 1)$ is symmetric its principal submatrix $B$ is also symmetric. Observe that any eigenvector $b$ for $B$ can produce an eigenvector for $A_(n - 1)$, $(0, b)$. We can use the first column of $A_(n - 1)$ and $(0, b)$ to orthogonalize $A_(n - 1)$, and we can keep doing this until we arrive at $A_1$ which is completely diagonal.
   $
     Q_1 .... Q_n A_n Q_n^top ... Q_1 ^top = Q A_n Q^top = D
   $
@@ -341,6 +325,20 @@ $
   A^+ = V_r Sigma_r^(-1) U_r^top
 $
 
+== Trace
+#theorem[The trace is invariant to cyclic permutations.]
+#proof[$
+sum_(i, j, k)A_(i j)B_(j k)C_(k i) = T(A B C) = \
+sum_(k, i, j)C_(k i)A_(i j)B_(j k) = T(C A B) = \
+sum_(j, k, i)B_(j k)C_(k i)A_(i j) = T(B C A)
+$]
+
+Furthermore, 
+$
+T(P^(-1) D P) = T(D) = sum_i lambda_i
+$
+
+So the trace of a matrix is the sum of its eigenvalues, or more generally the trace of $A^top A$ is the sum of singular values squared.
 
 == Norms
 #definition[
@@ -385,15 +383,12 @@ Traces have some very nice algebraic properties, so this is probably the easiest
 
 == Definite and Indefinite
 #definition[
-  A matrix $A$ is positive-definite if
-  $
-    x^top A x > 0, forall x
-  $
+  A matrix $A$ is positive-definite if $x^top A x > 0, forall x$
 
-  You can similarly definite negative definite and the semi variants which allow $x^top A x = 0$. If it doesn't fit into any of these categories, it's called indefinite.
+  You can similarly definite negative definite and the semi variants which allow $x^top A x = 0$. If it doesn't satisfy any such property it's called indefinite.
 ]
 
-The best way to think about these matrices is in terms of the $x^top A x$ object. This object is literally a quadratic equation in high dimensions. For a definite matrix, all choices of $x$ decrease $x^top A x$, or all directions increase $x^top A x$. Hence, you have a nice bowl shaped quadratic and this makes optimization easy. On the other hand, if some directions move you up and some move you down, you end up with a saddle. This can mess up gradient-descent based optimization methods.
+The best way to think about these matrices is in terms of the $x^top A x$ object. This object is literally a quadratic equation in high dimensions. For a definite matrix, all choices of $x$ decrease $x^top A x$, or all directions increase $x^top A x$. Hence, you have a nice bowl shaped quadratic and this makes optimization easy. On the other hand, if some directions move you up and some move you down, you end up with a saddle. This can mess up gradient-descent based optimization.
 
 #theorem[
   Positive definite matrices have positive diagonal entries.
@@ -418,6 +413,28 @@ The best way to think about these matrices is in terms of the $x^top A x$ object
 
   Thus, the $i$th column (and by symmetry, the $i$th row) is 0.
 ]
+
+#theorem[
+  A matrix $A$ is positive definite if and only if $1/2 (A + A^top)$ is positive definite.
+]
+#proof[
+  $
+    x^top A x = 1/2 x^top (A + A^top) x + 1/2 x^top (A - A^top) x = \
+    1/2 x^top (A + A^top) x + 1/2 (x^top A x - x^top A^top x) = \
+    1/2 x^top (A + A^top) x + 1/2 (x^top A x - x^top A x) = 1/2 x^top (A + A^top) x
+  $
+]
+
+#theorem[
+  A symmetric matrix $A$ is positive definite iff its eigenvalues are greater then $0$.
+]
+#proof[
+  $
+    (sum_i lambda_i alpha v_i)^top A (sum_i lambda_i alpha v_i) = sum lambda_i alpha norm(v_i) > 0 \
+    lambda < 0 => x^top A x = x^top lambda x < 0
+  $
+]
+The first line takes advantage of the fact that we can construct an orthonormal eigenbasis.
 
 == Companion Matrix
 A companion matrix is just a construction whose eigenvalue equation is exactly some polynomial. For the polynomial $c_1 + c_2 x + ... + c_n x^n + x^(n + 1)$. It can be constructed as follows.

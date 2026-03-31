@@ -771,6 +771,8 @@ This can be seen as a generalization of both gradient descent and projected grad
 //   $
 // ]
 
+Technically prox can be viewed as rescaling the gradient on $h$, which seems like it could be problematic. Finding zeros for $nabla g(x) + 2 nabla h(x)$ _is not_ the same as minimizing $g(x) + h(x)$. To see why this is fine, let's analyze the effective step induced by the above procedure, the so-called generalized gradient.
+
 #definition(name: "Generalized Gradient")[
   $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient g(x_t))), eta)$
 ]
@@ -787,9 +789,9 @@ This can be seen as a generalization of both gradient descent and projected grad
   $
 ]
 
-So, you can see this approach takes a qualitatively different step then gradient descent, it evaluates the sub-differential of $h$ at an offset point.
+So indeed, the only fixed points for proximal gradient descent occur at minima of the function. 
 
-By construction, $"prox"$ was made to force descent, and if $g$ is smooth you can choose the step-size to force descent. Combined, you can show the generalized gradient has its own descent lemma. 
+There's one last problem we need to resolve. By construction, $"prox"$ was made to force descent, but does it descend _fast enough_? As a first step, we prove a descent lemma for the Generalized Gradient.
 #lemma[
   $
     eta <= 1/beta =>  forall z, f(x - eta G(x)) <= f(z) + G(x)^top (x - z) + eta/2 norm(G(x))^2 - alpha/2 norm(x - z)^2
@@ -818,10 +820,10 @@ By construction, $"prox"$ was made to force descent, and if $g$ is smooth you ca
   Add the two and apply strong convexity of $g$.
   $
     f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - G(x)^top (z - x) + nabla g(x)^top (z - x)\
-    f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 + g(z) - g(x) - alpha/2 norm(x - z)^2 \
-    f(x - eta G(x)) <= h(z) + g(z) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 \
+    f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 + G(x)^top (x - z) + g(z) - g(x) - alpha/2 norm(x - z)^2 \
+    f(x - eta G(x)) <= h(z) + g(z) + G(x)^top (x - z) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 \
     eta <= 1/beta => beta <= 3 / eta, beta eta^2 - 2 eta <= eta \
-    f(x - eta G(x)) <= f(z) + (eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 
+    f(x - eta G(x)) <= f(z) + G(x)^top (x - z) + (eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 
   $
 ]
 
@@ -1052,6 +1054,12 @@ You have to find the minimum point over all candidates to be sure you've found a
 
 In general, you can think of solving a system with inequality constraints as first choosing which constraints will be tight and then applying the method of Lagrange multipliers. Note that the method of Lagrange multipliers can work _even if there is a duality gap_.
 
+== SDPs
+
+== Newton's Method
+
+
+
 // Class Notes.
 // Fenchel-Moreau: Dual of the Dual of a proper closed convex optimization problem is the same problem.
 // Primal and dual can both be infeasible, primal can be infeasible while dual is finite, dual can be infeasible while primal is finite
@@ -1071,7 +1079,24 @@ In general, you can think of solving a system with inequality constraints as fir
 // Method of Lagrange Multipliers
 // How to deal with inequalities?
 // Test if you're at a local minimum?
-// Prox is just a more careful gradient descent step.
-// 
-// 
+// TODO: review extra KKT
+
+// Duality Gap of a general linear program (idt this is that important)
+// SDP Formulation
+// SDPs are convex, and contain _more programs then linear programming_!
+// SDPs might have a finite minima, but that minima is not necessarily obtainable.
+// SDPs satisfy strong duality if there exists a sitrlcy feasible primal and dual solution, and max/mins are obtainable.
+// Dual of SDD is SDP.
+// Newton's Method
+// If Hessian Positive Definite, Newton's method gives a descent direction.
+// Minimizing a quadratic formulation
+// Formulate error as a recurrence.
+// Might not converge if certain proof conditions fails, also might only converge at a linear rate.
+// Damped Newton's Method
+// LICQ, Critical Cone, Strict Local Minimum, Independent Component Analysis connection to PCA.
+// Gabor Wavelets vs. JPEG, ICA denoising.
+// Assuming invertible mixer matrix and statistically independent noise.
+// Minimize Mutua,l Information. Can somehow estimate mutual information without densitites.
+// Whitening, reduces the number of parameter sby half. Only have to work with orthonormal matrices.
+// Correlation is a bad metric, you want KL because correlation only works for detecting linear releationships.
 // TODO: should add a section talking about Franke-Wolfe Algorithms!
