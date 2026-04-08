@@ -21,6 +21,7 @@
 
 .pg-card {
   border-left: 3px solid transparent;
+  padding-left: 1rem;
   background: transparent;
   transition: border-color 150ms ease;
   position: relative;
