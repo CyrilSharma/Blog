@@ -7,14 +7,13 @@ type Post = {
   date: string | Date;
   dateMs?: number;
   tags?: string[];
-  isNotes?: boolean;
+  preview?: string;
 };
 
 type Props = {
   posts: Post[];
   basePath: string;
 };
-
 
 export default function PostGrid({ posts, basePath }: Props) {
   return (
@@ -29,6 +28,7 @@ export default function PostGrid({ posts, basePath }: Props) {
                   scrolling="no"
                   tabIndex={-1}
                   aria-hidden="true"
+                  loading="lazy"
                 />
               </div>
             </a>

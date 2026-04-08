@@ -1,0 +1,39 @@
+---
+import "../styles/post-grid.css";
+
+interface Post {
+  id: string;
+  title: string;
+  date: string | Date;
+  preview?: string;
+}
+
+interface Props {
+  posts: Post[];
+  basePath: string;
+}
+
+const { posts, basePath } = Astro.props;
+
+const formatDate = (value: string | Date) => {
+  const d = value instanceof Date ? value : new Date(value as string);
+  return isNaN(d.valueOf()) ? "" : d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+};
+---
+
+<div class="post-grid">
+  <div class="pg-grid">
+    {posts.map((post) => (
+      <article class="pg-card">
+        <a class="pg-card-link" href={`${basePath}/${post.id}/`} aria-label={post.title}></a>
+        {post.preview
+          ? <div class="pg-frame-wrapper" set:html={post.preview} />
+          : <div class="pg-fallback">
+              <h2 class="pg-title">{post.title}</h2>
+              <div class="pg-date">{formatDate(post.date)}</div>
+            </div>
+        }
+      </article>
+    ))}
+  </div>
+</div>

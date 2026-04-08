@@ -12,6 +12,7 @@
     "@astrojs/react": "^4.3.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.4.0",
+    "@fontsource/crimson-pro": "^5.2.8",
     "@iconify-json/mdi": "^1.2.3",
     "@nanostores/react": "^1.0.0",
     "@types/react": "^19.1.8",

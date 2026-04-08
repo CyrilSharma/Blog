@@ -4,6 +4,12 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import "@fontsource/crimson-pro/400.css";
+@import "@fontsource/crimson-pro/400-italic.css";
+@import "@fontsource/crimson-pro/600.css";
+@import "@fontsource/crimson-pro/700.css";
+@import "@fontsource/crimson-pro/700-italic.css";
+
 :root {
   --main-color: #333333;
   --raw-bg-color: rgba(101, 117, 133, 0.16);

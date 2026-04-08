@@ -26,6 +26,7 @@
   position: relative;
   height: 22rem;
   overflow: hidden;
+  contain: layout;
 }
 
 
@@ -37,11 +38,10 @@
   border-top: 1px solid var(--warm-rule);
 }
 
-.pg-card a {
-  color: inherit;
-  text-decoration: none;
-  display: block;
-  height: 100%;
+.pg-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .pg-date {
@@ -61,7 +61,9 @@
 .pg-frame-wrapper {
   width: 100%;
   height: 100%;
+  overflow: hidden;
   pointer-events: none;
+  contain: layout;
   -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
 }
