@@ -4,6 +4,11 @@
 import "$styles/global.css";
 import { SITE_TITLE } from "$consts";
 import { BASE_PATH } from "$consts";
+import crimsonPro400 from "@fontsource/crimson-pro/files/crimson-pro-latin-400-normal.woff2?url";
+import crimsonPro400i from "@fontsource/crimson-pro/files/crimson-pro-latin-400-italic.woff2?url";
+import crimsonPro600 from "@fontsource/crimson-pro/files/crimson-pro-latin-600-normal.woff2?url";
+import crimsonPro700 from "@fontsource/crimson-pro/files/crimson-pro-latin-700-normal.woff2?url";
+import crimsonPro700i from "@fontsource/crimson-pro/files/crimson-pro-latin-700-italic.woff2?url";
 
 interface Props {
   title: string;
@@ -15,6 +20,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 ---
+
+<!-- Font Preloads -->
+<link rel="preload" as="font" type="font/woff2" href={crimsonPro400} crossorigin="anonymous" />
+<link rel="preload" as="font" type="font/woff2" href={crimsonPro400i} crossorigin="anonymous" />
+<link rel="preload" as="font" type="font/woff2" href={crimsonPro600} crossorigin="anonymous" />
+<link rel="preload" as="font" type="font/woff2" href={crimsonPro700} crossorigin="anonymous" />
+<link rel="preload" as="font" type="font/woff2" href={crimsonPro700i} crossorigin="anonymous" />
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
