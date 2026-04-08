@@ -31,6 +31,16 @@ export default defineConfig({
         name: "watch-html-content",
         configureServer(server) {
           server.watcher.add(`./html/**/*.html`);
+          server.watcher.add(`./content/article`);
+          server.watcher.on("add", (file) => {
+            if (!file.endsWith(".typ") || !file.includes("content/article")) return;
+            console.log(`[make] new file detected: ${file}, running make...`);
+            const proc = spawn("make", [], { stdio: "inherit" });
+            proc.on("exit", (code) => {
+              if (code === 0) console.log("[make] done");
+              else console.error(`[make] exited with code ${code}`);
+            });
+          });
           const typstWatchers = new Map();
           server.middlewares.use((req, _res, next) => {
             const match = req.url?.match(/^\/([^/?@]+)\//);

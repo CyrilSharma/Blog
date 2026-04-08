@@ -93,7 +93,12 @@ a:hover {
   color: var(--accent-dark);
 }
 
-.prose ol, 
+.prose {
+  font-size: 1.4rem;
+  line-height: 1.4;
+}
+
+.prose ol,
 .prose ul {
   padding-left: 5px;
   margin-left: 22px;

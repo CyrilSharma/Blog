@@ -3,7 +3,7 @@
   title: "Alcohol Research",
   desc: "",
   date: "2025-07-18T21:11:36-04:00",
-  tags: ("musings", "values", "notes"),
+  tags: ("musings", "values"),
 )
 
 I don't think people should drink alcohol. These are my main reasons.

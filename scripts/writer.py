@@ -70,7 +70,7 @@ def create_new_typst_file():
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
         console.print(f"\n✅ [green]Created new Typst file:[/green] [bold]{filename}[/bold]")
-        console.print(f"\n✅ [green]Blog URL:[/green] [bold]http://localhost:4321/{filename}/[/bold]")
+        console.print(f"\n✅ [green]Blog URL:[/green] [bold]http://localhost:4321/Blog/{filename}/[/bold]")
     except OSError as e:
         console.print(f"[red]Error writing file:[/red] {e}")
         sys.exit(1)

@@ -310,3 +310,5 @@
 #let hf(n, d) = $
   frac(#n, #d, style: "horizontal")
 $
+
+#let ip(x, y) = $lr(angle.l #x, #y angle.r)$
