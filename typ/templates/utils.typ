@@ -311,4 +311,4 @@
   frac(#n, #d, style: "horizontal")
 $
 
-#let ip(x, y) = $lr(angle.l #x, #y angle.r)$
+#let ip(x, y) = $lr(chevron.l #x, #y chevron.r)$

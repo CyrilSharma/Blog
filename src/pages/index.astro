@@ -2,9 +2,8 @@
 import BaseHead from "$components/BaseHead.astro";
 import { SITE_TITLE, SITE_DESCRIPTION, BASE_PATH } from "$consts";
 import { getCollection } from "astro:content";
+import { extractPreview } from "../utils";
 import PostGrid from "$components/PostGrid.astro";
-import { readFileSync } from "fs";
-import { resolve } from "path";
 
 // Extract the shared style block once (identical across all posts)
 let sharedStyles = "";
@@ -16,58 +15,6 @@ try {
 
 function formatDate(d: Date): string {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-}
-
-function extractPreview(id: string, title: string, date: Date): string {
-  try {
-    const raw = readFileSync(resolve("html", id, "index.html"), "utf-8");
-    const bodyMatch = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    let body = bodyMatch ? bodyMatch[1] : "";
-    for (const tag of ["script", "style", "nav", "img"]) {
-      body = body.replace(new RegExp(`<${tag}[\\s\\S]*?<\\/${tag}>`, "gi"), "");
-    }
-    body = body.replace(/<img[^>]*>/gi, "");
-
-    // Collect complete top-level block elements until we have enough text
-    const blockTags = new Set(["p", "div", "ul", "ol", "dl", "blockquote", "pre", "table"]);
-    const blocks: string[] = [];
-    let textLen = 0;
-    let i = 0;
-    while (i < body.length && textLen < 800) {
-      if (body[i] !== "<") { i++; continue; }
-      const tagEnd = body.indexOf(">", i);
-      if (tagEnd === -1) break;
-      const tagContent = body.slice(i + 1, tagEnd);
-      if (tagContent.startsWith("/") || tagContent.startsWith("!")) { i = tagEnd + 1; continue; }
-      const tagName = tagContent.split(/[\s/]/)[0].toLowerCase();
-      if (!blockTags.has(tagName)) { i = tagEnd + 1; continue; }
-      // Find matching close tag, tracking nesting depth
-      let depth = 1, j = tagEnd + 1;
-      while (j < body.length && depth > 0) {
-        if (body[j] !== "<") { j++; continue; }
-        const end = body.indexOf(">", j);
-        if (end === -1) break;
-        const inner = body.slice(j + 1, end);
-        const innerClose = inner.startsWith("/");
-        const innerTag = (innerClose ? inner.slice(1) : inner).split(/[\s/]/)[0].toLowerCase();
-        if (innerTag === tagName) depth += innerClose ? -1 : 1;
-        j = end + 1;
-      }
-      const block = body.slice(i, j);
-      blocks.push(block);
-      textLen += block.replace(/<[^>]*>/g, "").length;
-      i = j;
-    }
-    body = blocks.join("\n");
-    // Prepend article header matching ArticleHeader.astro's inline styles
-    const header = `<div style="margin-bottom:1em;line-height:1">
-      <h1 style="margin:0;font-size:3em;line-height:1.2;letter-spacing:normal;text-align:left">${title}</h1>
-      <div style="color:#a0623a;font-size:1.3rem;letter-spacing:0.07em;text-transform:uppercase;margin:0.5em 0">${formatDate(date)}</div>
-    </div>`;
-    return header + `<div class="prose">${body}</div>`;
-  } catch {
-    return "";
-  }
 }
 
 const posts = (await getCollection("blog"))
@@ -83,11 +30,7 @@ const posts = (await getCollection("blog"))
       date: displayDate,
       dateMs,
       tags: post.data.tags ?? [],
-      preview: extractPreview(
-        post.id,
-        post.data.title,
-        displayDate instanceof Date ? displayDate : new Date(displayDate as unknown as string)
-      ),
+      preview: extractPreview(post.id),
     };
   })
   .sort((a, b) => b.dateMs - a.dateMs);

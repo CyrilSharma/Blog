@@ -26,13 +26,9 @@ const formatDate = (value: string | Date) => {
     {posts.map((post) => (
       <article class="pg-card">
         <a class="pg-card-link" href={`${basePath}/${post.id}/`} aria-label={post.title}></a>
-        {post.preview
-          ? <div class="pg-frame-wrapper" set:html={post.preview} />
-          : <div class="pg-fallback">
-              <h2 class="pg-title">{post.title}</h2>
-              <div class="pg-date">{formatDate(post.date)}</div>
-            </div>
-        }
+        <h2 class="pg-title">{post.title}</h2>
+        <div class="pg-date">{formatDate(post.date)}</div>
+        {post.preview && <div class="pg-frame-wrapper" set:html={post.preview} />}
       </article>
     ))}
   </div>
