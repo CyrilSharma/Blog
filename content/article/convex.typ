@@ -17,9 +17,10 @@
 Intuitively, this is a set which contains no "gaps", i.e empty regions between points in the set.
 #align(graphic(cetz.canvas({
   import cetz.draw: *;
-  circle((-3, 0), radius: 2, fill: green.transparentize(50%), stroke: none)
-  rect((1, -2), (5, 2), fill: red.transparentize(50%), stroke: none)
-  rect((2, -1), (4, 2), stroke: white, fill: white)
+  circle((-3, 0), radius: 2, fill: green.transparentize(50%))
+  rect((1, -2), (5, 2), fill: red.transparentize(50%))
+  rect((2, -1), (4, 2), fill: white)
+  line((2 + 0.015, 2), (4 - 0.015, 2), stroke: (thickness: 2pt, paint: white))
 })))
 
 It's straightforward to show convex sets remain convex under a variety of transforms, such as Cartesian products and intersections. Here are some other useful convexity preserving transformations.
@@ -794,7 +795,7 @@ So indeed, the only fixed points for proximal gradient descent occur at minima o
 There's one last problem we need to resolve. By construction, $"prox"$ was made to force descent, but does it descend _fast enough_? As a first step, we prove a descent lemma for the Generalized Gradient.
 #lemma[
   $
-    eta <= 1/beta =>  forall z, f(x - eta G(x)) <= f(z) + G(x)^top (x - z) + eta/2 norm(G(x))^2 - alpha/2 norm(x - z)^2
+    eta <= 1/beta =>  forall z, f(x - eta G(x)) <= f(z) + G(x)^top (x - z) - eta/2 norm(G(x))^2 - alpha/2 norm(x - z)^2
   $
 ]
 #proof[
@@ -822,8 +823,8 @@ There's one last problem we need to resolve. By construction, $"prox"$ was made 
     f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - G(x)^top (z - x) + nabla g(x)^top (z - x)\
     f(x - eta G(x)) <= h(z) + g(x) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 + G(x)^top (x - z) + g(z) - g(x) - alpha/2 norm(x - z)^2 \
     f(x - eta G(x)) <= h(z) + g(z) + G(x)^top (x - z) + (beta eta^2 - 2 eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 \
-    eta <= 1/beta => beta <= 3 / eta, beta eta^2 - 2 eta <= eta \
-    f(x - eta G(x)) <= f(z) + G(x)^top (x - z) + (eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 
+    eta <= 1/beta => beta <= 3 / eta, beta eta^2 - 2 eta <= -eta \
+    f(x - eta G(x)) <= f(z) + G(x)^top (x - z) - (eta)/2 norm(G(x))^2 - alpha/2 norm(x - z)^2 
   $
 ]
 
@@ -950,6 +951,7 @@ The max appeared because we require the entries of the matrix to be positive (th
 = Duality
 // Weak Duality, Strong Duality.
 #definition(name: "Linear Program")[Find $inf_x c^top x | A x <= b$]
+Importantly, people often also add the condition $x >= 0$. Since any negative number can be represented as the difference of two positive numbers, this has equal expressivity as the above formulation.
 
 A reasonable question is what's the best lower-bound for $c^top x$.
 $
@@ -1055,8 +1057,38 @@ You have to find the minimum point over all candidates to be sure you've found a
 In general, you can think of solving a system with inequality constraints as first choosing which constraints will be tight and then applying the method of Lagrange multipliers. Note that the method of Lagrange multipliers can work _even if there is a duality gap_.
 
 == SDPs
+Strong Duality allows us to solve hard non-linear optimization challenges. One particularly useful class of such challenges is called Semi-Definite Programs. These are formulated as follows.
+$
+  inf ip(C, X) \
+  ip(A_i, X) <= b_i \ 
+  X succ.eq 0
+$
+
+Where the inner product here is the Frobenius inner product. Anything you can do with linear programs you can also do here, just work with diagonal $X$. However, the PSD constraint let's you add interesting non-linear constraints between the entries of $X$. Importantly though, the set of PSD matrices is convex, and remains convex after intersecting it with affine constraints. Hence, SDPs are convex programs, and benifet from the fact that strong duality usually holds for convex programs, and from the existence of fast convex solvers.
+
+My favorite application of SDPs is _building a better PCA_. PCA is great for trying to interpret high-dimensional data, but it's a linear projection so there's only so much it can do by itself. With SDPs, you can efficiently perform the following procedure:
++ Given the k-nearest neighbors of a high-dimensional point, preserve those distances exactly.
++ Maximize the distance to everything else.
++ Apply PCA
+
+The key is make the SDP directly parameterize the Gram matrix, defined by $X_i = u_i dot u_j$. Valid gram matrices are always PSD, so this is doable within this framework.
+
+The end result is you essentially unroll the high-dimensional space giving you much better results then raw PCA. It's called #link("https://en.wikipedia.org/wiki/Semidefinite_embedding")[semi-definite embedding].
+
 
 == Newton's Method
+This is an iterative method for finding zeros of function, which is derived from a simple linearization of the function.
+$
+  0 = f(x_(t+1)) approx f(x_t) + J(x_t) (x_(t+1) - x_t) \ 
+  J(x_t) x_(t+1) = J(x_t) x_t - f(x_t) => x_(t+1) = x_t - J(x_t)^+ f(x_t)
+$
+Notice that because we're using the pseudo-inverse, the implication is not forced, there are other valid choices for $x_t$. This makes sense, imagine we're optimizing a function with three inputs and one output. The linear approximation asks us to find the point at which the hyperplane equals zeros, but there may be many such points. Conversely, the hyperplane might not intersect at all, in which case we settle for the closest point on the hyperplane to 0.
+
+This method can also be used for optimization, by finding roots of the Jacobian.
+
+*TODO*: proof of convergence. It's pretty easy to derive, just use the Lagrangian form and bound things.
+
+
 
 
 
@@ -1097,6 +1129,13 @@ In general, you can think of solving a system with inequality constraints as fir
 // Gabor Wavelets vs. JPEG, ICA denoising.
 // Assuming invertible mixer matrix and statistically independent noise.
 // Minimize Mutua,l Information. Can somehow estimate mutual information without densitites.
-// Whitening, reduces the number of parameter sby half. Only have to work with orthonormal matrices.
+// Whitening, reduces the number of parameters by half. Only have to work with orthonormal matrices.
 // Correlation is a bad metric, you want KL because correlation only works for detecting linear releationships.
+// Jacobi rotation matrices. Coordinate descent. Entropy of H(WX)
+// Mutual information can be decomposed using Entropy.
+// Minimize sum of 1D Entropies. Kurtosis. Fast ICA algorithm, BS expectation approximation
+// Use orthogonality constraints to get around lambda.
+// ISA.
+// Crazy relaxed estimator.eya
 // TODO: should add a section talking about Franke-Wolfe Algorithms!
+// Add a section talking about Nesterov momentum. It's pretty esay to derive
