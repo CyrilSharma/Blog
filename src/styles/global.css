@@ -431,3 +431,11 @@ sup a:hover {
 .prose small {
   font-style: default;
 }
+
+.date {
+  margin: 0.5em 0;
+  color: #a0623a;
+  font-size: 1.2rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
