@@ -65,6 +65,7 @@
   height: 5rem;
   background: linear-gradient(to bottom, transparent, var(--main-bg-color));
   pointer-events: none;
+  z-index: 2147483647
 }
 
 .pg-frame-wrapper iframe {
