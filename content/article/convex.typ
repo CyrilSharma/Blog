@@ -1097,7 +1097,7 @@ $
   //  0 = f(x_n) + J_(x_n) alpha - J_(x_n) x_(n + 1) + f(x_(n)) + 1/2 (alpha - x_n)^top H(x^*) (alpha - x_n) \
 $
 
-So if $1/2 norm(J^(-1)_(x_n)) norm(H(x^*)) norm(x_n - a) = M <= 1$, the method is guaranteed to converge quadratically. Note that Newton's method is not guaranteed to converge for convex functions!
+So if $1/2 norm(J^(-1)_(x_n)) norm(H(x^*)) norm(x_n - a) = M <= 1$, the method is guaranteed to converge quadratically. 
 
 
 // Class Notes.
