@@ -1086,10 +1086,18 @@ Notice that because we're using the pseudo-inverse, the implication is not force
 
 This method can also be used for optimization, by finding roots of the Jacobian.
 
-*TODO*: proof of convergence. It's pretty easy to derive, just use the Lagrangian form and bound things.
+How fast does Newton's method converge?
+$
+  f(alpha) = f(x_n) + J_(x_n)(alpha - x_n) + 1/2 (alpha - x_n)^top H(x^*) (alpha - x_n) \
+  0 = f(x_n) + J_(x_n)(alpha - x_n) + 1/2 (alpha - x_n)^top H(x^*) (alpha - x_n) \
+  0 = f(x_n) + J_(x_n)(alpha - (x_(n + 1) + J_(x_(n))^(-1) f(x_(n)))) + 1/2 (alpha - x_n)^top H(x^*) (alpha - x_n) \
+   0 = (alpha - x_(n + 1)) + 1/2 J_(x_n)^(-1) (alpha - x_n)^top H(x^*) (alpha - x_n) \
+   (x_(n + 1) - alpha) =  1/2 J_(x_n)^(-1) (x_n - alpha)^top H(x^*) (x_n - alpha) \
+   norm(x_(n+1) - alpha) <= M norm(x_n - alpha)^2
+  //  0 = f(x_n) + J_(x_n) alpha - J_(x_n) x_(n + 1) + f(x_(n)) + 1/2 (alpha - x_n)^top H(x^*) (alpha - x_n) \
+$
 
-
-
+So if $1/2 norm(J^(-1)_(x_n)) norm(H(x^*)) norm(x_n - a) = M <= 1$, the method is guaranteed to converge quadratically. Note that Newton's method is not guaranteed to converge for convex functions! In the case of sigmoid, near the tails the function is essentially a straight line, and Newton's method will massively overstep when trying to find a root.
 
 
 // Class Notes.
