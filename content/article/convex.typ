@@ -364,40 +364,40 @@ And here's some "nice" function classes we typically work with. Note that all of
   $
 ]
 
-Let's see what $beta$-smoothness tells us about GD.
-$ norm(gradient f(x) - gradient f(y)) <= beta norm(eta gradient f(x)) = beta eta norm(gradient f(x)) $
-#align(graphic(
-  cetz.canvas({
-    import cetz.draw: *;
-    circle((0, 2), radius: 0.5, stroke: (dash: "dashed"))
-    line((0, 0), (0, 2), mark: (end: "straight"), name: "x")
-    line((0, 0), (0.36, 2.4), mark: (end: "straight"), name: "y")
-    content((-1, 1), padding-right: 5pt, [$nabla f(x)$])
-    content((1, 1), padding-right: 5pt, [$nabla f(y)$])
-  })
-))
+// Let's see what $beta$-smoothness tells us about GD.
+// $ norm(gradient f(x) - gradient f(y)) <= beta norm(eta gradient f(x)) = beta eta norm(gradient f(x)) $
+// #align(graphic(
+//   cetz.canvas({
+//     import cetz.draw: *;
+//     circle((0, 2), radius: 0.5, stroke: (dash: "dashed"))
+//     line((0, 0), (0, 2), mark: (end: "straight"), name: "x")
+//     line((0, 0), (0.36, 2.4), mark: (end: "straight"), name: "y")
+//     content((-1, 1), padding-right: 5pt, [$nabla f(x)$])
+//     content((1, 1), padding-right: 5pt, [$nabla f(y)$])
+//   })
+// ))
 
-Picture a circle of small radius (no bigger then $gradient f(x)$) around $gradient f(x)$. Within this small _region of trust_ ($eta <= 1/beta$) all vectors in the circle point at least somewhat in the direction of $gradient f(x)$. If you imagine breaking the path from $nabla f(x) -> nabla f(y)$ up, each step in that path will decrease the function. This is exactly what the proof exploits.
-
-#proof[
-  $
-    "dot"(gradient f(x) - gradient f(y), gradient f(x)) <=_"Cauchy Scharz" beta eta norm(gradient f(x))^2  \
-    norm(gradient f(x))^2 - "dot"(gradient f(y), gradient f(x)) <= beta eta norm(gradient f(x))^2  \
-    -"dot"(gradient f(y), gradient f(x)) <= (beta eta - 1) norm(gradient f(x))^2 \
-    f(x + h) = f(x) + integral_0^(1) gradient f(x + t h)^top (-eta gradient f(x))dif t \
-    f(x + h) <= f(x) + integral_0^(1) (beta t eta - 1) eta norm(gradient f(x)) dif t\
-    f(x + h) <= f(x) + ((beta eta^2) / 2 -  eta) norm(gradient f(x))^2 \
-    f(x + h) <= f(x) - 1/(2 beta) norm(gradient f(x))^2
-  $
-]
+// Picture a circle of small radius (no bigger then $gradient f(x)$) around $gradient f(x)$. Within this small _region of trust_ ($eta <= 1/beta$) all vectors in the circle point at least somewhat in the direction of $gradient f(x)$. If you imagine breaking the path from $nabla f(x) -> nabla f(y)$ up, each step in that path will decrease the function. This is exactly what the proof exploits.
 
 // #proof[
 //   $
-//     f(x + h) <= f(x) + gradient f(x)^top h + beta/2 norm(h)^2 \
-//     f(x_(t + 1)) <= f(x) - 1/beta norm(nabla f(x))^2 + 1/(2 beta) norm(nabla f(x_t))^2 \
-//     f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 = f(x) - eta/2 norm(gradient f(x_t))^2 \
+//     "dot"(gradient f(x) - gradient f(y), gradient f(x)) <=_"Cauchy Scharz" beta eta norm(gradient f(x))^2  \
+//     norm(gradient f(x))^2 - "dot"(gradient f(y), gradient f(x)) <= beta eta norm(gradient f(x))^2  \
+//     -"dot"(gradient f(y), gradient f(x)) <= (beta eta - 1) norm(gradient f(x))^2 \
+//     f(x + h) = f(x) + integral_0^(1) gradient f(x + t h)^top (-eta gradient f(x))dif t \
+//     f(x + h) <= f(x) + integral_0^(1) (beta t eta - 1) eta norm(gradient f(x)) dif t\
+//     f(x + h) <= f(x) + ((beta eta^2) / 2 -  eta) norm(gradient f(x))^2 \
+//     f(x + h) <= f(x) - 1/(2 beta) norm(gradient f(x))^2
 //   $
 // ]
+
+#proof[
+  $
+    f(x + h) <= f(x) + gradient f(x)^top h + beta/2 norm(h)^2 \
+    f(x_(t + 1)) <= f(x) - 1/beta norm(nabla f(x))^2 + 1/(2 beta) norm(nabla f(x_t))^2 \
+    f(x_(t + 1)) <= f(x) - 1/(2 beta) norm(nabla f(x_t))^2 = f(x) - eta/2 norm(gradient f(x_t))^2 \
+  $
+]
 
 // An interesting insight in the above proof is that if you differentiate the first line with respect to $h$, you get $x_(t + 1) = x_t - beta gradient f(x_t)$ which is the minimizer of the quadratic in terms of $h$. Hence, you can view gradient descent as repeatedly moving to the minimum of a locally fitted quadratic.
 
@@ -423,65 +423,96 @@ Picture a circle of small radius (no bigger then $gradient f(x)$) around $gradie
     f(x_k) - f(x^*) <= (beta)/(2k) norm(x_0 - x^*)^2
   $
 ]
-// #proof[
-//   $
-//     norm(x_(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
-//     norm(x_t - x^*)^2 + eta^2 norm(gradient f(x_t))^2 - 2 eta gradient f(x_t)^top (x_t - x^*) \
-//     2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
-//   $
-//   Substitute in the first order convexity condition.
-//   $
-//      2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2
-//   $
 
-//   Now use the descent lemma.
-//   $
-//      2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 2 /eta (f(x_t) - f(x_(t + 1))) \
-//      2 eta (f(x_(t + 1)) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 \
-//   $
+#import "@preview/ctz-euclide:0.1.5": *
+#align(graphic(cetz.canvas({
+  ctz-init()
+  ctz-style(point: (shape: "dot", size: 0.07, fill: black))
+  ctz-def-points(a: (0, 0), b: (2, 0), c: (3, 0), d: (3, 3), e: (2, 2), f: (3, 2))
+  ctz-draw(
+    points: ("a", "b", "c"),
+    labels: (
+      a: (pos: "above left", text: $x^*$),
+      b: (pos: "above left", text: $x_k$),
+      c: (pos: "above left", text: $x_0$)
+    )
+  ) 
+  ctz-draw-segment("a", "c") 
+  ctz-draw-measure-segment("a", "c", label: $norm(x_0 - x^*)$, offset: 0.45, side: "right")
+  ctz-draw-segment("a", "d")
+  ctz-draw-measure-segment("c", "d", label: $beta norm(x_0 - x^*)$, offset: 0.45, side: "right")
+  ctz-draw-segment("c", "d")
+  ctz-draw-segment("b", "e")
+  ctz-draw(segment: ("a", "f"), sketchy: true, roughness: 5, stroke: (green))
+})))
 
-//   Finally, use a telescoping sum to simplify things.
-//   $
-//      sum_(t=0)^(k-1) 2 eta (f(x_(t+1)) - f(x^*)) <= sum_(t=0)^(k-1) (norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2) \
-//     2 k eta (f(x_k) - f(x^*)) <= norm(x_0 - x^*)^2 - norm(x^(k) - x^*)^2 \
-//     f(x_k) - f(x^*) <= 1/(2 k eta) norm(x_0 - x^*)^2  = beta /(2 k) norm(x_0 - x^*)^2
-//   $
-// ]
-
-#let idxs = range(0, 1000)
-#let xs = idxs.map(i => (float(i) - 500)/125)
-#align(graphic(lq.diagram(
-  lq.plot(xs, xs.map(x => -calc.exp(-x*x))),
-  lq.plot((-3,),(0,), mark-size: 8pt)
-)))
-
-Without convexity, we could only say that the slope got pretty small. The reason we can say more with convexity is it gives a lower-bound on the norm of the gradient which by the descent lemma means we make substantial progress per step. This would not be the case if you were in a relatively flat region of a non-convex curve (shown above).
+#proof[
+  Assume we are in 1D. The green curve represents the _gradient_ of our convex function. Thinking about gradient descent on the gradient curve has a nice interpretation. The gradient curve itself is monotonically increasing (this comes from convexity) and our gradient descent steps take the height of the gradient curve and moves by a scaled version of that towards the root. The area under the green curve between $[x^*, x_k]$ is equal to $f(x_k) - f(x^*)$. This area is upper-bounded by the $beta$-triangle: the sub-triangle whose base spans $[x^*, x_k]$ and the height is $beta norm(x_k - x^*)$. This comes from $beta$-smoothness. Now suppose across all steps, the "height" (e.g. the value of the gradient) is $> beta norm(x_0 - x^*) / k$. Then, each step moved at least $1/beta beta norm(x_0 - x^*) / k$, hence the width of the $beta$-triangle at the end is...
+  $  norm(x_0 - x^*) - beta/beta norm(x_0 - x^*) ((k-1)/k) = norm(x_0 - x^*) / k $
+  
+  The area of the $beta$-triangle is thus at most $(beta)/(2k) norm(x_0 - x^*)^2$. If the height ever dips below $beta/k norm(x_0 - x^*)^2$, it must stay below it for all subsequent steps (the descent lemma forces this) and so the bound holds in all cases.
+]
+I think this proof gives really great intuition for the $1/k$ rate, but unfortunately I cannot see an easy generalization to higher dimensions. The more general proof is shown below.
 
 #proof[
   $
-    f(x) - f(y) <= nabla f(x)^top (x - y) => norm(nabla f(x_t)) >= (f(x_t) - f(x^*))/(norm(x_t - x^*)) \
+    norm(x_(t+1) - x^*)^2 = norm(x_t - eta gradient f(x_t) - x^*)^2 = \
+    norm(x_t - x^*)^2 + eta^2 norm(gradient f(x_t))^2 - 2 eta gradient f(x_t)^top (x_t - x^*) \
+    2 eta gradient f(x_t)^top (x_t - x^*) = norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2 \
   $
-  Substituting this lower-bound into the descent lemma yields...
+  Substitute in the first order convexity condition.
   $
-    f(x_(t + 1)) <= f(x_t) - 1/(2 beta)  (f(x_t) - f(x^*))^2/(norm(x_t - x^*))^2 \
-    epsilon_(t + 1) <= epsilon_t - 1/(2 beta)  (epsilon_t^2)/norm(x_t - x^*)^2 <= 
-    epsilon_t - 1/(2 beta)  (epsilon_t^2)/norm(x_0 - x^*)^2\
-    epsilon_(t + 1) <= epsilon_t - c epsilon_t^2
-  $
-
-  This is a finite-difference equation! You can rearrange it to make it solvable with telescoping.
-  $
-    (epsilon_t - epsilon_(t + 1))/(epsilon_(t + 1)epsilon_t) >= c epsilon_t^2/(epsilon_(t + 1)epsilon_t) => 1/(epsilon_(t+1)) - 1/(epsilon_(t)) >= c \
-    1/(epsilon_k) - 1/(epsilon_(0)) >= k c => epsilon_k <= 1/(k c)
+     2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 norm(gradient f(x_t))^2
   $
 
-  So we get 
+  Now use the descent lemma.
   $
-    epsilon_k <= 2/(eta k) norm(x_0 - x^2) = (2 beta)/k norm(x_0 - x^2)
+     2 eta (f(x_t) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 + eta^2 2 /eta (f(x_t) - f(x_(t + 1))) \
+     2 eta (f(x_(t + 1)) - f(x^*)) <= norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2 \
   $
-  
-  This bound is _not_ as tight as the theorem, however this proof is direct.
+
+  Finally, use a telescoping sum to simplify things.
+  $
+     sum_(t=0)^(k-1) 2 eta (f(x_(t+1)) - f(x^*)) <= sum_(t=0)^(k-1) (norm(x_t - x^*)^2 - norm(x_(t+1) - x^*)^2) \
+    2 k eta (f(x_k) - f(x^*)) <= norm(x_0 - x^*)^2 - norm(x^(k) - x^*)^2 \
+    f(x_k) - f(x^*) <= 1/(2 k eta) norm(x_0 - x^*)^2  = beta /(2 k) norm(x_0 - x^*)^2
+  $
 ]
+
+// #let idxs = range(0, 1000)
+// #let xs = idxs.map(i => (float(i) - 500)/125)
+// #align(graphic(lq.diagram(
+//   lq.plot(xs, xs.map(x => -calc.exp(-x*x))),
+//   lq.plot((-3,),(0,), mark-size: 8pt)
+// )))
+
+// Without convexity, we could only say that the slope got pretty small. The reason we can say more with convexity is it gives a lower-bound on the norm of the gradient which by the descent lemma means we make substantial progress per step. This would not be the case if you were in a relatively flat region of a non-convex curve (shown above).
+
+// #proof[
+//   $
+//     f(x) - f(y) <= nabla f(x)^top (x - y) => norm(nabla f(x_t)) >= (f(x_t) - f(x^*))/(norm(x_t - x^*)) \
+//   $
+//   Substituting this lower-bound into the descent lemma yields...
+//   $
+//     f(x_(t + 1)) <= f(x_t) - 1/(2 beta)  (f(x_t) - f(x^*))^2/(norm(x_t - x^*))^2 \
+//     epsilon_(t + 1) <= epsilon_t - 1/(2 beta)  (epsilon_t^2)/norm(x_t - x^*)^2 <= 
+//     epsilon_t - 1/(2 beta)  (epsilon_t^2)/norm(x_0 - x^*)^2\
+//     epsilon_(t + 1) <= epsilon_t - c epsilon_t^2
+//   $
+
+//   This is a finite-difference equation! You can rearrange it to make it solvable with telescoping.
+//   $
+//     (epsilon_t - epsilon_(t + 1))/(epsilon_(t + 1)epsilon_t) >= c epsilon_t^2/(epsilon_(t + 1)epsilon_t) => 1/(epsilon_(t+1)) - 1/(epsilon_(t)) >= c \
+//     1/(epsilon_k) - 1/(epsilon_(0)) >= k c => epsilon_k <= 1/(k c)
+//   $
+
+//   So we get 
+//   $
+//     epsilon_k <= 2/(eta k) norm(x_0 - x^2) = (2 beta)/k norm(x_0 - x^2)
+//   $
+  
+//   This bound is _not_ as tight as the theorem, however this proof is direct.
+// ]
 
 
 #theorem[
@@ -493,26 +524,26 @@ Without convexity, we could only say that the slope got pretty small. The reason
   That, is gradient descent yields linear convergence.
 ]
 #proof[
-  // Almost the same as the above proof. The first order convexity condition for $alpha$-strongly convex functions is as follows.
-  // $
-  //   f(y) >= f(x) + gradient f(x)^top (y - x) + alpha/2 norm(y - x)^2
-  // $
-
-  // So if you substitute that in to the above proof you get
-  // $
-  //    2eta(f(x_t) - f(x^*) + alpha / 2 norm(x_t - x^*)^2) <= norm(x_t - x^*)^2 - norm(x_(t + 1) - x^*) \
-  //    norm(x_(t + 1) - x^*)^2 <= (1 - alpha / beta)norm(x_t - x^*)^2 \
-  //    norm(x_k - x^*)^2 <= (1 - alpha / beta)^k norm(x_0 - x^*)^2
-  // $
-
+  Almost the same as the above proof. The first order convexity condition for $alpha$-strongly convex functions is as follows.
   $
-     f(x_(t + 1)) <= f(x_t) - 1/(2 beta)  (f(x_t) - f(x^*))^2/(norm(x_t - x^*))^2 \
-     alpha/2 norm(x_(t + 1) - x^*)^2 <= alpha/2 norm(x_t - x^*)^2 -(alpha^2)/(4 beta) norm(x_t - x^*)^2 \ 
-     norm(x_(t + 1) - x^*)^2 <= (1 - alpha/(2 beta)) norm(x_t - x^*)^2 \
-     norm(x_k - x^*)^2 <= (1 - alpha/(2 beta))^k norm(x_0 - x^*)^2 
+    f(y) >= f(x) + gradient f(x)^top (y - x) + alpha/2 norm(y - x)^2
   $
 
-  Again, a slightly worse result then it is possible to prove.
+  So if you substitute that in to the above proof you get
+  $
+     2eta(f(x_t) - f(x^*) + alpha / 2 norm(x_t - x^*)^2) <= norm(x_t - x^*)^2 - norm(x_(t + 1) - x^*) \
+     norm(x_(t + 1) - x^*)^2 <= (1 - alpha / beta)norm(x_t - x^*)^2 \
+     norm(x_k - x^*)^2 <= (1 - alpha / beta)^k norm(x_0 - x^*)^2
+  $
+
+  // $
+  //    f(x_(t + 1)) <= f(x_t) - 1/(2 beta)  (f(x_t) - f(x^*))^2/(norm(x_t - x^*))^2 \
+  //    alpha/2 norm(x_(t + 1) - x^*)^2 <= alpha/2 norm(x_t - x^*)^2 -(alpha^2)/(4 beta) norm(x_t - x^*)^2 \ 
+  //    norm(x_(t + 1) - x^*)^2 <= (1 - alpha/(2 beta)) norm(x_t - x^*)^2 \
+  //    norm(x_k - x^*)^2 <= (1 - alpha/(2 beta))^k norm(x_0 - x^*)^2 
+  // $
+
+  // Again, a slightly worse result then it is possible to prove.
 ]
 
 #align(image("../img/bowl_trajectory_1_20.png"))
