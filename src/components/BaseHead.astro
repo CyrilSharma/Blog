@@ -63,3 +63,14 @@ const { title, description, image = "/blog-placeholder-1.jpg" } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<script>
+  if (import.meta.hot) {
+    import.meta.hot.on("typst-navigate", ({ slug }: { slug: string }) => {
+      const target = `${import.meta.env.BASE_URL}/${slug}/`;
+      if (!window.location.pathname.endsWith(`/${slug}/`)) {
+        window.location.href = target;
+      }
+    });
+  }
+</script>

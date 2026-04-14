@@ -41,6 +41,12 @@ export default defineConfig({
               else console.error(`[make] exited with code ${code}`);
             });
           });
+          server.watcher.on("change", (file) => {
+            if (!file.endsWith(".typ") || !file.includes("content/article")) return;
+            const slug = path.basename(file, ".typ");
+            console.log(`[typst] navigating to ${slug}`);
+            server.ws.send({ type: "custom", event: "typst-navigate", data: { slug } });
+          });
           const typstWatchers = new Map();
           server.middlewares.use((req, _res, next) => {
             const match = req.url?.match(/^\/([^/?@]+)\//);
