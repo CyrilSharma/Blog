@@ -1138,20 +1138,20 @@ Suppose you want to solve $Y = A X$, but you don't know $A$ or $X$. However, you
 
 First, let's clean up the problem a little bit. We can modify $Y$ and then assume $X$ has zero mean rows.
 $
-  Y - bb(E)(Y) = Y - bb(E)(A X) = A x - A bb(E)(X) = A (X - bb(E)(X))
+  Y - EE(Y) = Y - EE(A X) = A x - A EE(X) = A (X - EE(X))
 $
 
 Next it is impossible to know what the original signal strength was, because modifying the coefficients of $A$ and scaling rows are equivalent transformations. Hence, let's assume each row of $X$ has unit covariance.
 $
-  E(Y Y^top) = E((A x) (A x)^top) = E(A x x^top A^top) = A A^top
+  EE(Y Y^top) = EE((A x) (A x)^top) = EE(A x x^top A^top) = A A^top
 $
 
 Finally, let's transform the problem to force the covariance of $Y$ to $I$.
 $
   A A^top = Q D Q^top \ 
   Z = D^(-1/2) Q^top quad Y^* = Z Y quad A^* = Z A \
-  E(Y^* Y^*^top) = E((Z Y)(Z Y)^top) = Z A A^top Z^top = I \
-  E(Y^* Y^*^top) = E(A^* X X^top A^*^top) = A^* A^*^top
+  EE(Y^* Y^*^top) = EE((Z Y)(Z Y)^top) = Z A A^top Z^top = I \
+  EE(Y^* Y^*^top) = EE(A^* X X^top A^*^top) = A^* A^*^top
 $
 
 Since $A^* A^*^top = I$, we now only need to find an orthnormal mixer matrix $A^*$. This trick is called Whitening. From now on, I'm going to assume the problem has been transformed like above.
@@ -1159,7 +1159,7 @@ Since $A^* A^*^top = I$, we now only need to find an orthnormal mixer matrix $A^
 Now, what is the mutual information of $Y$?
 $
   "KL"(P(Y_1, ..., Y_d), product_i P(Y_i)) = \
-  bb(E)_(p_"joint") log(P(Y_1, ..., Y_d)) - sum_i log(P(Y_i)) = \
+  EE_(p_"joint") log(P(Y_1, ..., Y_d)) - sum_i log(P(Y_i)) = \
   -H(Y_1, ..., Y_d) + sum_i H(Y_i) 
 $
 

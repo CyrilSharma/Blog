@@ -8,43 +8,43 @@
 #show: note_page 
 
 = Inequalities
-#definition(name: "Markov's Inequality")[$ P(X > t) <= E(X)/t $]
+#definition(name: "Markov's Inequality")[$ P(X > t) <= EE(X)/t $]
 #proof[
-  $ t P(X > t) &<= E(X | X > t) P(X > t) \
-             &<= E(X | X > t)P(X > t) + \
-             &quad  E(X | X <= t)P(X <= t)  \
-             &= E(X) \
-   P(X > t) &<= E(X)/t $]
+  $ t P(X > t) &<= EE(X | X > t) P(X > t) \
+             &<= EE(X | X > t)P(X > t) + \
+             &quad  EE(X | X <= t)P(X <= t)  \
+             &= EE(X) \
+   P(X > t) &<= EE(X)/t $]
 
-#definition(name: "Chevyshev's Inequality")[$ P(X - E(X) >= epsilon) <= V(x)/epsilon^2 $]
+#definition(name: "Chevyshev's Inequality")[$ P(X - EE(X) >= epsilon) <= V(x)/epsilon^2 $]
 #proof[
-$ P(X - E(X) >= epsilon) &= P((X - E(X))^2 >= epsilon^2) \
-                         &<= E((X - E(X))^2)/epsilon^2 \
+$ P(X - EE(X) >= epsilon) &= P((X - EE(X))^2 >= epsilon^2) \
+                         &<= EE((X - EE(X))^2)/epsilon^2 \
                          &= V(X)/epsilon^2 $]
 
-#definition(name: "Jensen's Inequality")[$ g(E(X)) <= E(g(X)) $]
+#definition(name: "Jensen's Inequality")[$ g(EE(X)) <= EE(g(X)) $]
 #proof[
 Given $g$ is convex we have
 #[
   #set math.equation(numbering: "(1)")
   $ g(a x + (1 - a) y) <= a g(x) + (1 - a)g(y) $
 ]
-$ g(E(X)) &= g(integral_X x p(x) dif x) \ 
+$ g(EE(X)) &= g(integral_X x p(x) dif x) \ 
           &= g(x_0p(x_0)dif x + ... + x_n p(x_n) dif x) \
           &<=^"(1)" p(x_0) g(x_0) dif x + (1 - p(x_0))g(dots) dif x \
           &<=^"(1)" p(x_0) g(x_0) dif x + dots + p(x_n) g(x_n) dif x \
-          &= E(g(X)) $
-The textbook provides a cleaner proof where you just lower-bound g(x) by the tangent line at $E(x)$.
-$ E(g(x)) >= E(L(x)) = E(a + b x) = a + b E(x)\ = L(E(x)) = g(E(x)) $
+          &= EE(g(X)) $
+The textbook provides a cleaner proof where you just lower-bound g(x) by the tangent line at $EE(x)$.
+$ EE(g(x)) >= EE(L(x)) = EE(a + b x) = a + b EE(x)\ = L(EE(x)) = g(EE(x)) $
 ]
 
-#definition(name: "Cauchy-Schwartz Inequality")[$ E(X Y)^2 <= E(X^2)E(Y^2) $]
+#definition(name: "Cauchy-Schwartz Inequality")[$ EE(X Y)^2 <= EE(X^2)EE(Y^2) $]
 #proof[
-We start by investigating $E((X t + Y)^2)$ which is clearly non-negative.
-$ &= E(X^2)t^2 + 2E(X Y)t + E(Y^2) $
+We start by investigating $EE((X t + Y)^2)$ which is clearly non-negative.
+$ &= EE(X^2)t^2 + 2EE(X Y)t + EE(Y^2) $
 For this quadratic equation to be non-negative, the discriminant must be $<= 0$.
-$ 4E(X Y)^2  - 4E(X^2)E(Y^2)  <= 0 \
-  E(X Y)^2 <= E(X^2)E(Y^2) $
+$ 4EE(X Y)^2  - 4EE(X^2)EE(Y^2)  <= 0 \
+  EE(X Y)^2 <= EE(X^2)EE(Y^2) $
 ]
 
 This is interesting because it's hard to think of a direct way to derive this. You have to get the insight to transform it into a quadratic via a dummy parameter to see this.
@@ -53,7 +53,7 @@ This is interesting because it's hard to think of a direct way to derive this. Y
 There are two common notions of convergence.
 + The probability of $|X_n - X| < epsilon$ tends to 1 as $n$ grows. In other words, I expect to sample almost the exact same things.
 + The distributions become identical. E.g. I have one distribution that asymptotically becomes a normal distribution, that doesn't mean it has particularly good odds of sampling the same thing as whatever that normal distribution is, though. Hence, convergence in probability is stronger than convergence in distribution.
-+ Bonus: $X_n$ converges quadratically to $X$ iff $lim_(n arrow infinity) E((X_n - X)^2) = 0$
++ Bonus: $X_n$ converges quadratically to $X$ iff $lim_(n arrow infinity) EE((X_n - X)^2) = 0$
 
 Converging in probability does not imply converging in (3) because expectations can get skewed by extreme points, even very unlikely extremes. Converging in distribution of course does not imply converging in probability.
 
@@ -97,10 +97,10 @@ Let's assume we'll bet a fixed fraction of our income, $f$. Let's assume capital
 Let's choose to maximize the growth rate of capital per round $g(f)$.
 $ g(f) &= log((X_n /X_0)^(1/n)) \
   g(f)   &= S/n log(1 + f) + F/n log(1 - f) \
-  E(g(f)) &= p log(1 + f) + q log(1 - f) $
+  EE(g(f)) &= p log(1 + f) + q log(1 - f) $
 
 Maximizing,
-$ d/(dif f) E[g(f)] &= p/(1 + f) - q/(1 - f) = 0 \
+$ d/(dif f) EE(g(f)) &= p/(1 + f) - q/(1 - f) = 0 \
                     &arrow p(1 - f) - q(1 + f) = 0 \
                     &arrow (p - q) = (p + q)f \
                     &arrow f = p - q $
