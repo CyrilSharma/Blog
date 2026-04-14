@@ -28,7 +28,7 @@ $
 == Contrastive Divergence
 Suppose we want to optimize a distribution. The most obvious idea is to just run the MLE.
 $
-  "argmax"_theta bb(E)_(p_"data") log(q_theta (x)) \
+  argmax_theta bb(E)_(p_"data") log(q_theta (x)) \
   nabla_theta bb(E)_(p_"data") log(q_theta (x)) = nabla_theta bb(E)_(p_"data") (-E_theta (x) - log(Z_theta)) = \
   - bb(E)_(p_"data") E'_theta (x) + (Z'_theta) / (Z_theta) = 
   - bb(E)_(p_"data") E'_theta (x) +  1/(Z_theta) integral -exp(-E_theta (x))E'_theta (x) dif x = \
@@ -57,7 +57,7 @@ Using this principle, we can immediately obtain an upper and lower-bound on the 
 This is sometimes useful by itself (e.g. if you actually want to evaluate the probability of a sample), but the more useful case is for computing posteriors.
 #corollary[
   $
-    p(z|x) = "argmax"_q H(q(z|x)) + bb(E)_(x tilde q(z|x)) log(p(z, x))
+    p(z|x) = argmax_q H(q(z|x)) + bb(E)_(x tilde q(z|x)) log(p(z, x))
   $
 ]
 
@@ -65,15 +65,15 @@ We can directly try to maximize the above formulation without making any mention
 
 You can also view these statements as KL minimizations.
 $
-  "argmin"_q "KL"(q(z|x), p(z, x)) = "argmin"_q bb(E)_(z tilde q(z|x)) log(q(z|x)) - bb(E)_(z tilde q(z|x)) log (p(z, x)) \
-  "argmax" H(q(z|x)) + bb(E)_(x tilde q(z|x)) log(p(z, x))
+  argmin_q "KL"(q(z|x), p(z, x)) = argmin_q bb(E)_(z tilde q(z|x)) log(q(z|x)) - bb(E)_(z tilde q(z|x)) log (p(z, x)) \
+  argmax H(q(z|x)) + bb(E)_(x tilde q(z|x)) log(p(z, x))
 $
 
 This is nice because when we restrict the possible $q$s, it now has a sensible interpretation, we're just finding the closest $q$ in the family we have to the target distribution.
 
 We can also write the following, since the $p(x)$ term is not a function of $q$.
 $
- "argmin"_q "KL"(q(z|x), p(z, x)) = bb(E)_(z tilde q(z|x)) log(q(z|x)) - log(p(z|x)) - log(p(x)) \ 
+ argmin_q "KL"(q(z|x), p(z, x)) = bb(E)_(z tilde q(z|x)) log(q(z|x)) - log(p(z|x)) - log(p(x)) \ 
  bb(E)_(z tilde q(z|x)) log(q(z|x)) - log(p(z|x))
 $
 
@@ -111,7 +111,7 @@ These are two very different estimators! In general, neither dominates the other
 == Score-Matching
 The idea of score-matching is simple.
 $
-  "argmin"_theta bb(E)_(p_"data") norm(nabla_x log(q_theta (x)) - nabla_x log(p_"data" (x)))^2 
+  argmin_theta bb(E)_(p_"data") norm(nabla_x log(q_theta (x)) - nabla_x log(p_"data" (x)))^2 
 $
 
 We can rewrite the inner term as follows $
@@ -120,7 +120,7 @@ $
 
 Dropping the term independent from $theta$ we obtain: 
 $
-  => "argmin"_theta  bb(E)_(p_"data") norm(nabla_x log(q_theta (x)))^2 - 2 (nabla_x log(q_theta (x)))^top (nabla_x log(p_"data" (x)))
+  => argmin_theta  bb(E)_(p_"data") norm(nabla_x log(q_theta (x)))^2 - 2 (nabla_x log(q_theta (x)))^top (nabla_x log(p_"data" (x)))
 $
 
 To compute this, observe the first term is simple.
@@ -150,7 +150,7 @@ $
 
 The naive way of doing this requires running several backwards passes, one per each diagonal element. There's a neat trick called sliced score matching which reduces the overhead. Specifically, change the objective function to...
 $
-  "argmin"_theta bb(E)_(v tilde p_v) bb(E)_(p_"data") (v^top nabla_x log(q_theta (x)) - v^top nabla_x log(p_"data" (x)))^2 
+  argmin_theta bb(E)_(v tilde p_v) bb(E)_(p_"data") (v^top nabla_x log(q_theta (x)) - v^top nabla_x log(p_"data" (x)))^2 
 $
 
 If you choose $p_v$ such that $v v^top = I$, it's easy to verify that the objective actually remains unchanged. 

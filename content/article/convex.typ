@@ -603,7 +603,7 @@ We can generalize our optimality conditions from earlier to use subgradients.
 ]
 #proof[
   $
-    "argmin"_(x in C) f(x) = "argmin" f(x) + I_C (x) = \
+    argmin_(x in C) f(x) = argmin f(x) + I_C (x) = \
     dif f(x) + I_C(x) = dif f(x) + "NC"(x)
   $
   $0$ must be in the subgradient of $x^*$ for it to be optimal.
@@ -775,7 +775,7 @@ Using this, it's easy to show all the rates we showed for earlier methods immedi
 #definition(name: "Proximal Gradient Descent")[
   Find $inf_x f(x) = inf_x g(x) + h(x)$, where $g, h$ are convex.
   $
-    "Prox"(y) = "argmin"_(z in R^d) 1/2 norm(y - z)^2 + h(z)\
+    "Prox"(y) = argmin_(z in R^d) 1/2 norm(y - z)^2 + h(z)\
     x_(t + 1) = "Prox"(x_t - eta gradient g(x))
   $
 ]
@@ -809,7 +809,7 @@ Technically prox can be viewed as rescaling the gradient on $h$, which seems lik
   $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient g(x_t))), eta)$
 ]
 #theorem[
-  $G(x^*) = 0 => x^* = "argmin"_x f(x)$
+  $G(x^*) = 0 => x^* = argmin_x f(x)$
 ]
 #proof[
   $
@@ -876,7 +876,7 @@ $
 
 Which directly implies $M$ is low-rank. So we want a low-rank matrix which fits the observed data. Thus, we get the following problem.
 $
-  hat(M) = "argmin"_M sum (M_(i j) - y_(i j))^2 + lambda "rank"(M)
+  hat(M) = argmin_M sum (M_(i j) - y_(i j))^2 + lambda "rank"(M)
 $
 
 The first term is smooth and easy to deal with and the second term isn't. This suggests Proximal gradient descent, but unfortunately $"rank"(M)$ is not convex. So, instead, we can take a convex relaxation of the problem.
@@ -943,9 +943,9 @@ The first term is smooth and easy to deal with and the second term isn't. This s
 
 The convex envelope of $"rank"(M)$ is the nuclear norm at least when $norm(M) <= 1$, which you guarantee with scaling. The prox operator is now
 $
-  "argmin"_M 1/(2 eta) norm(M - L)^2 + norm(M)_* = "argmin"_(M = U M' V^top) 1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') \
+  argmin_M 1/(2 eta) norm(M - L)^2 + norm(M)_* = argmin_(M = U M' V^top) 1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') \
   1/(2 eta) norm(M' - Sigma)^2 + sum sigma_i (M') >= 1/(2 eta) norm(M' - Sigma)^2 + sum M'_(i i)\
-  "argmin"_(M'_(i i)) 1/(2 eta)(M'_(i i) - Sigma_(i i))^2 + M'_(i i) => M'_(i i) = max(0, Sigma_(i i) - eta) \
+  argmin_(M'_(i i)) 1/(2 eta)(M'_(i i) - Sigma_(i i))^2 + M'_(i i) => M'_(i i) = max(0, Sigma_(i i) - eta) \
   M = U max(0, Sigma - eta I) V^top
 $
 
@@ -1130,6 +1130,50 @@ $
 
 So if $1/2 norm(J^(-1)_(x_n)) norm(H(x^*)) norm(x_n - a) = M <= 1$, the method is guaranteed to converge quadratically. 
 
+// Adagrad (basic Hessian approximation) and RMSprop (decayed window approximation)
+// Adam (the above + momentum)
+
+== ICA
+Suppose you want to solve $Y = A X$, but you don't know $A$ or $X$. However, you do know all the rows in $X$ are statistically independent. That is, imagine the rows of $X$ to be independent time-series such as audio signals in a room. How can you solve this?
+
+First, let's clean up the problem a little bit. We can modify $Y$ and then assume $X$ has zero mean rows.
+$
+  Y - bb(E)(Y) = Y - bb(E)(A X) = A x - A bb(E)(X) = A (X - bb(E)(X))
+$
+
+Next it is impossible to know what the original signal strength was, because modifying the coefficients of $A$ and scaling rows are equivalent transformations. Hence, let's assume each row of $X$ has unit covariance.
+$
+  E(Y Y^top) = E((A x) (A x)^top) = E(A x x^top A^top) = A A^top
+$
+
+Finally, let's transform the problem to force the covariance of $Y$ to $I$.
+$
+  A A^top = Q D Q^top \ 
+  Z = D^(-1/2) Q^top quad Y^* = Z Y quad A^* = Z A \
+  E(Y^* Y^*^top) = E((Z Y)(Z Y)^top) = Z A A^top Z^top = I \
+  E(Y^* Y^*^top) = E(A^* X X^top A^*^top) = A^* A^*^top
+$
+
+Since $A^* A^*^top = I$, we now only need to find an orthnormal mixer matrix $A^*$. This trick is called Whitening. From now on, I'm going to assume the problem has been transformed like above.
+
+Now, what is the mutual information of $Y$?
+$
+  "KL"(P(Y_1, ..., Y_d), product_i P(Y_i)) = \
+  bb(E)_(p_"joint") log(P(Y_1, ..., Y_d)) - sum_i log(P(Y_i)) = \
+  -H(Y_1, ..., Y_d) + sum_i H(Y_i) 
+$
+
+This is because the joint and the product of marginals should be the same under the assumption of statistical independence. Conveniently, under the many assumptions we have made, the joint entropy is a constant with respect to $X$.
+
+// TODO: justify
+If we have found $W$ such that $W Y = X$, then $W Y$'s components rows are independent, so they should have $0$ mutual information. Hence, it suffices to solve 
+$
+ limits(argmin)_(W^top W = I) sum_i H((W Y)_i)  
+$
+
+This reduction is the main insight. We've turned a problem which initially involved estimating a joint distribution to a problem which involves estimating marginals. Furthermore, entropy is concave, and we're maximizing over a convex set. Hence, this fits nicely within the convex analysis framework, and there is a large suite of techniques which can be used to optimize this.
+
+// The distribution which has the most entropy for a fixed covariance matrix is the normal distribution, so in some sense we want to choose $W$ to push things as far away from normal distributions as possible.
 
 // Class Notes.
 // Fenchel-Moreau: Dual of the Dual of a proper closed convex optimization problem is the same problem.
@@ -1167,7 +1211,7 @@ So if $1/2 norm(J^(-1)_(x_n)) norm(H(x^*)) norm(x_n - a) = M <= 1$, the method i
 // LICQ, Critical Cone, Strict Local Minimum, Independent Component Analysis connection to PCA.
 // Gabor Wavelets vs. JPEG, ICA denoising.
 // Assuming invertible mixer matrix and statistically independent noise.
-// Minimize Mutua,l Information. Can somehow estimate mutual information without densitites.
+// Minimize Mutual Information. Can somehow estimate mutual information without densitites.
 // Whitening, reduces the number of parameters by half. Only have to work with orthonormal matrices.
 // Correlation is a bad metric, you want KL because correlation only works for detecting linear releationships.
 // Jacobi rotation matrices. Coordinate descent. Entropy of H(WX)
@@ -1176,5 +1220,11 @@ So if $1/2 norm(J^(-1)_(x_n)) norm(H(x^*)) norm(x_n - a) = M <= 1$, the method i
 // Use orthogonality constraints to get around lambda.
 // ISA.
 // Crazy relaxed estimator.eya
+// Polak momentum? Nesterov momentum.
+// Adagrad, RMSProp
 // TODO: should add a section talking about Franke-Wolfe Algorithms!
 // Add a section talking about Nesterov momentum. It's pretty esay to derive
+// Shampoo idea: two preconditioners (because the update is matrix valued)
+// Use a left matrix which is mxm and a right matrix which is nxn.
+// Update rule is just G G^T and G^T G and then invert...
+// SOAP

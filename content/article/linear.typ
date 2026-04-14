@@ -274,19 +274,19 @@ So we get the new projector, $A (A^* A)^(-1)A^*$.
 
 Orthogonal projectors are nice because they immediately tell you the closest point in a subspace. Suppose I have a vector $y$ and I have a the closest point $x$ in the subspace denoted $U$. Then 
 $
-  "argmin"_x y - x = "argmin"_x v_1 + v_2 - x = "argmin"_x norm(v_1 - x)^2 = v_1 = "Proj"(y)
+  argmin_x norm(y - x) = argmin_x norm(v_1 + v_2 - x) = argmin_x norm(v_1 - x) = v_1 = "Proj"(y)
 $
 
 Where $v_1 in U, v_2 in U^top$. Hence, orthogonal projection is the canonical solution to least squares problems, e.g. find $x$ to minimize $norm(A x - b)^2$.
 
 Here's another problem you can solve with orthogonal projectors.
 $
-  tilde(x) = "argmin"_(x) norm(y - x) | A x = b
+  tilde(x) = argmin_(x) norm(y - x) | A x = b
 $
 
 We can break y and x into their row and null space components.
 $
-  tilde(x) = "argmin"_x norm(y_"row" + y_"null" - x_"row" - x_"null") | A x = b \
+  tilde(x) = argmin_x norm(y_"row" + y_"null" - x_"row" - x_"null") | A x = b \
 $
 
 $x_"row"$ is constrained, changing it would violate the constraint. The nullspace component does not have this problem. Hence, choosing $x_"null" = y_"null"$ is optimal. Thus,
@@ -310,12 +310,12 @@ Suppose we want to solve $A x = b$. If $A$ is not a square, full-rank matrix, th
 
 To see why this is useful, let's plug these definitions into our problem.
 $
-  x = A^+ b => A(A^+ b) = (A A^+) b = "argmin"_(c in "Col"(A)) norm(b - c)
+  x = A^+ b => A(A^+ b) = (A A^+) b = argmin_(c in "Col"(A)) norm(b - c)
 $
 
 Suppose $b in "Col"(A)$.
 $
-  x = A^+ A y = "argmin"_(r in "Row"(A)) norm(y - r)
+  x = A^+ A y = argmin_(r in "Row"(A)) norm(y - r)
 $
 
 So if $b in.not "Col"(A)$ we find $x$ to produce the closest vector, and if $b in "Col"(A)$ we find the smallest $x$ that produces it. The motivation for the second condition is it's a natural tie-breaker when there are multiple solutions.
@@ -1079,7 +1079,7 @@ We would like to approximate $X in bb(R)^(T times d)$ with a $T times r$ matrix,
 
 To make our problem more precise, we want to compress $d$ coordinates to $r$ coordinates. Then, we will grade our approximation based on how well the "decompressed" $r$ coordinates line up with the original coordinates. If we insist compression and decompression must be linear, it's easy to see this is equivalent to the following problem.
 $
-  "argmin"_(R | "Rank"(R) = r) norm(X - R X)^2_F
+  argmin_(R | "Rank"(R) = r) norm(X - R X)^2_F
 $
 
 Suppose the optimal $R$ spanned a rank-$r$ subspace $U$. Let $P$ be the orthogonal projector onto $U$.
@@ -1091,11 +1091,11 @@ $
 
 Hence, choosing $R = Q Q^*$ to be an orthogonal projector is always optimal. Now, we can analyze our original problem. Let $X = U Sigma V^T$ per the SVD.
 $
-  "argmin"_(R | "Rank"(R) = r) norm(X - R X)^2_F = "TR"((X - R X)^top (X - R X)) = \
-  "argmin"_(R | "Rank"(R) = r) "TR"(X^top R R^top X) - 2 "TR"(X^top R X) = \
-  "argmin"_(R | "Rank"(R) = r) "TR"(X^top R X) - 2 "TR"(X^top R X) = "TR"(X^top R X) = \
-  "argmax"_(R | "Rank"(R) = r) "TR"(Q^* U Sigma^2 U^top Q) = \
-  "argmax"_(R | "Rank"(R) = r) sum_i^r "dot"(Q^* U_i, Q^* U_i) Sigma^2_(i i)
+  argmin_(R | "Rank"(R) = r) norm(X - R X)^2_F = "TR"((X - R X)^top (X - R X)) = \
+  argmin_(R | "Rank"(R) = r) "TR"(X^top R R^top X) - 2 "TR"(X^top R X) = \
+  argmin_(R | "Rank"(R) = r) "TR"(X^top R X) - 2 "TR"(X^top R X) = "TR"(X^top R X) = \
+  argmax_(R | "Rank"(R) = r) "TR"(Q^* U Sigma^2 U^top Q) = \
+  argmax_(R | "Rank"(R) = r) sum_i^r "dot"(Q^* U_i, Q^* U_i) Sigma^2_(i i)
 $
 
 By Cauchy-Schwarz, choosing $Q^* = [U_1^*; ...; U_r^*]$ is optimal.

@@ -312,3 +312,6 @@
 $
 
 #let ip(x, y) = $lr(chevron.l #x, #y chevron.r)$
+
+#let argmin = math.op("argmin", limits: true)
+#let argmax = math.op("argmax", limits: true)
