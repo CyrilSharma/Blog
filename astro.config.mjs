@@ -6,6 +6,7 @@ import react from "@astrojs/react";
 import path from "node:path";
 import fs from "node:fs";
 import { spawn } from "node:child_process";
+import * as cheerio from "cheerio";
 
 const meta = JSON.parse(fs.readFileSync("./meta.json", "utf8"));
 const rawPages = Object.keys(meta).map(
@@ -30,6 +31,27 @@ export default defineConfig({
       {
         name: "watch-html-content",
         configureServer(server) {
+          const SKIP = new Set(["style", "script"]);
+          function parseElements(bodyHtml) {
+            const $ = cheerio.load(bodyHtml);
+            return $("body").children().toArray()
+              .filter(el => !SKIP.has(el.tagName?.toLowerCase()))
+              .map(el => $.html(el));
+          }
+
+          // Pre-populate cache from all existing html files
+          const elementCache = new Map(); // slug -> string[]
+          if (fs.existsSync("./html")) {
+            for (const slug of fs.readdirSync("./html")) {
+              const f = `html/${slug}/index.html`;
+              if (fs.existsSync(f)) {
+                const body = fs.readFileSync(f, "utf8")
+                  .match(/<body[^>]*>([\s\S]*?)<\/body>/is)?.[1] ?? "";
+                elementCache.set(slug, parseElements(body));
+              }
+            }
+          }
+
           server.watcher.add(`./html/**/*.html`);
           server.watcher.add(`./content/article`);
           server.watcher.on("add", (file) => {
@@ -74,18 +96,29 @@ export default defineConfig({
           const pending = new Map();
           server.watcher.on("change", (file) => {
             if (!file.includes("/html/")) return;
+            const slugMatch = file.match(/\/html\/([^/]+)\//);
+            if (!slugMatch) return;
+            const slug = slugMatch[1];
             if (pending.has(file)) clearTimeout(pending.get(file));
             pending.set(
               file,
               setTimeout(() => {
                 pending.delete(file);
                 const full = fs.readFileSync(file, "utf8");
-                const match = full.match(/<body[^>]*>([\s\S]*?)<\/body>/is);
-                const content = match ? match[1] : full;
+                const body = full.match(/<body[^>]*>([\s\S]*?)<\/body>/is)?.[1] ?? full;
+                const newElements = parseElements(body);
+                const oldElements = elementCache.get(slug) ?? [];
+                elementCache.set(slug, newElements);
+
+                let scrollIndex = -1;
+                for (let i = 0; i < Math.max(oldElements.length, newElements.length); i++) {
+                  if (oldElements[i] !== newElements[i]) { scrollIndex = i; break; }
+                }
+
                 server.ws.send({
                   type: "custom",
                   event: "typst-update",
-                  data: { content },
+                  data: { content: body, scrollIndex },
                 });
               }, 150)
             );

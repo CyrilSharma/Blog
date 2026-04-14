@@ -51,12 +51,21 @@ const { title, desc, date, updatedDate, tags } = Astro.props;
     </main>
   <script>
     if (import.meta.hot) {
-      import.meta.hot.on("typst-update", ({ content }) => {
+      const SKIP = new Set(["style", "script"]);
+      import.meta.hot.on("typst-update", ({ content, scrollIndex }: { content: string, scrollIndex: number }) => {
         const prose = document.querySelector(".prose");
-        if (prose) prose.innerHTML = content;
+        if (!prose) return;
+        prose.innerHTML = content;
+        if (scrollIndex >= 0) {
+          const target = [...prose.children]
+            .filter(c => !SKIP.has(c.tagName.toLowerCase()))
+            [scrollIndex];
+          if (target) requestAnimationFrame(() =>
+            target.scrollIntoView({ behavior: "smooth", block: "center" })
+          );
+        }
       });
     }
-
   </script>
   </body>
 </html>
