@@ -54,8 +54,9 @@ export default defineConfig({
 
           server.watcher.add(`./html/**/*.html`);
           server.watcher.add(`./content/article`);
+          server.watcher.add(`./local/article`);
           server.watcher.on("add", (file) => {
-            if (!file.endsWith(".typ") || !file.includes("content/article")) return;
+            if (!file.endsWith(".typ") || (!file.includes("content/article") && !file.includes("local/article"))) return;
             console.log(`[make] new file detected: ${file}, running make...`);
             const proc = spawn("make", [], { stdio: "inherit" });
             proc.on("exit", (code) => {
@@ -64,7 +65,7 @@ export default defineConfig({
             });
           });
           server.watcher.on("change", (file) => {
-            if (!file.endsWith(".typ") || !file.includes("content/article")) return;
+            if (!file.endsWith(".typ") || (!file.includes("content/article") && !file.includes("local/article"))) return;
             const slug = path.basename(file, ".typ");
             console.log(`[typst] navigating to ${slug}`);
             server.ws.send({ type: "custom", event: "typst-navigate", data: { slug } });
@@ -74,7 +75,9 @@ export default defineConfig({
             const match = req.url?.match(/^\/([^/?@]+)\//);
             const slug = match?.[1];
             if (slug && !typstWatchers.has(slug)) {
-              const typFile = `content/article/${slug}.typ`;
+              const typFile = fs.existsSync(`local/article/${slug}.typ`)
+                ? `local/article/${slug}.typ`
+                : `content/article/${slug}.typ`;
               if (fs.existsSync(typFile)) {
                 fs.mkdirSync(`html/${slug}`, { recursive: true });
                 console.log(`[typst] starting watch for ${slug}`);
