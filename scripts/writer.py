@@ -8,6 +8,7 @@ import subprocess
 
 console = Console()
 BLOG_DIR = './content/article'
+LOCAL_DIR = './local/article'
 
 def iso_timestamp() -> str:
     """
@@ -37,7 +38,10 @@ def create_new_typst_file():
             continue
         break
 
-    # Ask for title, description, tags
+    # Ask whether local-only
+    local = Prompt.ask("[cyan]Local only?[/cyan]", choices=["y", "n"], default="n") == "y"
+
+    # Ask for description, tags
     description = "" # prompt_nonempty("[cyan]Enter short description[/cyan]")
     raw_tags = prompt_nonempty("[cyan]Enter comma-separated tags (e.g. evolution,notes)[/cyan]")
 
@@ -65,7 +69,9 @@ def create_new_typst_file():
     )
 
     # Write to file
-    filepath = f"{BLOG_DIR}/{filename}.typ"
+    dest = LOCAL_DIR if local else BLOG_DIR
+    os.makedirs(dest, exist_ok=True)
+    filepath = f"{dest}/{filename}.typ"
     try:
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(content)
