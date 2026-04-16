@@ -334,7 +334,7 @@ One example of this problem is finding the closest point in a convex set to a gi
 = Algorithms
 Here's some important terminology...
 #definition(name: "Rates of Convergence")[
-  Let $epsilon_t = hf(norm(x_(t+1) - x^*), norm(x_t - x^*)) quad lim_(t -> oo) epsilon_t = C$ \
+  Let $epsilon_t = norm(x_(t+1) - x^*) slash norm(x_t - x^*) quad lim_(t -> oo) epsilon_t = C$ \
   $C = 0 => "Super-Linear", C = 1 => "Sub-Linear", 0 < C < 1 => "Linear"$
 ]
 #definition(name: "Descent Direction")[
@@ -358,7 +358,7 @@ And here's some "nice" function classes we typically work with. Note that all of
 ]
 
 #lemma(name: "Descent Lemma")[
-  For a $beta$-smooth function, gradient descent with $eta = hf(1, beta)$ yields
+  For a $beta$-smooth function, gradient descent with $eta = 1 slash beta$ yields
   $
     f(x_(t + 1)) <= f(x_t) - 1/(2 beta) norm(gradient f(x_t))^2
   $
@@ -418,7 +418,7 @@ And here's some "nice" function classes we typically work with. Note that all of
 ]
 
 #theorem[
-  For a convex $beta$-smooth function, gradient descent with $eta = hf(1, beta)$ yields
+  For a convex $beta$-smooth function, gradient descent with $eta = 1 slash beta$ yields
   $
     f(x_k) - f(x^*) <= (beta)/(2k) norm(x_0 - x^*)^2
   $
@@ -516,7 +516,7 @@ I think this proof gives really great intuition for the $1/k$ rate, but unfortun
 
 
 #theorem[
-  If $f$ is $beta$-smooth and $alpha$-strongly convex, $eta = hf(1, beta)$ yields
+  If $f$ is $beta$-smooth and $alpha$-strongly convex, $eta = 1 slash beta$ yields
   $
     norm(x_k - x^*)^2 <= (1 - alpha/beta)^k norm(x_0 - x^*)^2
   $
@@ -547,7 +547,7 @@ I think this proof gives really great intuition for the $1/k$ rate, but unfortun
 ]
 
 #align(image("../img/bowl_trajectory_1_20.png"))
-This $hf(alpha,beta)$ term is interesting. It's called the condition number of the problem. The intuitive reason for what this represents is the maximum difference in curvature between different directions. If you have a fixed step size, you have to make your step size small enough to deal with the maximum curvature regions. However, this means you move very slowly along the minimum curvature regions (shown above). Dealing with this problem is why momentum and higher-order methods were developed!
+This $alpha slash beta$ term is interesting. It's called the condition number of the problem. The intuitive reason for what this represents is the maximum difference in curvature between different directions. If you have a fixed step size, you have to make your step size small enough to deal with the maximum curvature regions. However, this means you move very slowly along the minimum curvature regions (shown above). Dealing with this problem is why momentum and higher-order methods were developed!
 
 == Subgradient Methods
 #definition(name: "Subgradient")[
@@ -806,7 +806,7 @@ This can be seen as a generalization of both gradient descent and projected grad
 Technically prox can be viewed as rescaling the gradient on $h$, which seems like it could be problematic. Finding zeros for $nabla g(x) + 2 nabla h(x)$ _is not_ the same as minimizing $g(x) + h(x)$. To see why this is fine, let's analyze the effective step induced by the above procedure, the so-called generalized gradient.
 
 #definition(name: "Generalized Gradient")[
-  $G(x_t) = hf((x_t - "Prox"_(eta, h)(x_t - eta gradient g(x_t))), eta)$
+  $G(x_t) = (x_t - "Prox"_(eta, h)(x_t - eta gradient g(x_t))) slash eta$
 ]
 #theorem[
   $G(x^*) = 0 => x^* = argmin_x f(x)$
@@ -861,7 +861,7 @@ There's one last problem we need to resolve. By construction, $"prox"$ was made 
 
 #theorem[
   $
-    eta = hf(1, beta) => f(x_t) - f(x^*) <= beta / (2k) norm(x_0 - x^*)^2 
+    eta = 1 slash beta => f(x_t) - f(x^*) <= beta / (2k) norm(x_0 - x^*)^2 
   $
 ]
 #proof[
