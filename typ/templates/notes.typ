@@ -134,6 +134,17 @@
     #set text(14pt, weight: "bold")
     #block[#it]
   ]
+
+  show ref: it => {
+    let el = it.element
+    if el != none and el.func() == heading {
+      // Links the text of the heading to its location
+      link(el.location(), el.body)
+    } else {
+      // Fallback for non-heading references (like citations or figures)
+      it
+    }
+  }
   
   body
 }

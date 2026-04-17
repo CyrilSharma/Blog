@@ -25,19 +25,19 @@ $
 // TODO: Speculative Decoding.
 
 = Optimization
-== Contrastive Divergence
+== Contrastive Divergence <contrastive-divergence>
 Suppose we want to optimize a distribution. The most obvious idea is to just run the MLE.
 $
   argmax_theta EE_(p_"data") log(q_theta (x)) \
   nabla_theta EE_(p_"data") log(q_theta (x)) = nabla_theta EE_(p_"data") (-E_theta (x) - log(Z_theta)) = \
-  - EE_(p_"data") E'_theta (x) + (Z'_theta) / (Z_theta) = 
-  - EE_(p_"data") E'_theta (x) +  1/(Z_theta) integral -exp(-E_theta (x))E'_theta (x) dif x = \
-  - EE_(p_"data") E'_theta (x) - EE_(q_theta) E'_theta (x)
+  - EE_(p_"data") E'_theta (x) - (Z'_theta) / (Z_theta) = 
+  - EE_(p_"data") E'_theta (x) -  1/(Z_theta) integral -exp(-E_theta (x))E'_theta (x) dif x = \
+  - EE_(p_"data") E'_theta (x) + EE_(q_theta) E'_theta (x)
 $
 
 You can use any of the sampling methods to deal with the second term.
 
-== Gibb's Variational Principle
+== Gibb's Variational Principle <gibbs>
 Let $p(x) = 1/Z exp(-E(x))$. Our goal is to estimate $Z$, the normalization constant. 
 #theorem[$
   log(Z) = max_q (H(q) - EE_(x tilde q) E(x))
@@ -73,15 +73,52 @@ This is nice because when we restrict the possible $q$s, it now has a sensible i
 
 We can also write the following, since the $p(x)$ term is not a function of $q$.
 $
- argmin_q "KL"(q(z|x), p(z, x)) = EE_(z tilde q(z|x)) log(q(z|x)) - log(p(z|x)) - log(p(x)) \ 
- EE_(z tilde q(z|x)) log(q(z|x)) - log(p(z|x))
+ argmin_q "KL"(q(z|x), p(z, x)) = EE_(z tilde q(z|x)) log(q(z|x)) - log(p(z, x)) \ 
+ EE_(z tilde q(z|x)) log(q(z|x)) - log(p(z, x))
 $
 
 This is everyone's favorite optimization objective: the ELBO! This is precisely what VAEs optimize.
 
 #definition(name: "VAE Optimization Objective")[
-  $ max_theta max_phi sum_(x in "dataset") EE_(z tilde q(z|x)) log(q(z|x)) - log(p(z|x)) $
+  $ max_theta max_phi sum_(x in "dataset") EE_(z tilde q(z|x)) log(q_theta (z|x)) - log(p_phi (z, x)) $
 ]
+
+== Expectation Maximization
+@contrastive-divergence works decently if you observe the full state of a system. However, sometimes there are unobserved pieces of data (latents) which have a causal influence on the data and it's useful to be able to model those.
+$
+  argmax_theta EE_(x tilde p_"data") log(p_theta (x)) =
+  argmax_theta EE_(x tilde p_"data") log(integral p_theta (x, z)dif z)
+$
+
+Unfortunately, that inner integral is pretty difficult to evaluate. Without major restrictions on $p_theta$, we won't be able to marginalize out the Latents. So let's relax the problem.
+$
+  log(integral p_theta (x, z) q(z)/q(z) dif z) >=_"Jensen's" 
+  integral (log(p_theta (x, z)) - log(q(z)) q(z) dif z =\
+  H(q (z)) + EE_(z ~ q(z))log(p_theta (x, z))
+$
+
+Looking at the @gibbs, the choice of $q(z)$ which maximizes this inner quantity (e.g. the tightest lower-bound) is $p_theta (z|x)$.
+
+At that particular choice of $q$ the left-hand side becomes 
+$
+  log(EE_(p(z|x)) (p_theta (x, z)) / (p(z|x)) dif z) = log(EE_(p(z|x)) p(x) dif z)
+$
+
+Jensen's is tight for constants, so our particular choice of $q$ actually yields an _equality_.
+
+Now, let's replace the inner integral in the original formulation with the expression we just derived.
+$
+  argmax_theta EE_(x tilde p_"data") H(p_(theta) (z|x)) + EE_(p_(theta_t) (z|x))log(p_theta (x, z)) \
+  argmax_theta EE_(x tilde p_"data") (EE_(p_(theta) (z|x))log(p_theta (x, z))) \
+  argmax_theta EE_(x tilde p_"data") (EE_(p_(theta) (z|x))log(p_theta (x, z)))
+$
+
+Now the hard part is maximizing with respect to the inner expectation. We can do a coordinate-ascent style trick as follows.
++ Compute the inner expectation treating $p_theta (z|x)$ as fixed to obtain some function of theta: $Q(theta)$ (choose $p(z|x)$ is be easy to sample from).
++ Maximize $Q(theta)$ to derive a new $theta$, then return to step 1.
+
+This actually converges to the true optimum. The rough intuition is the maximization step increases the ELBO (a.k.a $Q(theta)$), and the expectation step improves the value of $Q(theta)$ all the way up to the true likelihood. Combined, they monotonically force the likelihood up. Only at the optimum can either step stall.
+
 
 == Differentiating Distributions
 Suppose we're trying to optimize 
