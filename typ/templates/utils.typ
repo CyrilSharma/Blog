@@ -311,3 +311,8 @@
 #let argmin = math.op("argmin", limits: true)
 #let argmax = math.op("argmax", limits: true)
 #let EE = math.op(math.bb("E"), limits: true)
+#let dx = $d x$
+#let dy = $d y$
+#let dz = $d z$
+#let dt = $d t$
+#let dw = $d w$
