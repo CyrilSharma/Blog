@@ -1173,11 +1173,22 @@ $
 
 This reduction is the main insight. We've turned a problem which initially involved estimating a joint distribution to a problem which involves estimating marginals. Furthermore, entropy is concave, and we're maximizing over a convex set. Hence, this fits nicely within the convex analysis framework, and there is a large suite of techniques which can be used to optimize this.
 
-// The distribution which has the most entropy for a fixed covariance matrix is the normal distribution, so in some sense we want to choose $W$ to push things as far away from normal distributions as possible.
 
-// Class Notes.
+
+// Class Notes & Final Prep
+// The topics covered on Exam 2 will include all material from the stochastic gradient lecture
+// on February 19 through the lecture on April 14 (the content of the April 14 lecture is still TBD,
+// we will discuss it during the next lecture).
+// Stuff from the beginning: various proofs of convexity
+// How to compute closed forms for projections.
+// How to compute closed forms for the prox operator. 
+// Various proofs of GD, invoking beta-smoothness, convexity, all of that stuff.
+// Proof of interesting properties: such as partial minimization is convex.
+// Or proof that the gradient has to be in the normal cone for optimality.
+// Actually computing subgradients, and methods of Lagrange Multipliers
 // Fenchel-Moreau: Dual of the Dual of a proper closed convex optimization problem is the same problem.
-// Primal and dual can both be infeasible, primal can be infeasible while dual is finite, dual can be infeasible while primal is finite
+// Primal and dual can both be infeasible, primal can be infeasible while dual is finite,
+// dual can be infeasible while primal is finite
 // Strong duality does not imply anything about the dual of the dual property.
 // Weak Slater's Condition.
 // Implies bpth LPs and QPs which only have affine constraints satisfy strong duality at feasible points.
@@ -1195,7 +1206,6 @@ This reduction is the main insight. We've turned a problem which initially invol
 // How to deal with inequalities?
 // Test if you're at a local minimum?
 // TODO: review extra KKT
-
 // Duality Gap of a general linear program (idt this is that important)
 // SDP Formulation
 // SDPs are convex, and contain _more programs then linear programming_!
@@ -1216,6 +1226,9 @@ This reduction is the main insight. We've turned a problem which initially invol
 // Correlation is a bad metric, you want KL because correlation only works for detecting linear releationships.
 // Jacobi rotation matrices. Coordinate descent. Entropy of H(WX)
 // Mutual information can be decomposed using Entropy.
+// The distribution which has the most entropy for a fixed covariance matrix is the normal distribution, 
+// so in some sense we want to choose $W$ to push things as far away from normal distributions as 
+// possible.
 // Minimize sum of 1D Entropies. Kurtosis. Fast ICA algorithm, BS expectation approximation
 // Use orthogonality constraints to get around lambda.
 // ISA.
@@ -1228,3 +1241,5 @@ This reduction is the main insight. We've turned a problem which initially invol
 // Use a left matrix which is mxm and a right matrix which is nxn.
 // Update rule is just G G^T and G^T G and then invert...
 // SOAP
+// Add Polyak Step Size?
+// Connection to Formal Verification.
