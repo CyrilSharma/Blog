@@ -8,21 +8,6 @@
 
 #show: note_page
 
-// = Stochastic Calculus
-// $
-//   w(t + u) - w(t) = cal(N)(0, u) \
-//   // lim_(d t -> 0) (w(t + d t) - w(t))/(d t) = 1/(d t) cal(N)(0, d t) = cal(N)(0, 1/ (d t))
-//   integral d w approx sum_(i = 0)^(u N) cal(N)(0, 1/N) => d w approx cal(N)(0, d t)
-// $
-
-// $
-//   dx = f(x, t)dt + g(t)dw
-// $
-// Reverse SDE
-// Itos lemma and connect everything to deterministic calc.
-// Focker Plank
-// Derive reverse SDE...
-
 = Exact Sampling
 == Rejection Sampling
 You want to draw samples from distribution $p(x)$ but you can only draw samples from $q(x)$. Luckily, you can engineer $q(x)$ to cover the domain of $p(x)$, and there exists $C$ such that $C q(x) >= p(x) semi forall x$. The idea is to sample from $q$, and keep the sample with probability $p(x)/(C q(x))$.
@@ -128,8 +113,20 @@ $
   1/L (p_x p_y) /p(x_(not i)) =  1/L p_y (p_x) /p(x_(not i)) = 1/L p_y p(y_i = X, y_(not i))/p(x_(not i)) =  p_y T_(y x)
 $
 
-// TODO: Various schemes for Markov Chain sampling: Langevin, HMC, Temperature Stuff...
-// Temperature based Annealing and HMC.
+== Temperature Annealing
+The problem with Metropolis Hastings methods is they tend to get stuck in regions of high probability. Asymptotically they still has the desired stationary distribution, but it can take many steps until convergence. The idea of this method is to sometimes take steps along higher temperature distributions, which allow escaping high density regions.
+
+We'll take a step in the current chain with probability $1/2$, and otherwise copy our state either to the chain above or below us. Detailed balance within a chain is pretty straightforward.
+$
+  1/2 1/L (product p_i (x_i) )T_(x, y) = \
+  1/(2L) (product p_i (x_i) )min( (p_i (y_i))/(p_i (x_i)), 1) = 1/(2L) (product p_i (y_i) )min( (p_i (y_i))/(p_i (x_i)), 1) = \
+  1/2 1/L (product p_i (y_i) )T_(y, x)
+$
+
+Detailed balance across chains is the exact same. To extract a sample from the chain with the desired temperature you just throw away the samples from the other chains.
+
+
+// TODO: HMC. AIS.
 
 = Optimization
 == Contrastive Divergence <contrastive-divergence>
@@ -190,7 +187,7 @@ This is everyone's favorite optimization objective: the ELBO! This is precisely 
   $ max_theta max_phi sum_(x in "dataset") EE_(z tilde q(z|x)) log(q_theta (z|x)) - log(p_phi (z, x)) $
 ]
 
-== CAVI
+== Coordinate Ascent Variational Inference
 The @gibbs gives us a way to estimate posteriors without normalization constants. We can further increase the problem tractability by using what's known as a mean-field approximation. Essentially, we're going to restrict $q_theta$ such that
 $
   q_theta (z | x) = product_i q^i_theta (z_i | x)
@@ -335,6 +332,226 @@ $
 
 So in other words, run one forward pass, do a backwards pass, do a weighted sum of all the gradient updates, then do a backwards pass again and dot with $v$. This reduces the number of backwards passes from $d$ to 2. You can also use #link("https://en.wikipedia.org/wiki/Automatic_differentiation")[forward mode differentiation] to compute everything in one pass. This trick is known as the #link("https://docs.backpack.pt/en/master/use_cases/example_trace_estimation.html")[Hutchinson Trace Estimator].
 
+== Denoised Score Matching
+If we stare at the score matching objective you might see a problem.
+$
+  argmin_theta EE_(p_"data") norm(nabla_x log(q_theta (x)) - nabla_x log(p_"data" (x)))^2 
+$
+This loss only care about matching the score at _data points in the training set_. There's no incentive to make the score smooth around those points, or to accurately track the scores in less populated regions.
+
+The trick to alleviating this is to force the model to learn the scores at different noise levels, analogous to Annealed Temperature Sampling. Something like...
+$
+  argmin_theta 1/L sum EE_(p_("data", i)) norm(nabla_x log(q_(theta, i) (x)) - nabla_x log(p_("data", i) (x)))^2 
+$
+
+Where $z ~ p_("data", i)$ satisfies $z = x + epsilon$, where $x ~ p_("data")$. One immediate advantage of this is we no longer need Hutchinson Trace Estimators.
+$
+  nabla_x log(p_("data", i)(x)) = nabla_x log(integral p_"data" (z)p_(epsilon)(x - z)dz) =
+  (EE_(z ~ p_"data") (nabla_x p_epsilon (x - z)))/(EE_(z ~ p_"data")(p_(epsilon)(x - z)))
+$
+
+This is quite easy to estimate, but for Gaussians it actually has a closed form.
+
+Now, how do you sample from this thing? The obvious idea is to run Langevin until convergence whenever you switch noise levels. This is called Annealed Langevin Sampling.
+
+== Noise Contrastive Estimation
+The idea of NCE is to train a classifier to distinguish between samples from a noise distribution and the data distribution.
+
+$ p_(theta, c)(x) = exp(ip(theta, x) - c) = exp(ip(tilde(theta), tilde(x))) \
+  D_tilde(theta) (x) = ((p_tilde(theta) (x))/(p_tilde(theta) (x) + k q(x))) \
+  argmax_theta EE_(x, y) y log(D_tilde(theta)(x)) + (1 - y) log(1 - D_(tilde(theta)) (x))
+$
+Here, $y$ is a $0-1$ variable which is 1 with $1-k$ odds. If we draw a $1$ we draw from the data distribution, and otherwise we draw from the noise distribution $q$. You can show (somewhat painfully) that the objective is convex.
+
+$
+  Der_tilde(theta) (p_tilde(theta) (x)) = Der_tilde(theta) (exp(tilde(T)(x)^top tilde(theta))) = 
+  (exp(tilde(T)(x)^top tilde(theta))) tilde(T) (x)^top = p_tilde(theta) (x) tilde(T) (x)^top \
+  Der_tilde(theta) (D_tilde(theta) (x)) = (k q(x) p_tilde(theta)(x))/(p_tilde(theta) (x) + k q(x))^2 tilde(T)(x)^top = (1 - D_tilde(theta) (x)) D_tilde(theta) (x) tilde(T) (x)^top \
+  Der_tilde(theta) (log(D_tilde(theta)(x) )) = 
+  1/(D_tilde(theta) (x)) (1 - D_tilde(theta) (x)) D_tilde(theta) (x) tilde(T) (x)^top  = (1 - D_(tilde(theta))(x)) tilde(T) (x)^top \
+  Der_tilde(theta) (log(1 - D_tilde(theta)(x) )) = -1/(1 - D_tilde(theta) (x)) (1 - D_tilde(theta) (x)) D_tilde(theta) (x) tilde(T) (x)^top = -D_tilde(theta) (x) tilde(T)(x)^top \
+  dif(Der_tilde(theta) (log(1 - D_tilde(theta)))) = d(-D_tilde(theta) (x) tilde(T)(x)^top) =
+  -(1 - D_tilde(theta) (x)) D_tilde(theta) (x) tilde(T) (x) tilde(T)(x)^top d tilde(theta) \
+  dif(Der_tilde(theta) (log(D_tilde(theta)))) = d((1 - D_(tilde(theta))(x)) tilde(T) (x)^top) = 
+   -(1 - D_tilde(theta) (x)) D_tilde(theta) (x) tilde(T) (x) tilde(T)(x)^top d tilde(theta)  \
+  Der^2 L(D_tilde(theta)) = Der^2(-1/(k + 1) EE_(p_"data") log(D_tilde(theta)) - (k/(k+1))EE_q log(1 - D_tilde(theta))) = \
+  1/(k + 1) integral ((k q(x) + p_"data" (x))(1 - D_tilde(theta) (x)) D_tilde(theta) (x) \) tilde(T)(x) tilde(T)(x)^top dx 
+$
+This is an integral of a positively-weighted PSD matrix, so it remains PSD, and by the second-order convexity criteria the objective is convex. Furthermore, you can show there's a local maximum (and by convexity a global maximum) at $p_theta (x) = p_"data" (x)$.
+
+$
+  Der(L(D_tilde(theta))) = Der(-1/(k + 1) EE_(p_"data") log(D_tilde(theta)) + (k/(k+1))EE_q log(1 - D_tilde(theta))) = \
+  -1/(k + 1) integral (p_"data" (x) (1 - D_tilde(theta) (x)) - k q(x) D_tilde(theta) (x)) tilde(T)(x)^top = 0\ 
+  integral (p_"data" (x) + k q(x)) D_tilde(theta) (x) = 1 \
+   D_tilde(theta) (x) = (p_"data" (x))/(p_"data" (x) + k q(x))
+$
+
+
+The magical part about this optimization objective is that we _learn the normalization constant alongisde the parameters_. Of course in practice. if you really use pure noise for $q$, the classifier will find a very easy job distinguishing between the data and noise distribution. This will dry up the training signal, and prevent the model from getting anywhere near $p_"data"$. 
+
+= Stochastic Calculus
+A lot of sampling methods are update rules where you take the current state, apply some transformation, and add noise.
+
+$
+  dx = f(x_t, t)dt + g(t) cal(N) (0, Delta t) quad "or" quad  dx = f(x_t, t)dt + g(t) dw
+$
+
+This is known as a Stochastic Differential Equation. To get a feel for them let's look at the simple case of $f(x_t, t) = 0, g(t) = 1$.
+$
+  sum Delta x_t = sum (x_(t + Delta t) - x_t) = x_T - x_0  = sum_(t = 0)^(t slash Delta t) cal(N) (0, Delta t) = cal(N)(0, t)
+$
+
+This distribution is called a Wiener process. Let's look at its derivative...
+$
+  lim_(Delta t -> 0) (w(t + Delta t) - w(t))/(Delta t) = lim_(Delta t -> 0) (cal(N)(0, Delta t))/(Delta t) = lim_(Delta t -> 0) cal(N)(0, 1/(Delta t))
+$
+
+Intuitively what this is saying is that the derivative can be arbitrarily large, which is not surprising because you can imagine samples from $cal(N)(0, Delta t)$ are typically of size $sqrt(Delta t)$, which is much larger than $Delta t$. Traditional Calculus is not really equipped to handle functions that are infinitely rough, and this is where the tools of Stochastic Calculus come in. There is more than one way to define a Stochastic Calculus, we will be focusing on Ito calculus.
+
+== Shorthands
+Algebraically, you can "derive" most Ito calculus results if you know the following few differential tricks.
+$
+  dw^2 = dt quad dw dt = 0 quad dt^2 = 0
+$
+
+I call them tricks because they should be viewed as shorthands for the actual statements. For example $dw^2 = dt$ actually means
+$
+  "For suitable" phi | integral phi(w) dw^2   = integral phi(w)dt
+$
+
+There are a couple of things to unpack here. First, the integrals correspond to _Ito integrals_, namely
+$
+  integral phi(w) dw^2 = lim_(dt_i -> 0) sum phi(w_i)cal(N)(0, dt_i)^2 
+$
+
+Two choices the Ito Integral makes here is to evaluate the Rienmann sum at the left endpoint, and to ensure the limit exists no matter how we space out the points ($dt_i$ can vary). 
+
+If we don't choose the left endpoint it actually _changes the result_. This doesn't happen in normal calculus, however there is a good reason for it. Different discretizations change how much you expect the mean to drift.
+
+$
+  u(x) = lim_(dt -> 0) E(X_(t + dt) - X_t | X_t = x)/dt
+$
+
+Hence, you are actually defining a qualitatively different process if you change the discretization.
+
+Second, the result of an Ito integral is a distribution. Thus, that integral equality is really saying that the distribution on the left-hand side approaches the distribution of the right-hand side as the discretization gets finer and finer. There are many ways to define how close two distributions are, and they don't always agree. The Ito integral specifically requires convergence in L2 norm.
+
+$
+  EE(X - X^*) -> 0
+$
+
+So $dw^2 = dt$ is really saying...
+$
+   EE((sum phi(w_i)^2 (dw_i^2 - dt_i))^2) -> 0
+$
+
+Anyway, this is pretty easy to show. Consider one of the cross-terms.
+$
+   EE(phi(w_i) phi(w_j) (dw_i^2 - dt_i) (dw_j^2 - dt_j)) = \
+   EE(phi(w_i) phi(w_j)) EE((dw_i^2 - dt_i)) EE((dw_j^2 - dt_j)) = 0\
+$
+The fact that the expectation factors like this is a side effect of choosing a "suitable" $phi$, namely one which was "unaware" of the future trajectory of $w$. We've shown it suffices to bound everything which isn't a cross-term.
+$
+  E((sum phi(w_i)^2 (dw_i^2 - dt_i)^2) <=_("Assume" phi "bounded") g^2 E(sum (cal(N)(0, dt_i) ^2 - dt_i)^2) = \
+  g^2 sum dt_i^2 E((cal(N)(0, 1) - 1)^2) = (C T) / N -> 0
+$
+
+You don't have to assume $phi$ is bounded, there are weaker conditions you can use for convergence but nonetheless this is the idea. All the other statements can be proven in similar ways. Also, you'll notice I didn't assume all the time increments are the same. This is because the goal is to prove any approximation to the integral converges, not just some of them.
+
+== Ito's Lemma
+Now that we have some algebraic tools, we can begin to prove some useful results. The first one is essentially a change of variables formula.
+$
+  dx = f(x, t)dt + g(t)dw \
+  d(h(x, t)) = ...?
+$
+
+You can Taylor expand $g(x)$ using Taylor's theorem.
+$
+  h(x + dx, t + dt) = h(x, t) + h_x (x, t)dx + h_t (x, t)dt + 1/2 h_(x x)(x) dx^2 +\
+    1/2 h_(t t)(x) dt^2 + h_(x t) (x) dx dt + O("cubic") \
+$
+Now we can apply all our differential tricks.
+$
+  dx^2 = (f dt + g dw)(f dt + g dw) = f^2 dt^2 + f g dt dw + g f dw dt + g^2 dw^2 = g^2 dt \
+  dx dt = (f dt + g dw) dt = f dt^2 + g dw dt = 0 \
+  dx^3 = (g^2 dt) dx = 0 quad dx^2 dt = g^2 dt dt = 0 quad dt^2 dx = 0 dx = 0 quad dt^3 = dt^2 dt = 0 \
+  d h = h_x (f dt + g dw) + h_t dt + 1/2 h_(x x) g^2 dt = \
+  (f h_x + h_t + 1/2 h_(x x) g^2)dt + g h_x dw
+$
+
+You could make all this rigorous my manipulating limit sums but this is algebraically equivalent.
+
+
+== Fokker-Planck Equation
+We can use Ito's Lemma to derive a formula for how the probability density itself evolves under the SDE. The trick is just analyzing the expected value of $h(x)$ for a suitable $h$.
+$ E(d h) = E((f h_x + h_t + 1/2 h_(x x) f^2)dt + g h_x dw) =
+  E((f h_x + h_t + 1/2 h_(x x) f^2)dt) \
+  => d/dt E(h) = E((d h) / dt) = integral (f h_x + 1/2 h_(x x) f^2) p (x) \
+$
+
+We dropped the $h_t$ term because $h$ does not depend on $t$. We can get rid of the derivatives on $h$ using integration by parts.
+$
+  integral (f h_x + 1/2 h_(x x) f^2) p_t (x) = integral h_x f p (x) + 1/2 integral h_(x x) g^2 p(x) \
+  = - integral h d/dx (f p(x)) - 1/2 integral h_x g^2 d/dx p(x)
+  = - integral h d/dx (f p(x)) + 1/2 integral h g^2 d^2/dx^2 p(x)
+$
+
+Note that we dropped some terms in the integration by parts, corresponding to the $[u v]^oo_oo$ terms. These will always be zero under some mild regularity conditions ($f p -> 0$ at the extremes of the distribution).
+
+An alternate way of getting this expectation is simply differentiating through the integral.
+$
+  d/dt E(h) = integral  d/dt h p (x)
+$
+
+We now choose $h$ to a point-mass, forcing equality of the integrands for all $x$.
+$
+  d/dt p(x) = -d/dx (f p(x)) + 1/2 g^2 d/dx^2 p(x)
+$
+
+This is known as the Fokker-Planck Equation!
+
+== Reverse SDE
+Finally, we can derive an SDE which maps the distribution under some number of steps of the SDE back to the original distribution. We start by negating the Fokker-Planck equation.
+$
+  - d/dt p(x) = nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x)
+$
+
+If we integrated this and added it to the end distribution, we would recover the original distribution. To find an SDE that has this form, we can sort of just guess what choice of $f$ and $g$ will work. I'll denote the appropriate choices as $a$ and $b$ respectively.
+
+$
+  a = -f + g^2 nabla_x log(p(x)) quad b = g
+$
+
+Plugging these into the Fokker-Planck equation we immediately obtain...
+$
+  nabla_x (a p) = -nabla_x (f p) + g^2 nabla_(x x) p \
+  d/dt p(x) = nabla_x (f p) - g^2 nabla_(x x) p + 1/2 g^2 nabla_(x x) p(x) = \
+  nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x)
+$
+
+== Langevin Sampling
+The idea of Langevin sampling is to construct a forward SDE such that $p(x)$ is a fixed point, and everything else converges to the fixed point. 
+$
+  d/dt p(x) = -nabla_x (f p(x)) + 1/2 g^2 nabla_(x x) p(x)
+$
+
+Let's choose $f = nabla_x log(p(x))$ and $g = sqrt(2)$. As desired, $p(x)$ is a fixed point.
+$
+  d/dt p(x) = -nabla_x (nabla_x log(p(x)) p(x)) + nabla_(x x) p(x) = 0
+$
+
+Furthermore, if $p(x) prop exp(-E(x))$, the corresponding SDE looks a lot like gradient descent on the energy function $E(x)$.
+$
+  dx = (nabla_x log(p(x)))dt + sqrt(2) cal(N)(0, dt) \ 
+  dx = -nabla_x E(x)dt + sqrt(2) cal(N)(0, dt) \  
+$
+
+In fact, you can actually show Langevin sampling converges quickly because it is basically doing gradient descent over the KLs, but I won't show that here.
+
+Note that this is _not_ the same as simulating a reverse SDE, because we're computing the score with respect to the _target_ distribution, not the _current_ distribution. 
+
+== Diffusion
+Diffusion is essentially Denoised Score Matching. The main difference is _how it chooses the noise levels_, which DSM doesn't really constrain. Essentially, construct $p_("data", i)$ such that it can be viewed as the forward process of an SDE. Then, when going backwards use an SDE solver on the reverse SDE! The connection to SDEs enables a wide variety of tricks. For example, there are solvers which can account for local curvature and take dynamic step sizes. Furthermore, with an appropriate forward diffusion process the reverse SDE might actually be an ODE! This is the insight of #link("https://arxiv.org/abs/2010.02502")[DDIM].
 // TODO: Denoising Score Matching: why regular score matching fails to put mass in the right places.
 // TODO: Noise Contrastive Estimation.
 // TODO: Diffusion, and a bit ITO calculus.
