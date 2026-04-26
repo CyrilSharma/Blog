@@ -491,14 +491,14 @@ You could make all this rigorous my manipulating limit sums but this is algebrai
 
 == Fokker-Planck Equation
 We can use Ito's Lemma to derive a formula for how the probability density itself evolves under the SDE. The trick is just analyzing the expected value of $h(x)$ for a suitable $h$.
-$ E(d h) = E((f h_x + h_t + 1/2 h_(x x) f^2)dt + g h_x dw) =
-  E((f h_x + h_t + 1/2 h_(x x) f^2)dt) \
-  => d/dt E(h) = E((d h) / dt) = integral (f h_x + 1/2 h_(x x) f^2) p (x) \
+$ E(d h) = E((f h_x + h_t + 1/2 h_(x x) g^2)dt + g h_x dw) =
+  E((f h_x + h_t + 1/2 h_(x x) g^2)dt) \
+  => d/dt E(h) = E((d h) / dt) = integral (f h_x + 1/2 h_(x x) g^2) p (x) \
 $
 
 We dropped the $h_t$ term because $h$ does not depend on $t$. We can get rid of the derivatives on $h$ using integration by parts.
 $
-  integral (f h_x + 1/2 h_(x x) f^2) p_t (x) = integral h_x f p (x) + 1/2 integral h_(x x) g^2 p(x) \
+  integral (f h_x + 1/2 h_(x x) g^2) p_t (x) = integral h_x f p (x) + 1/2 integral h_(x x) g^2 p(x) \
   = - integral h d/dx (f p(x)) - 1/2 integral h_x g^2 d/dx p(x)
   = - integral h d/dx (f p(x)) + 1/2 integral h g^2 d^2/dx^2 p(x)
 $
@@ -523,18 +523,25 @@ $
   - d/dt p(x) = nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x)
 $
 
-If we integrated this and added it to the end distribution, we would recover the original distribution. To find an SDE that has this form, we can sort of just guess what choice of $f$ and $g$ will work. I'll denote the appropriate choices as $a$ and $b$ respectively.
+If we integrated this and added it to the end distribution, we would recover the original distribution. We want an SDE whose Fokker-Planck equation has this form, but no matter what choice we make for $g$, the SDE is going to have a positive instead of a negative sign on the second term. Thus, we have to use the drift term to correct it.
 
 $
-  a = -f + g^2 nabla_x log(p(x)) quad b = g
+  nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x) = \
+  nabla_x (f p(x)) - theta g^2 nabla_x (p(x) nabla log(p(x))) + (theta - 1/2) g^2 nabla_x (p(x) nabla log(p(x))) = \
+  nabla_x (f p(x)) - theta g^2 p(x) nabla_x log(p(x))) + (theta - 1/2) g^2 nabla_x (p(x) nabla log(p(x))) = \
+  nabla_x (f p(x) - theta g^2 p(x) nabla log(p(x))) + (theta - 1/2) g^2 nabla_x (p(x) nabla log(p(x))) \
+  -nabla_x ((-f + theta g^2 nabla log(p(x)))p(x)) + 1/2 (2 theta - 1) g^2 nabla_(x x) p(x)
 $
 
-Plugging these into the Fokker-Planck equation we immediately obtain...
+This is in the same form as the Fokker-Planck equation, so we can read off the SDE coefficients.
 $
-  nabla_x (a p) = -nabla_x (f p) + g^2 nabla_(x x) p \
-  d/dt p(x) = nabla_x (f p) - g^2 nabla_(x x) p + 1/2 g^2 nabla_(x x) p(x) = \
-  nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x)
+  a = -f + theta g^2 nabla_x log(p(x)) quad b = g sqrt(2 theta - 1)
 $
+
+The cool thing about this is if you plug in $theta = 1/2$ the reverse SDE is an _ODE_. This is called the probability flow ODE. This isn't that crazy of a result. An SDE maps one distribution to another, and the "randomness" part of the update essentially convolves the current distribution with a Gaussian. The fact that we can "derandomize" it essentially means we can come up with a distribution to distribution mapping which doesn't require instantaneous Gaussian convolutions.
+
+
+// TODO: use the non-magical derivation.
 
 == Langevin Sampling
 The idea of Langevin sampling is to construct a forward SDE such that $p(x)$ is a fixed point, and everything else converges to the fixed point. 
@@ -553,12 +560,14 @@ $
   dx = -nabla_x E(x)dt + sqrt(2) cal(N)(0, dt) \  
 $
 
-In fact, you can actually show Langevin sampling converges quickly because it is basically doing gradient descent over the KLs, but I won't show that here.
+In fact, you can actually show Langevin sampling converges quickly because it is basically doing gradient descent over the KLs, but that's non-trivial, I won't show that here.
 
 Note that this is _not_ the same as simulating a reverse SDE, because we're computing the score with respect to the _target_ distribution, not the _current_ distribution. 
 
 == Diffusion
-Diffusion is essentially Denoised Score Matching. The main difference is _how it chooses the noise levels_, which DSM doesn't really constrain. Essentially, construct $p_("data", i)$ such that it can be viewed as the forward process of an SDE. Then, when going backwards use an SDE solver on the reverse SDE! The connection to SDEs enables a wide variety of tricks. For example, there are solvers which can account for local curvature and take dynamic step sizes. Furthermore, with an appropriate forward diffusion process the reverse SDE might actually be an ODE! This is the insight of #link("https://arxiv.org/abs/2010.02502")[DDIM].
+Diffusion is essentially Denoised Score Matching. The main difference is _how it chooses the noise levels_, which DSM doesn't really constrain. Essentially, construct $p_("data", i)$ such that it can be viewed as the forward process of an SDE. Then, when going backwards use an SDE solver on the reverse SDE! The connection to SDEs enables a wide variety of tricks. For example, there are solvers which can account for local curvature and take dynamic step sizes. Furthermore, we've shown you can choose the reverse SDE to be an ODE, which can simplify inference a lot. This is the insight of #link("https://arxiv.org/abs/2010.02502")[DDIM].
+
+The only real problem with this idea is that ODE and SDE solvers will accumulate discretization error, which will compound the longer the trajectory. You can deal with this by taking a step with your ODE solver, and then taking a few steps of Langevin to correct the distribution, this is known as predictor-corrector sampling.
 // TODO: Denoising Score Matching: why regular score matching fails to put mass in the right places.
 // TODO: Noise Contrastive Estimation.
 // TODO: Diffusion, and a bit ITO calculus.
