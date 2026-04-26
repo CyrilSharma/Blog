@@ -432,7 +432,14 @@ $
   u(x) = lim_(dt -> 0) E(X_(t + dt) - X_t | X_t = x)/dt
 $
 
-Hence, you are actually defining a qualitatively different process if you change the discretization.
+For example,
+$
+  lim_(dt -> 0) E(w_i cal(N)(0, dt))/dt = (E(w_i) E(cal(N)(0, dt)))/dt = 0 \
+  lim_(dt -> 0) E(1/2(w_i + w_(i + 1)) cal(N)(0, dt))/dt = 
+  E((w_i + 1/2 cal(N)(0, dt_i)) cal(N)(0, dt_i))/dt = 1/2 \
+$
+
+This happens because the increment is no longer independent of the evaluated point. Hence, different discretizations correspond to fundamentally different stochastic processes.
 
 Second, the result of an Ito integral is a distribution. Thus, that integral equality is really saying that the distribution on the left-hand side approaches the distribution of the right-hand side as the discretization gets finer and finer. There are many ways to define how close two distributions are, and they don't always agree. The Ito integral specifically requires convergence in L2 norm.
 
@@ -456,7 +463,7 @@ $
   g^2 sum dt_i^2 E((cal(N)(0, 1) - 1)^2) = (C T) / N -> 0
 $
 
-You don't have to assume $phi$ is bounded, there are weaker conditions you can use for convergence but nonetheless this is the idea. All the other statements can be proven in similar ways. Also, you'll notice I didn't assume all the time increments are the same. This is because the goal is to prove any approximation to the integral converges, not just some of them.
+You don't have to assume $phi$ is bounded, there are weaker conditions you can use for convergence but nonetheless this is the idea. All the other statements can be proven in similar ways. 
 
 == Ito's Lemma
 Now that we have some algebraic tools, we can begin to prove some useful results. The first one is essentially a change of variables formula.
