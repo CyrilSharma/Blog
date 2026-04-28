@@ -113,8 +113,8 @@ $
   1/L (p_x p_y) /p(x_(not i)) =  1/L p_y (p_x) /p(x_(not i)) = 1/L p_y p(y_i = X, y_(not i))/p(x_(not i)) =  p_y T_(y x)
 $
 
-== Temperature Annealing
-The problem with Metropolis Hastings methods is they tend to get stuck in regions of high probability. Asymptotically they still has the desired stationary distribution, but it can take many steps until convergence. The idea of this method is to sometimes take steps along higher temperature distributions, which allow escaping high density regions.
+== Simulated Tempering
+The problem with Metropolis Hastings methods is they tend to get stuck in regions of high probability. Asymptotically they still have the desired stationary distribution, but it can take many steps until convergence. The idea of this method is to sometimes take steps along higher temperature distributions, which allow escaping high density regions.
 
 We'll take a step in the current chain with probability $1/2$, and otherwise copy our state either to the chain above or below us. Detailed balance within a chain is pretty straightforward.
 $
@@ -125,6 +125,24 @@ $
 
 Detailed balance across chains is the exact same. To extract a sample from the chain with the desired temperature you just throw away the samples from the other chains.
 
+== Hamiltonian Monte-Carlo
+The idea of HMC is augment our state with a velocity, and then somehow sample from the joint.
+$
+  p(x, v) prop exp(- E(x) - K(v))
+$
+
+Since the distribution factorizes, you can simply throw away the velocity to obtain samples from $exp(- E(x))$. We sample from this in two steps.
++ Pick a velocity $v ~ exp(-K(v))$.
++ Pick a new $x$ by simulating the _Hamiltonian_.
+
+To clarify step 2, you should imagine $E(x)$ is a potential energy and $K(v) = 1/2 norm(v)^2$ is the kinetic energy. Then, we want trajectories which don't change the energy...
+$
+  H(x, v) = - E(x) - K(v) \
+  0 = d/dt H(x, v) = (d H)/dx dx/dt + (d H)/(d v) (d v)/dt =\
+  => (d v)/dt = -E'(x)
+$
+
+So why does this work? Step 1 satisfies detailed balance because you can view it as a Gibbs step. Step 2 can be shown to keep the probability mass on any volume the same, provided the input distribution is $exp(-E(x) - K(v))$ for some $v$. Hence, the stationary distribution is indeed the joint.
 
 // TODO: HMC. AIS.
 
@@ -181,11 +199,8 @@ $
  EE_(z tilde q(z|x)) log(q(z|x)) - log(p(z, x))
 $
 
-This is everyone's favorite optimization objective: the ELBO! This is precisely what VAEs optimize.
-
-#definition(name: "VAE Optimization Objective")[
-  $ max_theta max_phi sum_(x in "dataset") EE_(z tilde q(z|x)) log(q_theta (z|x)) - log(p_phi (z, x)) $
-]
+// log(p_theta (x)) = "KL"(q_phi (h|x) || p_theta (h|x)) + H(q_phi (h|x)) + EE_(h ~ q_phi (h|x))(log p_theta (h, x))
+This is everyone's favorite optimization objective: the ELBO!
 
 == Coordinate Ascent Variational Inference
 The @gibbs gives us a way to estimate posteriors without normalization constants. We can further increase the problem tractability by using what's known as a mean-field approximation. Essentially, we're going to restrict $q_theta$ such that
@@ -241,11 +256,12 @@ $
 $
 
 Now the hard part is maximizing with respect to the inner expectation. We can do a coordinate-ascent style trick as follows.
-+ Compute the inner expectation treating $p_theta (z|x)$ as fixed to obtain some function of theta: $Q(theta)$ (choose $p(z|x)$ is be easy to sample from).
++ Compute the inner expectation treating $p_theta (z|x)$ as fixed to obtain some function of theta: $Q(theta)$ (choose $p(z|x)$ to be easy to sample from).
 + Maximize $Q(theta)$ to derive a new $theta$, then return to step 1.
 
 This actually converges to the true optimum. The rough intuition is the maximization step increases the ELBO (a.k.a $Q(theta)$), and the expectation step improves the value of $Q(theta)$ all the way up to the true likelihood. Combined, they monotonically force the likelihood up. Only at the optimum can either step stall.
 
+// This has a very cool connection to K-Means Clustering.
 
 == Differentiating Distributions
 Suppose we're trying to optimize 
@@ -255,7 +271,7 @@ $
 
 One notable example where this show up is if you're trying to optimize a KL with respect to a parameterized distribution. 
 
-Here's one method, called the score estimator (for reasons we will soon see).
+Here's one method, called REINFORCE or the score estimator.
 $
   nabla EE_(q_theta) f_theta (x) = nabla integral f_theta (x) q_theta (x) =  integral f'_theta (x) q_theta (x) + integral f_theta (x) q'_theta (x) \
   EE_(q_theta)(f'_theta (x)) + integral f_theta (x) nabla log(q_theta (x)) q_theta (x) = \
@@ -264,13 +280,86 @@ $
 
 The gradient log is called the score. As usual, you can compute the expectations using monte-carlo estimators.
 
-Another approach is construct $h$ such that $h(theta, epsilon) tilde q_theta$. Then our problem becomes...
+Another approach is to construct $h$ such that $h(theta, epsilon) tilde q_theta$. This is known as the Reparamaterization trick. Then our problem becomes...
 $
-  nabla EE_(epsilon) f_theta (h(theta, epsilon)) =
-  integral f'_theta (h(theta, epsilon)) h'(theta, epsilon) p(epsilon) = EE_epsilon f'_theta (h(theta, epsilon)) h'(theta, epsilon)
+  nabla_theta  EE_(epsilon) f_theta (h(theta, epsilon)) =
+  integral (nabla_h f_theta (h(theta, epsilon))) (nabla_theta h(theta, epsilon)) p(epsilon) = \
+  EE_epsilon (nabla_h f_theta (h(theta, epsilon))) (nabla_theta h(theta, epsilon))
 $
 
 These are two very different estimators! In general, neither dominates the other, but for specific settings one might be better than the other.
+
+== Variational Autoencoders
+VAEs feature a decoder $p_theta$ and an encoder $q_phi$. They simply maximize the ELBO using either the Reparamaterization trick or REINFORCE.
+#definition(name: "VAE Optimization Objective")[
+  $ min_theta min_phi sum_(x in "dataset") EE_(z tilde q(z|x)) log(q_phi (z|x)) - log(p_theta (z, x)) $
+]
+
+If you use REINFORCE to optimize the ELBO...
+$
+  EE_(q_phi (z|x))(f'_phi (x)) = EE_(q_phi (z|x)) (nabla_phi log(q_phi (z|x)) - nabla_phi log(p_theta (z, x)) = 0 \
+  EE_(q_phi (z|x))(f'_phi (x)) + EE_(q_phi (z|x)) (f_phi (x) nabla log(q_phi (x))) =
+  EE_(q_phi (z|x)) (f_phi (x) nabla_phi log(q_phi (z|x))) \
+
+  EE_(q_phi (z|x))(f'_theta (x)) = EE_(q_phi (z|x)) (nabla_theta log(q_phi (z|x)) - nabla_theta log(p_theta (z, x))) =  -EE_(q_phi (z|x)) (nabla_theta log(p_theta (z, x)))
+$
+
+If we use the Reparamaterization trick...
+$
+  EE_epsilon (nabla_h f(h(phi, epsilon))) (nabla_phi h(phi, epsilon)) = \
+  EE_epsilon nabla_h (log(q_phi (h(phi, epsilon)|x)) - log(p_theta (h(phi, epsilon), x))) (nabla_phi h(phi, epsilon))
+$
+
+Intriguingly, we need gradient with respect to the latent for the Reparamaterization trick, but not for REINFORCE. In practice, people always usually use the Reparamaterization trick because it tends to have lower variance in this setting, but it's interesting to note it has different requirements then the other estimator.
+
+The reason it's called an Autoencoder is that the objective can be rewritten...
+$
+   EE_(z tilde q(z|x)) log(q_phi (z|x)) - log(p_theta (z, x)) = \
+   EE_(z tilde q(z|x)) log(q_phi (z|x)) - log(p_theta (x|z)) - log(p_theta (z)) = \
+   - EE_(z tilde q(z|x)) log(p_theta (x|z)) + "KL"(q_phi (z|x) || p_theta (z))
+$
+The first term essentially says maximize the probability of recovering $x$ after sampling $z$ from $q(z|x)$. Hence, $q$ is the encoder and $p$ is the decoder. The second term is a sort of regularization loss, which any Autoencoder will have to prevent learning a trivial identity mapping.
+
+== Generative Adversarial Networks
+VAEs work alright today, but historically they produced pretty blurry images. The thinking was KL divergences makes for bad objectives. GANs are an entirely different way to solve the problem of sample generation. Essentially, you train a generator to make samples, and a discriminator to classify images as fake or real. Something like this...
+
+#definition(name: "DC-GAN")[
+  $ min_(g in G) max_(d in D) EE_(x in p_"data") log(D(x)) + EE_(x in p_"G") log(1 - D(x)) $
+]
+
+It's easy to see what the optimal discriminator for a given $G$ should be.
+$
+  argmax_(D(x)) log(D(x))p_"data" (x) + log(1 - D(x)) p_G (x) => \
+  1/(D(x)) p_"data" (x) - 1/(1 - D(x)) p_G (x) = 0 \
+  (1 - D(x)) p_"data" (x) - D(x) p_G (x) = 0 \
+  p_"data" (x) - D(x) (p_"data" (x) + p_G (x)) = 0 \
+  D(x) = (p_"data" (x))/(p_"data" (x) + p_G (x))
+$
+
+Now, if minimize over $G$ we get...
+$
+  argmin_(g in G)  EE_(x in p_"data") log((p_"data" (x))/(p_"data" (x) + p_G (x))) +  EE_(x in p_"G") log((p_G (x))/(p_"data" (x) + p_G (x))) = \
+  argmin_(g in G)  EE_(x in p_"data") log((p_"data" (x))/(1/2(p_"data" (x) + p_G (x)))) +  EE_(x in p_"G") log((p_G (x))/(1/2(p_"data" (x) + p_G (x)))) = \
+  argmin_(g in G) "KL"(p_"data", 1/2(p_"data" + p_G)) + "KL"(p_"G", 1/2 (p_"data" + p_"G")) =  \
+  argmin_(g in G) 2"JS"(p_"data", p_"G")
+$
+
+Where $"JS"$ is the Jenson-Shannon divergence. It's easy to see the Jenson Shannon divergence is non-negative because KL is non-negative. Furthermore, it's easy to see for the divergence to be zero, both KLs must be zero, and thus $p_G = p_"data"$.
+
+You can also see this intuitively. The more different the two distributions, the higher the Discriminator can make the loss function. Hence, the loss is minimized when the Discriminator cannot do better then random chance, which is when $p_"data" = p_"G"$.
+
+Another formalism for GANs is as follows.
+#definition(name: "W-GAN")[
+  $ min_(g in G) max_(d in D) abs(EE_(x in p_G) D(x) - EE_(x in p_"data") D(x)) $
+]
+
+For suitable $f$ the inner maximization problem can be shown to define a _metric_ which quantifies the distance between $p_"data"$ and $p_"G"$. Hence, $p_G$ will again equal $p_"data"$ at optimality. The point of this is that some distances might work better than others (e.g. the Optimal Transport distance) and formalizing GANs this way lets you control that more directly.
+
+GANs are trained via fixing either the discriminator or generator updating the other model, and then doing the opposite. Unfortunately this is the main drawback of GANs, because this kind of mini-max optimization is far less stable than pure minimization.
+
+// Birthday Paradox support size estimation.
+// Inception Score
+// Conditional GANs + Auxillary Classifier.
 
 == Score-Matching
 The idea of score-matching is simple.
@@ -568,7 +657,13 @@ Note that this is _not_ the same as simulating a reverse SDE, because we're comp
 Diffusion is essentially Denoised Score Matching. The main difference is _how it chooses the noise levels_, which DSM doesn't really constrain. Essentially, construct $p_("data", i)$ such that it can be viewed as the forward process of an SDE. Then, when going backwards use an SDE solver on the reverse SDE! The connection to SDEs enables a wide variety of tricks. For example, there are solvers which can account for local curvature and take dynamic step sizes. Furthermore, we've shown you can choose the reverse SDE to be an ODE, which can simplify inference a lot. This is the insight of #link("https://arxiv.org/abs/2010.02502")[DDIM].
 
 The only real problem with this idea is that ODE and SDE solvers will accumulate discretization error, which will compound the longer the trajectory. You can deal with this by taking a step with your ODE solver, and then taking a few steps of Langevin to correct the distribution, this is known as predictor-corrector sampling.
-// TODO: Denoising Score Matching: why regular score matching fails to put mass in the right places.
-// TODO: Noise Contrastive Estimation.
-// TODO: Diffusion, and a bit ITO calculus.
-// TODO: GANs
+
+// TODO: Integration by parts / Divergence Theorem so I don't have to rederive stuff.
+// TODO: JS Divergence.
+// TODO: Annealed Importance Sampling
+// TODO: Entropy of a Tree
+// log(p(x)) Gibbs Variational Principle.
+// Telescoping Density Ratio Estimation
+// Causality.
+// Simpson's Paradox.
+// Backdoor Criteria | Front Door Criteria.
