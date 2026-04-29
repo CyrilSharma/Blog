@@ -259,7 +259,7 @@ Now the hard part is maximizing with respect to the inner expectation. We can do
 + Compute the inner expectation treating $p_theta (z|x)$ as fixed to obtain some function of theta: $Q(theta)$ (choose $p(z|x)$ to be easy to sample from).
 + Maximize $Q(theta)$ to derive a new $theta$, then return to step 1.
 
-This actually converges to the true optimum. The rough intuition is the maximization step increases the ELBO (a.k.a $Q(theta)$), and the expectation step improves the value of $Q(theta)$ all the way up to the true likelihood. Combined, they monotonically force the likelihood up. Only at the optimum can either step stall.
+This algorithm always converges to a local optimum. The rough intuition is the maximization step increases the ELBO (a.k.a $Q(theta)$), and the expectation step improves the value of $Q(theta)$ all the way up to the true likelihood. Combined, they monotonically force the likelihood up. Only at a local optimum can either step stall.
 
 // This has a very cool connection to K-Means Clustering.
 
@@ -614,8 +614,13 @@ $
 
 If we integrated this and added it to the end distribution, we would recover the original distribution. We want an SDE whose Fokker-Planck equation has this form, but no matter what choice we make for $g$, the SDE is going to have a positive instead of a negative sign on the second term. Thus, we have to use the drift term to correct it.
 
+To see how to do this first we'll massage the ODE.
 $
-  nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x) = \
+  nabla_x (f p(x)) - 1/2 g^2 nabla_(x x) p(x) = nabla_x (f p(x)) - 1/2 g^2 nabla_x (p(x) nabla_x p(x))
+$
+
+Now we can "split" the second term (using $theta$ to control the split) and massage things a bit more.
+$
   nabla_x (f p(x)) - theta g^2 nabla_x (p(x) nabla log(p(x))) + (theta - 1/2) g^2 nabla_x (p(x) nabla log(p(x))) = \
   nabla_x (f p(x)) - theta g^2 p(x) nabla_x log(p(x))) + (theta - 1/2) g^2 nabla_x (p(x) nabla log(p(x))) = \
   nabla_x (f p(x) - theta g^2 p(x) nabla log(p(x))) + (theta - 1/2) g^2 nabla_x (p(x) nabla log(p(x))) \
@@ -628,9 +633,6 @@ $
 $
 
 The cool thing about this is if you plug in $theta = 1/2$ the reverse SDE is an _ODE_. This is called the probability flow ODE. This isn't that crazy of a result. An SDE maps one distribution to another, and the "randomness" part of the update essentially convolves the current distribution with a Gaussian. The fact that we can "derandomize" it essentially means we can come up with a distribution to distribution mapping which doesn't require instantaneous Gaussian convolutions.
-
-
-// TODO: use the non-magical derivation.
 
 == Langevin Sampling
 The idea of Langevin sampling is to construct a forward SDE such that $p(x)$ is a fixed point, and everything else converges to the fixed point. 
@@ -667,3 +669,16 @@ The only real problem with this idea is that ODE and SDE solvers will accumulate
 // Causality.
 // Simpson's Paradox.
 // Backdoor Criteria | Front Door Criteria.
+// D-Seperation.
+// W satisfies Backdoor Critera relative to T and Y if W blocks all backdoor paths from T to Y.
+// W does not contain descendant of T.
+// p(y|do(T)) = sum_w P(y|t, w)P(w)
+// Backdoor crtierian proof: introduce a new node and push it into T, make T equal to its value
+// Or not, if new node is "idle"
+// D-Seperation
+// Front-Door Criterion.
+// Markov equivaleneces; given 3 variables x, y, z there are four edge orientations and only the collider can be distinguished from the rest.
+// Edge Elimination, Collider Orientation
+// Known non-colliders can also be used to deduce stuff.
+// Cycle Avoidance.
+// Number of Interventions Needed.
