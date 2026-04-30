@@ -820,10 +820,11 @@ $
 
 This is equivalent to simultaneous iteration.
 $
-  A_k = (Q_(k - 1)...Q_0)^T A (Q_0...Q_(k -1)) = hat(Q_(k - 1))^T A hat(Q_(k - 1)) \
-  A_i = Q_i R_i \
-  hat(Q_(i - 1)) A_i = hat(Q_i) R_i \
-  A hat(Q_(i - 1)) = hat(Q_i) R_i
+  Q_k^top A_k = R_k => A_(k + 1) = Q_k^top A_k Q_k\
+  => A_k = (Q_(k - 1)...Q_0)^T A (Q_0...Q_(k -1)) = hat(Q_(k - 1))^T A hat(Q_(k - 1)) \
+  A_k = Q_k R_k => hat(Q_(k - 1)) A_k = hat(Q_k) R_k \
+  =>  hat(Q_(k - 1)) hat(Q_(k - 1))^T A hat(Q_(k - 1)) = hat(Q_k) R_k \
+  => A hat(Q_(k - 1)) = hat(Q_k) R_k
 $
 
 The last step essentially specifies the same update rule as simultaneous iteration. It's worth noting that the QR decomposition can be found in $n^2$ instead of $n^3$ time. The trick is to first reduce $A$ to Hessenberg form, and then you can use Householder reflectors which only touch two rows to zero out the sub-diagonal entries. The Hessenberg structure will remain throughout this process, via a similar argument used in reducing to Hessenberg form.

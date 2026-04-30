@@ -116,14 +116,16 @@ $
 == Simulated Tempering
 The problem with Metropolis Hastings methods is they tend to get stuck in regions of high probability. Asymptotically they still have the desired stationary distribution, but it can take many steps until convergence. The idea of this method is to sometimes take steps along higher temperature distributions, which allow escaping high density regions.
 
-We'll take a step in the current chain with probability $1/2$, and otherwise copy our state either to the chain above or below us. Detailed balance within a chain is pretty straightforward.
+We'll take a step in the current chain with probability $1/2$, and otherwise copy our state to a random temperature. There will be $L$ different temperature we can hop between. We can verify the joint $product p_i (x_i)$ satisfies detailed balance.
 $
-  1/2 1/L (product p_i (x_i) )T_(x, y) = \
+  1/2 (product p_i (x_i) )T_(x, y) = \
   1/(2L) (product p_i (x_i) )min( (p_i (y_i))/(p_i (x_i)), 1) = 1/(2L) (product p_i (y_i) )min( (p_i (y_i))/(p_i (x_i)), 1) = \
-  1/2 1/L (product p_i (y_i) )T_(y, x)
+  1/2 (product p_i (y_i) )T_(y, x)
 $
 
-Detailed balance across chains is the exact same. To extract a sample from the chain with the desired temperature you just throw away the samples from the other chains.
+The $1 slash L$ factor appeared because we only had a $1 slash L$ chance of transitioning to that temperature. If we wanted to analyze Detailed Balance when staying within a chain, you would drop that factor and everything else would stay the same.
+
+Since the joint factorizes, to extract a sample from the chain with the desired temperature you just throw away the samples from the other chains.
 
 == Hamiltonian Monte-Carlo
 The idea of HMC is augment our state with a velocity, and then somehow sample from the joint.
@@ -138,13 +140,29 @@ Since the distribution factorizes, you can simply throw away the velocity to obt
 To clarify step 2, you should imagine $E(x)$ is a potential energy and $K(v) = 1/2 norm(v)^2$ is the kinetic energy. Then, we want trajectories which don't change the energy...
 $
   H(x, v) = - E(x) - K(v) \
-  0 = d/dt H(x, v) = (d H)/dx dx/dt + (d H)/(d v) (d v)/dt =\
-  => (d v)/dt = -E'(x)
+  0 = d/dt H(x, v) = (d H)/dx dx/dt + (d H)/(d v) (d v)/dt\
+  => dot(x) = v quad dot(v) = -E'(x) \
+  // D vec(x, v) = mat(0, I; -E'(x), 0)vec(dot(x), dot(v))
 $
 
-So why does this work? Step 1 satisfies detailed balance because you can view it as a Gibbs step. Step 2 can be shown to keep the probability mass on any volume the same, provided the input distribution is $exp(-E(x) - K(v))$ for some $v$. Hence, the stationary distribution is indeed the joint.
+So why does this work? The key is both steps have the correct stationary distribution. Step 1 does because you can view it as a Gibbs step. To prove Step 2 it suffices to show the following. Let $p_t$ denote the probability distribution after simulating the Hamiltonian for $t$ steps.
+$
+  integral_A p(x, v)dV = integral_A p_t (x, v) dV
+$
 
-// TODO: HMC. AIS.
+Let $Phi(t)$ map $p -> p_t$. Then $p_t (x) = det(D(Phi(t)))^(-1) p(x)$. Hence, the above will only hold if that determinant is one. Clearly the determinant is $1$ when $t = 0$, because $Phi(t)$ is just an identity mapping. The problem is the determinant could change with $t$. To show that this doesn't happen, we must show the determinant never changes. Let's assume inductively it has not changed for $t$ time steps...
+$
+  d/dt "det"(D(phi(t))) = Tr(("det"(D(phi(t)))) (D(phi(t))^(-1))(d/dt D(phi(t)))) = \
+  Tr(D(phi(t))^(-1)d/dt D(phi(t))) = Tr(D(phi(t))^(-1) D(d/dt phi(t)))
+$
+
+Now define $f(x, v) = (v, -E'(x))$. Applying this function to our state is the same as taking a derivate with respect to time.
+$
+  Tr(D(phi(t))^(-1) D(f(phi(t)))) = Tr(D(phi(t))^(-1) (D f)[phi(t)] D(phi(t))) = \
+  Tr((D f)[phi(t)])
+$
+
+Finally, observe $D f$ has no mainline diagonal terms, and thus has a trace of $0$. Thus, the determinant is always 1 and the joint distribution is indeed stationary.
 
 = Optimization
 == Contrastive Divergence <contrastive-divergence>

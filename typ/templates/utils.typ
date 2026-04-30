@@ -318,3 +318,5 @@
 #let dz = $d z$
 #let dt = $d t$
 #let dw = $d w$
+#let dA = $d A$
+#let dV = $d V$
