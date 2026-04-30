@@ -48,13 +48,19 @@ The basic idea here is you have a proposal distribution $q(y|x)$ and an acceptan
 + The operator has a stationary distribution.
 + The operator has exactly one stationary distribution.
 + The operator, when iterated, converges to the stationary distribution.
-+ The stationary distribution matches $p(x)$.
++ $p(x)$ is a stationary distribution.
 
 == Stationary Distribution Existence
-To ensure a stationary distribution exists, it suffices to make your transition operator a random walk. An informal argument is as follows.
-+ What's the maximum an operator can scale the L2 norm of an input distribution? Well, it cannot change the L1 norm (which is 1) and that upper-bounds the L2 norm. Thus, eigenvalues of this operator are at most norm 1.
-+ Is it possible for all eigenvalues to have norm less than $1$? No, because then the transition matrix would necessarily scale down the L2 norm of the input, which would eventually force the L1 norm down as well, which random walks cannot change.
-+ Therefore, there must exist a vector with eigenvalue $1$, a stationary distribution.
+To ensure a stationary distribution exists, it suffices to make your transition operator a random walk. In finite dimensions you can argue...
++ The transition operator is linear because the probability of being at any state after the transition is linear in $p$. $ p(y) = integral T(x, y)p(x) $
++ If all eigenvalues of the operator are less than 1, probability mass is destroyed.
++ If any eigenvalues are greater than 1, probability mass will soon be created.
++ The eigenvalues of $A^top$ and $A$ are the same. Hence, since $A 1 = 1$ implies $A^top$ has an eigenvalue of $1$ which implies $exists pi^top$ such that
+  $
+    A^top pi^top = pi^top <==> pi A = pi 
+  $
+
+
 
 == Stationary Distribution Uniqueness 
 To show there's only one stationary distribution you just need to show after some number of steps, every state has a probability of reaching every other state. This is called *irreducability*. To see this, observe
@@ -63,14 +69,14 @@ To show there's only one stationary distribution you just need to show after som
   $
     (theta pi_1 + (1 - theta) pi_2)T = theta pi_1 + (1 - theta) pi_2
   $
-  That is, any affine combination of the two distributions is stationary, although the weights need to add to $1$ to ensure it's still a distribution. Consider the state where $pi_2 slash pi_1$ is the largest. By subtracting just the right amount of $pi_1$, we can zero out the probability for that state, while keeping all other probabilities positive and still have a valid distribution. But that's a contradiction, because after some number of transitions, there has to be non-zero probability mass on every state.
+  That is, any affine combination of the two distributions is stationary. Consider the state where $pi_2 slash pi_1$ is the largest. By subtracting just the right amount of $pi_1$, we can zero out the probability for that state, while keeping all other probabilities positive and still have a valid distribution. But that's a contradiction, because after some number of transitions, there has to be non-zero probability mass on every state.
 
 == Stationary Distribution Convergence
 // Uniquesss ensures only one eigenvalue of value 1, but there are still unbounded numbers with -1 or complex.
-To ensure you converge to _a_ stationary distribution, you need to ensure after some number of steps, the probability of being in a given state given any starting state is non-zero. This is called *aperiodicity*. An informal argument:
+To ensure you converge to _a_ stationary distribution, you need to ensure after some number of steps, the probability of returning to a given is non-zero. This is called *aperiodicity*. An informal argument:
 + Consider the stationary distribution and some other distribution.
-+ Sample a bunch of _paired_ trajectories from both.
-+ Observe that after some amount of time, there is a non-zero probability that you can be in any state (*aperiodicity*) so there is a non-zero probabilty a given pair entered the same state.
++ Sample _paired_ trajectories from both (trajectories with identical transitions).
++ *irreducability* ensures after some time, there is a non-zero probability that you can be in any state. However, this doesn't guarantee things will stay that way. *aperiodicity* fixes this by ensuring every state can reach itself on every timestep after some more time. Thus, after a sufficient duration, there is a non-zero probability a given pair entered the same state.
 + After entering the same state, that specific pair will stick together forever.
 + Thus, in the limit every trajectory from the distributions will coincide exactly.
 
@@ -663,15 +669,9 @@ $
   d/dt p(x) = -nabla_x (nabla_x log(p(x)) p(x)) + nabla_(x x) p(x) = 0
 $
 
-Furthermore, if $p(x) prop exp(-E(x))$, the corresponding SDE looks a lot like gradient descent on the energy function $E(x)$.
-$
-  dx = (nabla_x log(p(x)))dt + sqrt(2) cal(N)(0, dt) \ 
-  dx = -nabla_x E(x)dt + sqrt(2) cal(N)(0, dt) \  
-$
+It's easy to see that because of the noise term, Langevin sampling is irreducible and aperiodic which means its guaranteed to converge to the stationary distribution. The question of how fast is surprising complicated, and I won't cover that here.
 
-In fact, you can actually show Langevin sampling converges quickly because it is basically doing gradient descent over the KLs, but that's non-trivial, I won't show that here.
-
-Note that this is _not_ the same as simulating a reverse SDE, because we're computing the score with respect to the _target_ distribution, not the _current_ distribution. 
+Note that Langevin is _not_ the same as simulating a reverse SDE, because we're computing the score with respect to the _target_ distribution, not the _current_ distribution. 
 
 == Diffusion
 Diffusion is essentially Denoised Score Matching. The main difference is _how it chooses the noise levels_, which DSM doesn't really constrain. Essentially, construct $p_("data", i)$ such that it can be viewed as the forward process of an SDE. Then, when going backwards use an SDE solver on the reverse SDE! The connection to SDEs enables a wide variety of tricks. For example, there are solvers which can account for local curvature and take dynamic step sizes. Furthermore, we've shown you can choose the reverse SDE to be an ODE, which can simplify inference a lot. This is the insight of #link("https://arxiv.org/abs/2010.02502")[DDIM].
