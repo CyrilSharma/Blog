@@ -52,7 +52,8 @@ The basic idea here is you have a proposal distribution $q(y|x)$ and an acceptan
 
 == Stationary Distribution Existence
 To ensure a stationary distribution exists, it suffices to make your transition operator a random walk. In finite dimensions you can argue...
-+ The transition operator is linear because the probability of being at any state after the transition is linear in $p$. $ p(y) = integral T(x, y)p(x) $
++ The transition operator is linear because the transition operator doesn't depend on $p$ (only the state!) and it must obey the following equation.
+  $ p(y) = integral T(x, y)p(x) $
 + If all eigenvalues of the operator are less than 1, probability mass is destroyed.
 + If any eigenvalues are greater than 1, probability mass will soon be created.
 + The eigenvalues of $A^top$ and $A$ are the same. Hence, since $A 1 = 1$ implies $A^top$ has an eigenvalue of $1$ which implies $exists pi^top$ such that
